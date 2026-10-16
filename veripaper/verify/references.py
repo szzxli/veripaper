@@ -18,12 +18,15 @@ import urllib.parse
 
 import requests
 
-from veripaper.verify.extract import ARXIV_RE, DOI_RE, REF_HEADING_RE
+from veripaper.verify.extract import (
+    ARXIV_RE, DOI_RE, REF_HEADING_RE, normalize_ws,
+)
 
 UA = {"User-Agent": "veripaper/0.1 (mailto:dev@veripaper.local)"}
 CROSSREF_QUERY = "https://api.crossref.org/works"
 
 YEAR_RE = re.compile(r"\b((?:19|20)\d{2})\b")
+YEAR_LETTER_RE = re.compile(r"\b((?:19|20)\d{2})([a-z])?\b")
 NUMERIC_ENTRY_RE = re.compile(r"^\[(\d{1,3})\]\s*(.*)$")
 CITEKEY_ENTRY_RE = re.compile(r"^\[@([^\]]+)\]\s*(.*)$")
 
@@ -69,8 +72,10 @@ def _entry_ids(entry: str) -> dict:
         arxiv_id = aid
         break
     y = YEAR_RE.search(entry)
+    yl = YEAR_LETTER_RE.search(entry)
     return {"doi": doi, "arxiv_id": arxiv_id,
-            "year": int(y.group(1)) if y else None}
+            "year": int(y.group(1)) if y else None,
+            "ykey": (int(yl.group(1)), yl.group(2) or "") if yl else (None, "")}
 
 
 def parse_references(markdown: str) -> dict:
@@ -80,7 +85,7 @@ def parse_references(markdown: str) -> dict:
              'authoryear': {(surname, year): [entries]}},
     where entry = {'raw', 'doi', 'arxiv_id', 'year'}.
     """
-    _, section = split_references(markdown)
+    _, section = split_references(normalize_ws(markdown))
     refmap: dict = {"numeric": {}, "citekey": {}, "authoryear": {}}
     for raw in _split_entries(section):
         entry = {"raw": raw, **_entry_ids(raw)}
@@ -92,25 +97,74 @@ def parse_references(markdown: str) -> dict:
         if m:
             refmap["citekey"][m.group(1).strip()] = entry
             continue
-        # author-year key: first surname + year
+        # author-year key: first surname + year (+ disambiguation letter)
         sm = re.match(r"\s*([A-Z][A-Za-z'’\-]+)", raw)
-        if sm and entry["year"]:
-            surname = sm.group(1).lower()
-            refmap["authoryear"].setdefault((surname, entry["year"]), []).append(entry)
+        if sm and entry["ykey"][0]:
+            key = (sm.group(1).lower(), entry["ykey"][0], entry["ykey"][1])
+            refmap["authoryear"].setdefault(key, []).append(entry)
         # entries that match nothing are still kept for bibliographic query
         refmap.setdefault("unkeyed", []).append(entry)
     return refmap
 
 
-def _parse_intext_authoryear(marker: str) -> tuple[str, int] | None:
+def _parse_intext_authoryear(marker: str) -> tuple[str, int, str] | None:
     sm = re.match(r"\s*([A-Za-z'’\-]+)", marker)
-    y = YEAR_RE.search(marker)
+    y = YEAR_LETTER_RE.search(marker)
     if not sm or not y:
         return None
     surname = re.sub(r"[^a-z]", "", sm.group(1).lower())
     if surname in ("et", ""):
         return None
-    return surname, int(y.group(1))
+    return surname, int(y.group(1)), y.group(2) or ""
+
+
+def _s2_lookup(entry_raw: str, entry_year: int | None) -> tuple[str | None, str | None]:
+    """Semantic Scholar title search; same title-in-entry + year gate.
+    Returns (doi, arxiv_id); (None, None) on any failure. S2 has the best
+    CS/ML coverage, which CrossRef lacks (many NeurIPS/ICML papers)."""
+    q = re.sub(r"^\[(@?[^\]]+)\]\s*", "", entry_raw).strip()[:300]
+    if len(q) < 15:
+        return None, None
+    try:
+        r = requests.get(
+            "https://api.semanticscholar.org/graph/v1/paper/search",
+            params={"query": q, "fields": "title,abstract,externalIds,year",
+                    "limit": 3},
+            headers=UA, timeout=20)
+    except requests.RequestException:
+        return None, None
+    if r.status_code != 200:
+        return None, None
+    try:
+        data = r.json().get("data", [])
+    except ValueError:
+        return None, None
+    norm_entry = _norm(entry_raw)
+    for p in data:
+        title = p.get("title") or ""
+        if len(_norm(title)) < 10:
+            continue
+        if _norm(title) not in norm_entry:
+            continue
+        if entry_year and p.get("year") and abs(p["year"] - entry_year) > 1:
+            continue
+        ids = p.get("externalIds") or {}
+        doi = ids.get("DOI")
+        arxiv = ids.get("ArXiv")
+        if doi or arxiv:
+            return doi, arxiv
+    return None, None
+
+
+def _bibliographic_lookup(entry_raw: str, entry_year: int | None) -> dict:
+    """CrossRef first, Semantic Scholar second. Same acceptance gate."""
+    doi = _crossref_lookup(entry_raw, entry_year)
+    if doi:
+        return {"doi": doi, "arxiv_id": None, "via": "crossref"}
+    doi2, ax = _s2_lookup(entry_raw, entry_year)
+    if doi2 or ax:
+        return {"doi": doi2, "arxiv_id": ax, "via": "semanticscholar"}
+    return {"doi": None, "arxiv_id": None, "via": "none"}
 
 
 def _crossref_lookup(entry_raw: str, entry_year: int | None) -> str | None:
@@ -155,7 +209,7 @@ def resolve_marker(marker_type: str, marker_id: str, refmap: dict) -> dict:
     """Resolve an in-text marker to identifiers.
 
     Returns {'doi', 'arxiv_id', 'via', 'note'}; doi/arxiv_id None when unresolved.
-    via: embedded | crossref | none. Ambiguity → none + note.
+    via: embedded | crossref | semanticscholar | none. Ambiguity → none + note.
     """
     entry = None
     if marker_type == "numeric":
@@ -165,7 +219,12 @@ def resolve_marker(marker_type: str, marker_id: str, refmap: dict) -> dict:
     elif marker_type == "author-year":
         parsed = _parse_intext_authoryear(marker_id)
         if parsed:
-            cands = refmap.get("authoryear", {}).get(parsed, [])
+            amap = refmap.get("authoryear", {})
+            cands = amap.get(parsed, [])
+            if not cands:
+                # fallback: ignore the disambiguation letter
+                cands = [e for k, es in amap.items()
+                         if k[:2] == parsed[:2] for e in es]
             if len(cands) == 1:
                 entry = cands[0]
             elif len(cands) > 1:
@@ -177,9 +236,10 @@ def resolve_marker(marker_type: str, marker_id: str, refmap: dict) -> dict:
     if entry["doi"] or entry["arxiv_id"]:
         return {"doi": entry["doi"], "arxiv_id": entry["arxiv_id"],
                 "via": "embedded", "note": "identifier found in reference entry"}
-    doi = _crossref_lookup(entry["raw"], entry["year"])
-    if doi:
-        return {"doi": doi, "arxiv_id": None, "via": "crossref",
-                "note": "CrossRef bibliographic match (title-in-entry + year)"}
+    bl = _bibliographic_lookup(entry["raw"], entry["year"])
+    if bl["doi"] or bl["arxiv_id"]:
+        src = "CrossRef" if bl["via"] == "crossref" else "Semantic Scholar"
+        return {"doi": bl["doi"], "arxiv_id": bl["arxiv_id"], "via": bl["via"],
+                "note": f"{src} bibliographic match (title-in-entry + year)"}
     return {"doi": None, "arxiv_id": None, "via": "none",
-            "note": "reference entry has no DOI/arXiv ID and no confident CrossRef match"}
+            "note": "reference entry has no DOI/arXiv ID and no confident bibliographic match"}

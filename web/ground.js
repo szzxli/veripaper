@@ -11,7 +11,7 @@ const DOI_RE = /(?:https?:\/\/(?:dx\.)?doi\.org\/)?(10\.\d{4,}\/[^\s\]\)\"'<>]+)
 const ARXIV_RE = /(?:arXiv:)?(\d{4}\.\d{4,5}(?:v\d+)?|[a-z\-]+\/\d{7}(?:v\d+)?)/gi;
 const PANDOC_RE = /\[@([^\]]+)\]/g;
 const NUMERIC_RE = /\[(\d{1,3})\]/g;
-const AUTHOR_YEAR_RE = /\(([A-Z][A-Za-z'’\-]+(?:\s+et al\.)?(?:\s*(?:&|and)\s+[A-Z][A-Za-z'’\-]+)?(?:\s*,\s*[A-Z][A-Za-z'’\-]+)*,?\s*\d{4}[a-z]?(?:\s*;\s*[^)]+)?)\)/g;
+const AUTHOR_YEAR_RE = /\(\s*([A-Z][A-Za-z'’\-]+(?:\s+et al\.)?(?:\s*(?:&|and)\s+[A-Z][A-Za-z'’\-]+)?(?:\s*,\s*[A-Z][A-Za-z'’\-]+)*,?\s*\d{4}[a-z]?(?:\s*;\s*[^)]+)?)\s*\)/g;
 const URL_RE = /https?:\/\/[^\s\]\)\"'<>]+/gi;
 const YEAR_RE = /\b((?:19|20)\d{2})\b/g;
 const NUMERIC_ENTRY_RE = /^\[(\d{1,3})\]\s*(.*)$/;
@@ -76,8 +76,10 @@ function markersInSentence(sent) {
   return found;
 }
 
+function normalizeWs(s) { return s.replace(/[\u00a0\u2007\u202f\u2009\u200a]/g, ' '); }
+
 function extractPairs(md) {
-  const text = cutReferences(md.replace(FENCE_RE, ''));
+  const text = cutReferences(normalizeWs(md).replace(FENCE_RE, ''));
   const lines = text.split('\n').filter(ln => !ln.trimStart().startsWith('#'));
   const pairs = [];
   splitSentences(lines.join('\n')).forEach((sent, si) => {
@@ -110,8 +112,9 @@ function splitEntries(section) {
   return entries;
 }
 
+const YEAR_LETTER_RE = /\b((?:19|20)\d{2})([a-z])?\b/g;
 function entryIds(entry) {
-  let doi = null, arxivId = null, year = null;
+  let doi = null, arxivId = null, year = null, ykey = [null, ''];
   DOI_RE.lastIndex = 0;
   let m = DOI_RE.exec(entry);
   if (m) doi = m[1].replace(/[.,;:]+$/, '');
@@ -123,10 +126,14 @@ function entryIds(entry) {
   YEAR_RE.lastIndex = 0;
   m = YEAR_RE.exec(entry);
   if (m) year = parseInt(m[1], 10);
-  return { doi, arxiv_id: arxivId, year };
+  YEAR_LETTER_RE.lastIndex = 0;
+  m = YEAR_LETTER_RE.exec(entry);
+  if (m) ykey = [parseInt(m[1], 10), m[2] || ''];
+  return { doi, arxiv_id: arxivId, year, ykey };
 }
 
 function parseReferences(md) {
+  md = normalizeWs(md);
   const refmap = { numeric: {}, citekey: {}, authoryear: {} };
   for (const raw of splitEntries(splitRefSection(md))) {
     const entry = Object.assign({ raw }, entryIds(raw));
@@ -135,8 +142,8 @@ function parseReferences(md) {
     m = CITEKEY_ENTRY_RE.exec(raw);
     if (m) { refmap.citekey[m[1].trim()] = entry; continue; }
     m = /^\s*([A-Z][A-Za-z'’\-]+)/.exec(raw);
-    if (m && entry.year) {
-      const key = m[1].toLowerCase() + '|' + entry.year;
+    if (m && entry.ykey[0]) {
+      const key = m[1].toLowerCase() + '|' + entry.ykey[0] + '|' + entry.ykey[1];
       (refmap.authoryear[key] = refmap.authoryear[key] || []).push(entry);
     }
   }
@@ -145,12 +152,12 @@ function parseReferences(md) {
 
 function parseIntextAuthoryear(marker) {
   const sm = /^\s*([A-Za-z'’\-]+)/.exec(marker);
-  YEAR_RE.lastIndex = 0;
-  const y = YEAR_RE.exec(marker);
+  YEAR_LETTER_RE.lastIndex = 0;
+  const y = YEAR_LETTER_RE.exec(marker);
   if (!sm || !y) return null;
   const surname = sm[1].toLowerCase().replace(/[^a-z]/g, '');
   if (!surname || surname === 'et') return null;
-  return surname + '|' + parseInt(y[1], 10);
+  return surname + '|' + parseInt(y[1], 10) + '|' + (y[2] || '');
 }
 
 async function crossrefLookup(entryRaw, entryYear) {
@@ -179,6 +186,37 @@ async function crossrefLookup(entryRaw, entryYear) {
   return null;
 }
 
+async function s2Lookup(entryRaw, entryYear) {
+  const q = entryRaw.replace(/^\[(@?[^\]]+)\]\s*/, '').trim().slice(0, 300);
+  if (q.length < 15) return [null, null];
+  let r;
+  try {
+    r = await fetch('https://api.semanticscholar.org/graph/v1/paper/search?' + new URLSearchParams({
+      query: q, fields: 'title,abstract,externalIds,year', limit: '3' }));
+  } catch { return [null, null]; }
+  if (!r.ok) return [null, null];
+  let data;
+  try { data = (await r.json()).data || []; } catch { return [null, null]; }
+  const nEntry = norm(entryRaw);
+  for (const it of data) {
+    const title = it.title || '';
+    if (norm(title).length < 10) continue;
+    if (!nEntry.includes(norm(title))) continue;
+    if (entryYear && it.year && Math.abs(it.year - entryYear) > 1) continue;
+    const ids = it.externalIds || {};
+    if (ids.DOI || ids.ArXiv) return [ids.DOI || null, ids.ArXiv || null];
+  }
+  return [null, null];
+}
+
+async function bibliographicLookup(entryRaw, entryYear) {
+  const doi = await crossrefLookup(entryRaw, entryYear);
+  if (doi) return { doi, arxiv_id: null, via: 'crossref' };
+  const [doi2, ax] = await s2Lookup(entryRaw, entryYear);
+  if (doi2 || ax) return { doi: doi2, arxiv_id: ax, via: 'semanticscholar' };
+  return { doi: null, arxiv_id: null, via: 'none' };
+}
+
 async function resolveMarker(type, id, refmap) {
   let entry = null;
   if (type === 'numeric') entry = refmap.numeric[id] || null;
@@ -186,7 +224,12 @@ async function resolveMarker(type, id, refmap) {
   else if (type === 'author-year') {
     const key = parseIntextAuthoryear(id);
     if (key) {
-      const cands = refmap.authoryear[key] || [];
+      const amap = refmap.authoryear;
+      let cands = amap[key] || [];
+      if (!cands.length) {
+        const p2 = key.split('|').slice(0, 2).join('|') + '|';
+        cands = Object.keys(amap).filter(k => k.startsWith(p2)).flatMap(k => amap[k]);
+      }
       if (cands.length === 1) entry = cands[0];
       else if (cands.length > 1)
         return { doi: null, arxiv_id: null, via: 'none', note: `ambiguous: ${cands.length} entries match '${id}'` };
@@ -196,11 +239,14 @@ async function resolveMarker(type, id, refmap) {
     return { doi: null, arxiv_id: null, via: 'none', note: `no reference entry for [${id}]` };
   if (entry.doi || entry.arxiv_id)
     return { doi: entry.doi, arxiv_id: entry.arxiv_id, via: 'embedded', note: 'identifier found in reference entry' };
-  const doi = await crossrefLookup(entry.raw, entry.year);
-  if (doi)
-    return { doi, arxiv_id: null, via: 'crossref', note: 'CrossRef bibliographic match (title-in-entry + year)' };
+  const bl = await bibliographicLookup(entry.raw, entry.year);
+  if (bl.doi || bl.arxiv_id) {
+    const src = bl.via === 'crossref' ? 'CrossRef' : 'Semantic Scholar';
+    return { doi: bl.doi, arxiv_id: bl.arxiv_id, via: bl.via,
+      note: src + ' bibliographic match (title-in-entry + year)' };
+  }
   return { doi: null, arxiv_id: null, via: 'none',
-    note: 'reference entry has no DOI/arXiv ID and no confident CrossRef match' };
+    note: 'reference entry has no DOI/arXiv ID and no confident bibliographic match' };
 }
 
 /* ---------------- existence (reuse page's verify fns when present) ---------------- */

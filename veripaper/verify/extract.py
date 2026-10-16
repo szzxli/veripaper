@@ -24,13 +24,20 @@ ARXIV_RE = re.compile(r"(?:arXiv:)?(\d{4}\.\d{4,5}(?:v\d+)?|[a-z\-]+/\d{7}(?:v\d
 PANDOC_RE = re.compile(r"\[@([^\]]+)\]")
 NUMERIC_RE = re.compile(r"\[(\d{1,3})\]")
 AUTHOR_YEAR_RE = re.compile(
-    r"\(([A-Z][A-Za-z'’\-]+(?:\s+et al\.)?(?:\s*(?:&|and)\s+[A-Z][A-Za-z'’\-]+)?"
-    r"(?:\s*,\s*[A-Z][A-Za-z'’\-]+)*,?\s*\d{4}[a-z]?(?:\s*;\s*[^)]+)?)\)")
+    r"\(\s*([A-Z][A-Za-z'’\-]+(?:\s+et al\.)?(?:\s*(?:&|and)\s+[A-Z][A-Za-z'’\-]+)?"
+    r"(?:\s*,\s*[A-Z][A-Za-z'’\-]+)*,?\s*\d{4}[a-z]?(?:\s*;\s*[^)]+)?)\s*\)")
 URL_RE = re.compile(r"https?://[^\s\]\)\"'<>]+", re.I)
 
 REF_HEADING_RE = re.compile(r"^#{1,6}\s*(references|bibliography|works cited)\s*$", re.I | re.M)
 FENCE_RE = re.compile(r"```.*?```", re.S)
 SENT_SPLIT_RE = re.compile(r"(?<=[.!?])\s+(?=[A-Z0-9\"'“(\[])")
+
+# unicode spaces that sneak in from PDF/HTML pastes and break literal matches
+WS_NORM_RE = re.compile(r"[\u00a0\u2007\u202f\u2009\u200a]")
+
+
+def normalize_ws(text: str) -> str:
+    return WS_NORM_RE.sub(" ", text)
 
 ABBREV = {"et al.", "e.g.", "i.e.", "Fig.", "fig.", "Eq.", "vs.", "U.S.", "U.K."}
 
@@ -103,7 +110,7 @@ def _markers(sentence: str) -> list[dict]:
 
 def extract_pairs(markdown: str) -> list[dict]:
     """Return [{'claim', 'cite_raw', 'cite_type', 'cite_id', 'sentence_no'}]."""
-    text = _cut_references(_strip_code(markdown))
+    text = _cut_references(_strip_code(normalize_ws(markdown)))
     # drop headings (keep body sentences)
     lines = [ln for ln in text.splitlines() if not ln.lstrip().startswith("#")]
     text = "\n".join(lines)
