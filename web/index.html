@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>veripaper — ground every claim</title>
-<meta name="description" content="Open-source workbench for evidence-grounded research. Verify citations, ground drafts, label honestly.">
+<title>veripaper — catch invented citations in AI drafts</title>
+<meta name="description" content="Open-source workbench that verifies the citations in a research draft. Checks every cited source exists, flags the ones that don't, labels honestly.">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#16324f">
 <style>
@@ -126,11 +126,15 @@ footer .colophon a{color:var(--navy)}
   <p class="hint" id="pj-hint" style="margin-bottom:0"></p>
 </div>
 <div class="titleblock">
-  <h1>Ground every claim<br>before you submit.</h1>
-  <div class="byline">Researchers do ideas, logic, and proof — veripaper checks the evidence.</div>
+  <h1>Your AI wrote the draft.<br>Did it invent the citations?</h1>
+  <div class="byline">Paste the draft — veripaper checks every citation against the real paper, and flags the ones that don't exist.</div>
+  <div class="btnrow" style="justify-content:center;margin:24px 0 4px">
+    <button id="demo-btn" class="btn primary" style="padding:13px 34px;font-size:15px">▶ Try the 30-second demo</button>
+    <a href="#idea" class="btn ghost">Evaluate a research idea</a>
+  </div>
   <div class="abstract">
     <div class="ah">Abstract</div>
-    <p>veripaper is an open-source workbench that verifies the citations in a research draft. It looks up whether each cited source exists (CrossRef, DataCite, arXiv, Semantic Scholar), resolves reference-list markers to identifiers, and — with your own API key — judges whether a source's abstract substantively supports the claim. Every claim receives an honest label: <i>verified</i>, <i>cited</i>, <i>unverified</i>, or <i>stale</i>.</p>
+    <p>veripaper is an open-source workbench that verifies the citations in a research draft. It looks up whether each cited source exists (CrossRef, DataCite, arXiv, Semantic Scholar, Europe PMC, DBLP), resolves reference-list markers to identifiers, and — with your own API key — judges whether a source's abstract substantively supports the claim. Every claim receives an honest label: <i>verified</i>, <i>cited</i>, <i>unverified</i>, or <i>stale</i>.</p>
     <p>It never generates content and never pretends. When evidence is uncertain, it downgrades the label and leaves the judgment to the author.</p>
   </div>
 </div>

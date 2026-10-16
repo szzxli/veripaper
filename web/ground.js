@@ -447,6 +447,31 @@ function checkFreshness(claim, windowYears) {
   return age > windowYears ? { stale: true, tag: `[STALE:${newest}]` } : { stale: false, tag: '' };
 }
 
+/* No-key heuristic: neutral keyword-overlap measurement between the claim and
+ * the abstract. It is a number, not a judgment — the label stays CITED and the
+ * author decides. Never presented as VERIFIED. */
+const VP_STOP = new Set(('a,an,the,and,or,but,if,then,else,when,while,of,at,by,for,with,about,into,through,during,before,after,above,below,to,from,up,down,in,out,on,off,over,under,again,further,once,here,there,all,any,both,each,few,more,most,other,some,such,no,nor,not,only,own,same,so,than,too,very,can,will,just,should,now,is,are,was,were,be,been,being,have,has,had,having,do,does,did,doing,would,could,ought,i,you,he,she,it,we,they,them,his,her,its,our,their,this,that,these,those,as,also,which,who,whom,what,where,why,how,because,until,between,among,per,via,using,used,use,based,et,al').split(','));
+function vpTokens(s) {
+  return (String(s || '').toLowerCase().match(/[a-z0-9]{3,}/g) || [])
+    .map(t => (t.length > 4 && t.endsWith('s') ? t.slice(0, -1) : t))
+    .filter(t => !VP_STOP.has(t));
+}
+function keywordOverlap(claim, abstract) {
+  const ck = vpTokens(claim);
+  if (!ck.length) return null;
+  const ak = new Set(vpTokens(abstract));
+  if (!ak.size) return null;
+  const hit = ck.filter(t => ak.has(t)).length;
+  return hit / ck.length;
+}
+function heuristicSupportHint(claim, abstract) {
+  const r = keywordOverlap(claim, abstract);
+  if (r == null) return null;
+  const pct = Math.round(r * 100);
+  const band = r >= 0.45 ? 'strong' : r >= 0.25 ? 'partial' : 'weak';
+  return `heuristic: ${band} keyword overlap (${pct}% of claim keywords appear in the abstract) — a number, not a verdict; author decides`;
+}
+
 /* ---------------- pipeline ---------------- */
 
 async function groundDraft(text, opts, onStep) {
@@ -470,9 +495,15 @@ async function groundDraft(text, opts, onStep) {
         else { base = 'CITED'; note = j.reason || 'abstract does not support the claim — author decides'; }
       } else {
         base = 'CITED';
-        note = !opts.apiKey
-          ? 'no LLM key provided — support not checked (add an OpenRouter key above for content judgment)'
-          : 'no abstract available — downgraded honestly';
+        if (!opts.apiKey && ab) {
+          const hint = heuristicSupportHint(p.claim, ab);
+          note = (hint || 'no LLM key provided — support not checked') +
+            ' (add an OpenRouter key above for a real content judgment)';
+        } else {
+          note = !opts.apiKey
+            ? 'no LLM key provided — support not checked (add an OpenRouter key above for content judgment)'
+            : 'no abstract available — downgraded honestly';
+        }
       }
     }
     const fr = checkFreshness(p.claim, opts.windowYears);
@@ -577,6 +608,14 @@ function initGround() {
   const out = document.getElementById('ground-result');
   if (!ta) return;
   sample.addEventListener('click', () => { ta.value = SAMPLE; });
+  // 30-second demo: load the sample, run it, scroll to results
+  const demo = document.getElementById('demo-btn');
+  if (demo) demo.addEventListener('click', () => {
+    ta.value = SAMPLE;
+    const sec = document.getElementById('ground');
+    if (sec && sec.scrollIntoView) sec.scrollIntoView({ behavior: 'smooth' });
+    setTimeout(() => btn.click(), 650);
+  });
   btn.addEventListener('click', async () => {
     const text = ta.value.trim();
     if (!text) { out.innerHTML = '<p style="color:var(--ink-soft)">Paste your draft first — or load the sample.</p>'; return; }
