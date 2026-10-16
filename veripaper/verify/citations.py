@@ -1,6 +1,6 @@
 """Citation existence verification: DOI → CrossRef/arXiv lookup → metadata match.
 
-Borrowed from OpenDraft's proven approach: reject on failure, never fabricate.
+Design rule: reject on failure, never fabricate.
 """
 from __future__ import annotations
 

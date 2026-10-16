@@ -1,10 +1,9 @@
 """ResearchContract: typed handoff object between pipeline phases.
 
-Adopted from FAROS's PlanPackage concept: objectives, hypotheses, evidence
-references and acceptance criteria travel as structured, validated data —
-not raw natural language. Every phase consumes and produces contracts;
-every review finding compiles into a structured Revision the researcher
-must approve before the next round.
+Objectives, hypotheses, evidence references and acceptance criteria travel as
+structured, validated data — not raw natural language. Every phase consumes
+and produces contracts; every review finding compiles into a structured
+Revision the researcher must approve before the next round.
 """
 from __future__ import annotations
 

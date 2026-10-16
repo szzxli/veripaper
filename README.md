@@ -9,10 +9,11 @@ Everything else — writing, benchmarking, venue targeting, rebuttals — is han
 idea → proposal decision → idea distillation → evidence grounding → top-venue benchmarking → reviewer simulation → venue targeting → rebuttal → publishable
 ```
 
-## How it differs from OpenDraft
+## What it does differently
 
-OpenDraft (19 agents, MIT) solves "a draft in 10 minutes"; its strength is citation *existence* verification.
-It admits: *"verifies sources exist, not that claims about their content are accurate."*
+Draft-generation tools solve "a draft in 10 minutes"; their strength is citation
+*existence* verification — checking that sources exist, not that claims about
+their content are accurate.
 
 veripaper solves "getting published":
 - **Claim-level verification**: not just "does the citation exist", but "does the cited work actually support your claim"

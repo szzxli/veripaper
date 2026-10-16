@@ -1,4 +1,4 @@
-"""Claim-content verification (the increment OpenDraft lacks):
+"""Claim-content verification:
 does the cited work actually support the claim?
 
 Strategy: fetch the cited work's abstract (free via arXiv / Semantic Scholar),
