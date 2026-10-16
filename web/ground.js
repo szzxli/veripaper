@@ -7,7 +7,17 @@
 
 /* Faithful port of veripaper/verify/extract.py */
 const ABBREV = ['et al.', 'e.g.', 'i.e.', 'Fig.', 'fig.', 'Eq.', 'vs.', 'U.S.', 'U.K.'];
-const DOI_RE = /(?:https?:\/\/(?:dx\.)?doi\.org\/)?(10\.\d{4,}\/[^\s\]\)\"'<>]+)/gi;
+const DOI_RE = /(?:https?:\/\/(?:dx\.)?doi\.org\/)?(10\.\d{4,}\/[^\s\]\"'<>]+)/gi;
+/* DOIs may legally contain balanced parentheses (e.g. Wiley's
+ * 10.1016/S0140-6736(97)11096-0). The regex above lets them through;
+ * this strips trailing punctuation and any UNBALANCED trailing ')'. */
+function cleanDoi(raw) {
+  let d = String(raw || '').replace(/[.,;:]+$/, '');
+  const opens = s => (s.match(/\(/g) || []).length;
+  const closes = s => (s.match(/\)/g) || []).length;
+  while (d.endsWith(')') && opens(d) < closes(d)) d = d.slice(0, -1).replace(/[.,;:]+$/, '');
+  return d;
+}
 const ARXIV_RE = /(?:arXiv:)?(\d{4}\.\d{4,5}(?:v\d+)?|[a-z\-]+\/\d{7}(?:v\d+)?)/gi;
 const PANDOC_RE = /\[@([^\]]+)\]/g;
 const NUMERIC_RE = /\[(\d{1,3})\]/g;
@@ -60,7 +70,7 @@ function markersInSentence(sent) {
   };
   let m;
   DOI_RE.lastIndex = 0;
-  while ((m = DOI_RE.exec(sent))) add(m[0], 'doi', m[1].replace(/[.,;:]+$/, ''));
+  while ((m = DOI_RE.exec(sent))) add(m[0], 'doi', cleanDoi(m[1]));
   ARXIV_RE.lastIndex = 0;
   while ((m = ARXIV_RE.exec(sent))) {
     if (found.some(f => f.type === 'doi' && f.id.includes(m[1]))) continue;
@@ -127,7 +137,7 @@ function entryIds(entry) {
   let doi = null, arxivId = null, year = null, ykey = [null, ''];
   DOI_RE.lastIndex = 0;
   let m = DOI_RE.exec(entry);
-  if (m) doi = m[1].replace(/[.,;:]+$/, '');
+  if (m) doi = cleanDoi(m[1]);
   ARXIV_RE.lastIndex = 0;
   while ((m = ARXIV_RE.exec(entry))) {
     if (doi && doi.includes(m[1])) continue;
@@ -172,15 +182,16 @@ function parseIntextAuthoryear(marker) {
 
 async function crossrefLookup(entryRaw, entryYear) {
   const q = entryRaw.replace(/^\[(@?[^\]]+)\]\s*/, '').trim().slice(0, 500);
-  if (q.length < 15) return null;
+  const none = { doi: null, arxiv_id: null, limited: false };
+  if (q.length < 15) return none;
   const url = 'https://api.crossref.org/works?query.bibliographic=' + encodeURIComponent(q) +
     '&rows=3&select=DOI,title,published,author';
   let r;
   try { r = await fetch(url, { headers: { Accept: 'application/json' } }); }
-  catch { return null; }
-  if (!r.ok) return null;
+  catch { return none; }
+  if (!r.ok) return r.status === 429 ? { doi: null, arxiv_id: null, limited: true } : none;
   let items;
-  try { items = (await r.json()).message.items; } catch { return null; }
+  try { items = (await r.json()).message.items; } catch { return none; }
   const nEntry = norm(entryRaw);
   for (const it of (items || [])) {
     const title = ((it.title || [])[0] || '');
@@ -191,22 +202,23 @@ async function crossrefLookup(entryRaw, entryYear) {
       try { pub = (it.published || {})['date-parts'][0][0]; } catch { /* ignore */ }
       if (pub && Math.abs(pub - entryYear) > 1) continue;
     }
-    if (it.DOI) return it.DOI;
+    if (it.DOI) return { doi: it.DOI, arxiv_id: null, limited: false };
   }
-  return null;
+  return none;
 }
 
 async function s2Lookup(entryRaw, entryYear) {
   const q = entryRaw.replace(/^\[(@?[^\]]+)\]\s*/, '').trim().slice(0, 300);
-  if (q.length < 15) return [null, null];
+  const none = { doi: null, arxiv_id: null, limited: false };
+  if (q.length < 15) return none;
   let r;
   try {
     r = await fetch('https://api.semanticscholar.org/graph/v1/paper/search?' + new URLSearchParams({
       query: q, fields: 'title,abstract,externalIds,year', limit: '3' }));
-  } catch { return [null, null]; }
-  if (!r.ok) return [null, null];
+  } catch { return none; }
+  if (!r.ok) return r.status === 429 ? { doi: null, arxiv_id: null, limited: true } : none;
   let data;
-  try { data = (await r.json()).data || []; } catch { return [null, null]; }
+  try { data = (await r.json()).data || []; } catch { return none; }
   const nEntry = norm(entryRaw);
   for (const it of data) {
     const title = it.title || '';
@@ -214,19 +226,19 @@ async function s2Lookup(entryRaw, entryYear) {
     if (!nEntry.includes(norm(title))) continue;
     if (entryYear && it.year && Math.abs(it.year - entryYear) > 1) continue;
     const ids = it.externalIds || {};
-    if (ids.DOI || ids.ArXiv) return [ids.DOI || null, ids.ArXiv || null];
+    if (ids.DOI || ids.ArXiv) return { doi: ids.DOI || null, arxiv_id: ids.ArXiv || null, limited: false };
   }
-  return [null, null];
+  return none;
 }
 
 async function bibliographicLookup(entryRaw, entryYear) {
-  const doi = await crossrefLookup(entryRaw, entryYear);
-  if (doi) return { doi, arxiv_id: null, via: 'crossref' };
-  const [doi2, ax] = await s2Lookup(entryRaw, entryYear);
-  if (doi2 || ax) return { doi: doi2, arxiv_id: ax, via: 'semanticscholar' };
-  const [doi3] = await dblpLookup(entryRaw, entryYear);
-  if (doi3) return { doi: doi3, arxiv_id: null, via: 'dblp' };
-  return { doi: null, arxiv_id: null, via: 'none' };
+  const cr = await crossrefLookup(entryRaw, entryYear);
+  if (cr.doi) return { doi: cr.doi, arxiv_id: null, via: 'crossref', limited: false };
+  const s2 = await s2Lookup(entryRaw, entryYear);
+  if (s2.doi || s2.arxiv_id) return { doi: s2.doi, arxiv_id: s2.arxiv_id, via: 'semanticscholar', limited: false };
+  const db = await dblpLookup(entryRaw, entryYear);
+  if (db.doi) return { doi: db.doi, arxiv_id: null, via: 'dblp', limited: false };
+  return { doi: null, arxiv_id: null, via: 'none', limited: !!(cr.limited || s2.limited || db.limited) };
 }
 
 async function resolveMarker(type, id, refmap) {
@@ -250,74 +262,108 @@ async function resolveMarker(type, id, refmap) {
   if (!entry)
     return { doi: null, arxiv_id: null, via: 'none', note: `no reference entry for [${id}]` };
   if (entry.doi || entry.arxiv_id)
-    return { doi: entry.doi, arxiv_id: entry.arxiv_id, via: 'embedded', note: 'identifier found in reference entry' };
+    return { doi: entry.doi, arxiv_id: entry.arxiv_id, via: 'embedded',
+      entryRaw: entry.raw, note: 'identifier found in reference entry' };
   const bl = await bibliographicLookup(entry.raw, entry.year);
   if (bl.doi || bl.arxiv_id) {
     const src = bl.via === 'crossref' ? 'CrossRef' : bl.via === 'dblp' ? 'DBLP' : 'Semantic Scholar';
     return { doi: bl.doi, arxiv_id: bl.arxiv_id, via: bl.via,
-      note: src + ' bibliographic match (title-in-entry + year)' };
+      entryRaw: entry.raw, note: src + ' bibliographic match (title-in-entry + year)' };
   }
-  return { doi: null, arxiv_id: null, via: 'none',
-    note: 'reference entry has no DOI/arXiv ID and no confident bibliographic match' };
+  return { doi: null, arxiv_id: null, via: 'none', limited: !!bl.limited,
+    note: bl.limited
+      ? 'sources rate-limited while checking this entry — not checked, not proven fake'
+      : 'reference entry has no DOI/arXiv ID and no confident bibliographic match' };
 }
 
 /* ---------------- existence (reuse page's verify fns when present) ---------------- */
 
+/* Retraction signal: CrossRef prefixes retracted titles with "RETRACTED:"
+ * (verified against known-retracted DOIs). Only CrossRef carries it —
+ * no signal means "unknown", never "not retracted". */
+const RETRACTED_RE = /^\s*(retracted|withdrawn)\s*:/i;
+function isRetractedTitle(t) { return RETRACTED_RE.test(t || ''); }
+
+/* Chimeric-hallucination detection: the title matches a real paper but the
+ * authors named in the entry match none of the paper's real authors.
+ * Only judges when the entry actually names authors (et al. / "Surname, I."
+ * pattern); author-less entries are not flaggable. */
+function detectChimeric(entryRaw, authors) {
+  const arr = Array.isArray(authors) ? authors : String(authors || '').split(/,\s*/).filter(Boolean);
+  const fams = arr.map(a => {
+    const s = String(a);
+    const parts = s.split(/[\s,]+/).filter(Boolean);
+    const fam = s.includes(',') ? parts[0] : parts[parts.length - 1];
+    return (fam || '').toLowerCase().replace(/[^a-z]/g, '');
+  }).filter(f => f.length > 1);
+  if (!fams.length || !entryRaw) return false;
+  if (!/(et al\.|[A-Z][a-z]{1,},\s*[A-Z]\.)/.test(entryRaw)) return false;
+  const words = new Set((String(entryRaw).toLowerCase().match(/[a-z]{2,}/g) || []));
+  return !fams.some(f => words.has(f));
+}
+
 async function pgCheckCrossRef(doi) {
   const r = await fetch('https://api.crossref.org/works/' + encodeURIComponent(doi),
     { headers: { Accept: 'application/json' } });
-  if (!r.ok) return null;
+  if (!r.ok) return r.status === 429 ? { limited: true } : null;
   const m = (await r.json()).message;
+  const title = (m.title || ['(no title)'])[0];
   const yr = (m['published-print'] || m['published-online'] || m.created || {})['date-parts'];
   return {
-    title: (m.title || ['(no title)'])[0],
+    title,
     authors: (m.author || []).map(a => ((a.given || '') + ' ' + (a.family || '')).trim()).filter(Boolean).slice(0, 8),
     venue: ((m['container-title'] || [])[0] || ''),
     year: yr ? yr[0][0] : '',
     exists: true,
+    retracted: isRetractedTitle(title),
   };
 }
 async function pgCheckDataCite(doi) {
   const r = await fetch('https://api.datacite.org/dois/' + encodeURIComponent(doi),
     { headers: { Accept: 'application/vnd.api+json' } });
-  if (!r.ok) return null;
+  if (!r.ok) return r.status === 429 ? { limited: true } : null;
   const a = (await r.json()).data.attributes;
+  const title = (((a.titles || [])[0] || {}).title || '(no title)');
   return {
-    title: (((a.titles || [])[0] || {}).title || '(no title)'),
+    title,
     authors: (a.creators || []).map(c => c.name).filter(Boolean).slice(0, 8),
     venue: a.publisher || '',
     year: a.publicationYear || '',
     exists: true,
+    retracted: isRetractedTitle(title),
   };
 }
 /* Europe PMC: biomedical/life-science coverage incl. abstracts; CORS-enabled. */
 async function pgCheckEuropePMC(doi) {
   const r = await fetch('https://www.ebi.ac.uk/europepmc/webservices/rest/search?' + new URLSearchParams({
     query: 'DOI:"' + doi + '"', format: 'json', resultType: 'core', pageSize: '1' }));
-  if (!r.ok) return null;
+  if (!r.ok) return r.status === 429 ? { limited: true } : null;
   const res = (((await r.json()).resultList || {}).result || []);
   if (!res.length) return null;
   const p = res[0];
+  const title = p.title || '(no title)';
   return {
-    title: p.title || '(no title)',
+    title,
     abstract: (p.abstractText || '').trim() || null,
-    authors: (p.authorString || '').split(/,\s*/).slice(0, 5).join(', '),
+    authors: (p.authorString || '').split(/,\s*/).filter(Boolean).slice(0, 8),
     venue: (((p.journalInfo || {}).journal || {}).title || ''),
     year: p.pubYear || '',
     exists: true,
+    retracted: isRetractedTitle(title),
   };
 }
 /* DBLP: computer-science bibliography; title search for entries without IDs. */
 async function dblpLookup(entryRaw, entryYear) {
   const q = entryRaw.replace(/^\[(@?[^\]]+)\]\s*/, '').trim().slice(0, 300);
-  if (q.length < 15) return [null, null];
+  const none = { doi: null, arxiv_id: null, limited: false };
+  if (q.length < 15) return none;
   let r;
   try {
     r = await fetch('https://dblp.org/search/publ/api/?' + new URLSearchParams({ q, format: 'json', h: '3' }));
-  } catch { return [null, null]; }
-  if (!r.ok) return [null, null];
+  } catch { return none; }
+  if (!r.ok) return r.status === 429 ? { doi: null, arxiv_id: null, limited: true } : none;
   let hits;
-  try { hits = ((((await r.json()).result || {}).hits || {}).hit || []); } catch { return [null, null]; }
+  try { hits = ((((await r.json()).result || {}).hits || {}).hit || []); } catch { return none; }
   const nEntry = norm(entryRaw);
   for (const h of hits) {
     const info = h.info || {};
@@ -325,24 +371,34 @@ async function dblpLookup(entryRaw, entryYear) {
     if (norm(title).length < 10) continue;
     if (!nEntry.includes(norm(title))) continue;
     if (entryYear && info.year && Math.abs(+info.year - entryYear) > 1) continue;
-    if (info.doi) return [String(info.doi), null];
+    if (info.doi) return { doi: String(info.doi), arxiv_id: null, limited: false };
   }
-  return [null, null];
+  return none;
 }
 async function verifyDoi(doi) {
-  const hit = await pgCheckCrossRef(doi).catch(() => null)
-    || await pgCheckDataCite(doi).catch(() => null)
-    || await pgCheckEuropePMC(doi).catch(() => null);
-  return hit
-    ? { exists: true, title: hit.title, authors: hit.authors || [], venue: hit.venue || '', year: hit.year || '' }
-    : { exists: false, title: null, authors: [], venue: '', year: '' };
+  const miss = { exists: false, title: null, authors: [], venue: '', year: '', retracted: false, limited: false };
+  let limited = false;
+  for (const fn of [pgCheckCrossRef, pgCheckDataCite, pgCheckEuropePMC]) {
+    let hit = null;
+    try { hit = await fn(doi); } catch { hit = null; }
+    if (hit && hit.limited) { limited = true; continue; }
+    if (hit) return {
+      exists: true, title: hit.title, authors: hit.authors || [],
+      venue: hit.venue || '', year: hit.year || '',
+      retracted: !!hit.retracted, limited: false,
+    };
+  }
+  return limited ? Object.assign({}, miss, { limited: true }) : miss;
 }
 async function verifyArxiv(id) {
   const base = id.replace(/v\d+$/i, '');
-  const hit = await pgCheckDataCite('10.48550/arXiv.' + base).catch(() => null);
+  let hit = null;
+  try { hit = await pgCheckDataCite('10.48550/arXiv.' + base); } catch { hit = null; }
+  if (hit && hit.limited)
+    return { exists: false, title: null, authors: [], venue: '', year: '', retracted: false, limited: true };
   return hit
-    ? { exists: true, title: hit.title, authors: hit.authors || [], venue: 'arXiv preprint', year: hit.year || '' }
-    : { exists: false, title: null, authors: [], venue: '', year: '' };
+    ? { exists: true, title: hit.title, authors: hit.authors || [], venue: 'arXiv preprint', year: hit.year || '', retracted: !!hit.retracted, limited: false }
+    : { exists: false, title: null, authors: [], venue: '', year: '', retracted: false, limited: false };
 }
 
 async function resolveCitation(pair, refmap, cache) {
@@ -350,10 +406,12 @@ async function resolveCitation(pair, refmap, cache) {
   if (cache.has(key)) return cache.get(key);
   const t = pair.cite_type, cid = pair.cite_id;
   let out;
-  const wrap = (res, doi, arxivId, note) => ({
+  const wrap = (res, doi, arxivId, note, extra) => ({
     exists: res.exists, title: res.title, doi: res.exists ? doi : null,
     arxiv_id: res.exists ? arxivId : null,
     authors: res.authors || [], venue: res.venue || '', year: res.year || '',
+    limited: !!res.limited, retracted: !!res.retracted,
+    chimeric: !!(extra && extra.chimeric),
     note });
   if (t === 'doi') {
     out = wrap(await verifyDoi(cid), cid, null, 'raw DOI in text');
@@ -364,12 +422,22 @@ async function resolveCitation(pair, refmap, cache) {
     out = wrap(await verifyDoi(doi), doi, null, 'doi.org URL in text');
   } else if (t === 'numeric' || t === 'citekey' || t === 'author-year') {
     const rm = await resolveMarker(t, cid, refmap);
-    if (rm.doi) out = wrap(await verifyDoi(rm.doi), rm.doi, null, `reference-list (${rm.via}): ${rm.note}`);
-    else if (rm.arxiv_id) out = wrap(await verifyArxiv(rm.arxiv_id),
-      '10.48550/arXiv.' + rm.arxiv_id.replace(/v\d+$/i, ''), rm.arxiv_id, `reference-list (${rm.via}): ${rm.note}`);
-    else out = { exists: false, title: null, doi: null, arxiv_id: null, note: 'reference-list: ' + rm.note };
+    if (rm.doi) {
+      const v = await verifyDoi(rm.doi);
+      out = wrap(v, rm.doi, null, `reference-list (${rm.via}): ${rm.note}`,
+        { chimeric: detectChimeric(rm.entryRaw, v.authors) });
+    } else if (rm.arxiv_id) {
+      const v = await verifyArxiv(rm.arxiv_id);
+      out = wrap(v, '10.48550/arXiv.' + rm.arxiv_id.replace(/v\d+$/i, ''), rm.arxiv_id,
+        `reference-list (${rm.via}): ${rm.note}`,
+        { chimeric: detectChimeric(rm.entryRaw, v.authors) });
+    } else out = { exists: false, title: null, doi: null, arxiv_id: null,
+      authors: [], venue: '', year: '', limited: !!rm.limited,
+      retracted: false, chimeric: false, note: 'reference-list: ' + rm.note };
   } else {
-    out = { exists: false, title: null, doi: null, arxiv_id: null, note: `marker type '${t}' is not resolvable` };
+    out = { exists: false, title: null, doi: null, arxiv_id: null,
+      authors: [], venue: '', year: '', limited: false,
+      retracted: false, chimeric: false, note: `marker type '${t}' is not resolvable` };
   }
   cache.set(key, out);
   return out;
@@ -515,11 +583,27 @@ async function groundDraft(text, opts, onStep) {
             : 'no abstract available — downgraded honestly';
         }
       }
+      if (res.retracted) {
+        if (base === 'VERIFIED') base = 'CITED';  // a retracted paper verifies nothing
+        note = 'RETRACTED paper — do not cite it as support. ' + note;
+      }
+      if (res.chimeric) {
+        note = 'CHIMERIC citation: the title matches a real paper but the listed authors do not — ' + note;
+      }
+    } else if (res.limited) {
+      // rate-limited is NOT not-found: say so explicitly, never imply fabrication
+      base = 'RATE_LIMITED';
+      note = 'source(s) rate-limited (HTTP 429) while checking — not checked, NOT proven fake. Try again later.';
     }
     const fr = checkFreshness(p.claim, opts.windowYears);
+    const tags = [
+      fr.stale ? fr.tag : '',
+      res.chimeric ? '[CHIMERIC:author-mismatch]' : '',
+      res.retracted ? '[RETRACTED]' : '',
+    ].filter(Boolean);
     evidence.push({
-      claim: p.claim, base, stale: fr.stale ? fr.tag : '',
-      label: base + (fr.stale ? ' ' + fr.tag : ''),
+      claim: p.claim, base,
+      label: base + (tags.length ? ' ' + tags.join(' ') : ''),
       doi: res.doi || '', arxiv_id: res.arxiv_id || '', title: res.title || '', note,
       authors: res.authors || [], venue: res.venue || '', year: res.year || '',
     });
@@ -578,26 +662,37 @@ LeCun, Y., Bengio, Y., Hinton, G. Deep learning. Nature 521:436-444, 2015.
 Verizon. 2023 Data Breach Investigations Report. 2023.`;
 
 function labelClass(base) {
-  return { VERIFIED: 'l-verified', CITED: 'l-cited', UNVERIFIED: 'l-unverified' }[base] || 'l-cited';
+  return { VERIFIED: 'l-verified', CITED: 'l-cited', UNVERIFIED: 'l-unverified',
+    RATE_LIMITED: 'l-stale' }[base] || 'l-cited';
 }
 
 function renderReport(evidence) {
-  const counts = { VERIFIED: 0, CITED: 0, UNVERIFIED: 0 };
-  let staleN = 0;
-  for (const e of evidence) { counts[e.base]++; if (e.stale) staleN++; }
+  const counts = { VERIFIED: 0, CITED: 0, UNVERIFIED: 0, RATE_LIMITED: 0 };
+  let staleN = 0, chimericN = 0, retractedN = 0;
+  for (const e of evidence) {
+    counts[e.base] = (counts[e.base] || 0) + 1;
+    if (/\[STALE:/.test(e.label)) staleN++;
+    if (/\[CHIMERIC/.test(e.label)) chimericN++;
+    if (/\[RETRACTED\]/.test(e.label)) retractedN++;
+  }
   let html = `<div style="margin-bottom:18px;font-size:14.5px">` +
     `<b>${evidence.length}</b> claims checked &nbsp;·&nbsp; ` +
     `<span class="label l-verified">VERIFIED ${counts.VERIFIED}</span> ` +
     `<span class="label l-cited">CITED ${counts.CITED}</span> ` +
     `<span class="label l-unverified">UNVERIFIED ${counts.UNVERIFIED}</span>` +
+    (counts.RATE_LIMITED ? ` <span class="label l-stale">RATE_LIMITED ${counts.RATE_LIMITED}</span>` : '') +
     (staleN ? ` <span class="label l-stale">STALE ×${staleN}</span>` : '') +
+    (chimericN ? ` <span class="label l-unverified">CHIMERIC ×${chimericN}</span>` : '') +
+    (retractedN ? ` <span class="label l-unverified">RETRACTED ×${retractedN}</span>` : '') +
     `</div>`;
   evidence.forEach((e, i) => {
+    const tags = e.label.split(' ').slice(1).map(t =>
+      `<span class="label ${/CHIMERIC|RETRACTED/.test(t) ? 'l-unverified' : 'l-stale'}">${gesc(t)}</span>`).join('');
     html += `<div class="claim open" style="cursor:default">` +
       `<p><b>${i + 1}.</b> ${gesc(e.claim)}</p>` +
       `<div class="verdict" style="display:block">` +
       `<span class="label ${labelClass(e.base)}">${gesc(e.base)}</span>` +
-      (e.stale ? `<span class="label l-stale">${gesc(e.stale)}</span>` : '') +
+      tags +
       (e.title ? `<div style="margin:8px 0 4px"><b>${gesc(e.title)}</b></div>` : '') +
       (e.doi ? `<div style="color:var(--ink-soft);font-size:13px">DOI: ${gesc(e.doi)}</div>` : '') +
       `<div style="margin-top:6px;color:var(--ink-soft)">${gesc(e.note)}</div>` +
@@ -605,7 +700,11 @@ function renderReport(evidence) {
   });
   html += `<p style="font-size:12.5px;color:var(--ink-soft);margin-top:14px">` +
     `Labels: VERIFIED = abstract substantively supports the claim; CITED = source exists but support is uncertain/unchecked (author decides); ` +
-    `UNVERIFIED = no record found or marker not resolvable; [STALE:YYYY] = data older than the freshness window.</p>`;
+    `UNVERIFIED = no record found or marker not resolvable; ` +
+    `RATE_LIMITED = sources were rate-limited while checking — not checked, NOT proven fake; ` +
+    `[STALE:YYYY] = data older than the freshness window; ` +
+    `[CHIMERIC:author-mismatch] = title matches a real paper but the listed authors do not; ` +
+    `[RETRACTED] = the paper has been retracted — do not cite it as support.</p>`;
   return html;
 }
 

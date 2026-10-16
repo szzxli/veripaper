@@ -22,14 +22,21 @@ def _verify_ids(doi: str | None, arxiv_id: str | None, via_note: str) -> dict:
         res = citations.verify_doi(doi)
         return {"exists": res["exists"], "title": res.get("title"),
                 "doi": doi if res["exists"] else None, "arxiv_id": None,
+                "limited": res.get("limited", False),
+                "retracted": res.get("retracted", False),
+                "authors": res.get("authors", []),
                 "note": f"{via_note}; {res['reason']}"}
     if arxiv_id:
         res = citations.verify_arxiv(arxiv_id)
         return {"exists": res["exists"], "title": res.get("title"),
                 "doi": f"10.48550/arXiv.{arxiv_id}" if res["exists"] else None,
                 "arxiv_id": arxiv_id,
+                "limited": res.get("limited", False),
+                "retracted": res.get("retracted", False),
+                "authors": res.get("authors", []),
                 "note": f"{via_note}; {res['reason']}"}
     return {"exists": False, "title": None, "doi": None, "arxiv_id": None,
+            "limited": False, "retracted": False, "authors": [],
             "note": via_note}
 
 
@@ -51,13 +58,19 @@ def _resolve(pair: dict, cache: dict, refmap: dict) -> dict:
         if rm["doi"] or rm["arxiv_id"]:
             out = _verify_ids(rm["doi"], rm["arxiv_id"],
                               f"reference-list ({rm['via']}): {rm['note']}")
+            out["chimeric"] = references.detect_chimeric(
+                rm.get("entry_raw"), out.get("authors"))
         else:
             out = {"exists": False, "title": None, "doi": None, "arxiv_id": None,
+                   "limited": bool(rm.get("limited")), "retracted": False,
+                   "chimeric": False, "authors": [],
                    "note": f"reference-list: {rm['note']}"}
     else:
         out = {"exists": False, "title": None, "doi": None, "arxiv_id": None,
-               "note": f"marker type '{t}' is not resolvable"}
+               "limited": False, "retracted": False, "chimeric": False,
+               "authors": [], "note": f"marker type '{t}' is not resolvable"}
     cache[key] = out
+    out.setdefault("chimeric", False)
     return out
 
 
@@ -73,24 +86,43 @@ def run_ground(draft_path: str, out_path: str) -> str:
     for p in pairs:
         res = _resolve(p, cache, refmap)
         fr = freshness.check_freshness(p["claim"])
-        stale_tag = ""
-        if fr["stale"]:
-            stale_tag = f" {fr['tag']}"
+        tags = [fr["tag"]] if fr["stale"] else []
+        if res.get("chimeric"):
+            tags.append("[CHIMERIC:author-mismatch]")
+        if res.get("retracted"):
+            tags.append("[RETRACTED]")
+        tag_str = (" " + " ".join(tags)) if tags else ""
 
         if not res["exists"]:
-            evidence.append(EvidenceRef(
-                claim=p["claim"], source_doi=res["doi"],
-                label="UNVERIFIED" + stale_tag, note=res["note"]))
+            if res.get("limited"):
+                # rate-limited is NOT not-found: say so explicitly
+                evidence.append(EvidenceRef(
+                    claim=p["claim"], source_doi=res["doi"],
+                    label="RATE_LIMITED" + tag_str,
+                    note=("source(s) rate-limited (HTTP 429) while checking — "
+                          "not checked, NOT proven fake. Try again later.")))
+            else:
+                evidence.append(EvidenceRef(
+                    claim=p["claim"], source_doi=res["doi"],
+                    label="UNVERIFIED" + tag_str, note=res["note"]))
             continue
 
         abstract = claims.fetch_abstract(doi=res["doi"], arxiv_id=res["arxiv_id"])
         sup = claims.check_claim_support(p["claim"], abstract, res["title"] or "")
-        label = ("VERIFIED" if sup["verdict"] == "verified" else "CITED") + stale_tag
+        label = ("VERIFIED" if sup["verdict"] == "verified" else "CITED")
         note = sup["reason"]
+        if res.get("retracted"):
+            if label == "VERIFIED":
+                label = "CITED"  # a retracted paper verifies nothing
+            note = "RETRACTED paper — do not cite it as support. " + note
+        if res.get("chimeric"):
+            note = ("CHIMERIC citation: the title matches a real paper but the "
+                    "listed authors do not — " + note)
         if abstract is None:
             note = "no abstract fetched; " + note
         evidence.append(EvidenceRef(
-            claim=p["claim"], source_doi=res["doi"], label=label, note=note))
+            claim=p["claim"], source_doi=res["doi"],
+            label=label + tag_str, note=note))
 
     _write_report(out_path, draft_path, pairs, evidence)
     return out_path
@@ -110,13 +142,19 @@ def _write_report(out_path: str, draft_path: str, pairs: list[dict],
         "## Summary",
         "",
     ]
-    for label in ("VERIFIED", "CITED", "UNVERIFIED"):
+    for label in ("VERIFIED", "CITED", "UNVERIFIED", "RATE_LIMITED"):
         n = sum(v for k, v in counts.items() if k == label or k.startswith(label + ":"))
         # count STALE tags separately
         lines.append(f"- {label}: {n}")
     stale_n = sum(1 for e in evidence if "STALE:" in e.label)
     if stale_n:
         lines.append(f"- STALE tags: {stale_n}")
+    chimeric_n = sum(1 for e in evidence if "[CHIMERIC" in e.label)
+    if chimeric_n:
+        lines.append(f"- CHIMERIC tags: {chimeric_n}")
+    retracted_n = sum(1 for e in evidence if "[RETRACTED]" in e.label)
+    if retracted_n:
+        lines.append(f"- RETRACTED tags: {retracted_n}")
     lines += ["", "## Findings", ""]
     for i, e in enumerate(evidence, 1):
         base = e.label.split(" [")[0]
@@ -136,6 +174,9 @@ def _write_report(out_path: str, draft_path: str, pairs: list[dict],
         "Labels: VERIFIED = abstract substantively supports the claim; "
         "CITED = source exists but support is uncertain/unchecked (author decides); "
         "UNVERIFIED = no record found or marker not auto-resolvable; "
-        "[STALE:YYYY] = numeric claim older than the freshness window.",
+        "RATE_LIMITED = sources were rate-limited while checking — not checked, NOT proven fake; "
+        "[STALE:YYYY] = numeric claim older than the freshness window; "
+        "[CHIMERIC:author-mismatch] = title matches a real paper but the listed authors do not; "
+        "[RETRACTED] = the paper has been retracted — do not cite it as support.",
     ]
     open(out_path, "w", encoding="utf-8").write("\n".join(lines))

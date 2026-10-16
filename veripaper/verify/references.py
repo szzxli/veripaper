@@ -19,7 +19,7 @@ import urllib.parse
 import requests
 
 from veripaper.verify.extract import (
-    ARXIV_RE, DOI_RE, REF_HEADING_RE, normalize_ref_heading, normalize_ws,
+    ARXIV_RE, DOI_RE, REF_HEADING_RE, clean_doi, normalize_ref_heading, normalize_ws,
 )
 
 UA = {"User-Agent": "veripaper/0.1 (mailto:dev@veripaper.local)"}
@@ -65,7 +65,7 @@ def _entry_ids(entry: str) -> dict:
     doi = arxiv_id = None
     m = DOI_RE.search(entry)
     if m:
-        doi = m.group(1).rstrip(".,;:")
+        doi = clean_doi(m.group(1))
     for m in ARXIV_RE.finditer(entry):
         aid = m.group(1)
         if doi and aid in doi:
@@ -119,13 +119,41 @@ def _parse_intext_authoryear(marker: str) -> tuple[str, int, str] | None:
     return surname, int(y.group(1)), y.group(2) or ""
 
 
-def _s2_lookup(entry_raw: str, entry_year: int | None) -> tuple[str | None, str | None]:
+def detect_chimeric(entry_raw: str, authors: list[str] | str | None) -> bool:
+    """True when the title matches a real paper but the authors named in the
+    entry match none of the paper's real authors (chimeric hallucination).
+
+    Only judges when the entry actually names authors (et al. / "Surname, I."
+    pattern); author-less entries are not flaggable.
+    """
+    if isinstance(authors, str):
+        arr = [a.strip() for a in authors.split(",") if a.strip()]
+    else:
+        arr = [str(a) for a in (authors or [])]
+    fams = []
+    for a in arr:
+        parts = re.split(r"[\s,]+", a.strip())
+        parts = [p for p in parts if p]
+        fam = parts[0] if "," in a else (parts[-1] if parts else "")
+        fam = re.sub(r"[^a-z]", "", fam.lower())
+        if len(fam) > 1:
+            fams.append(fam)
+    if not fams or not entry_raw:
+        return False
+    if not re.search(r"et al\.|[A-Z][a-z]{1,},\s*[A-Z]\.", entry_raw):
+        return False
+    words = set(re.findall(r"[a-z]{2,}", entry_raw.lower()))
+    return not any(f in words for f in fams)
+
+
+def _s2_lookup(entry_raw: str, entry_year: int | None) -> dict:
     """Semantic Scholar title search; same title-in-entry + year gate.
-    Returns (doi, arxiv_id); (None, None) on any failure. S2 has the best
-    CS/ML coverage, which CrossRef lacks (many NeurIPS/ICML papers)."""
+    Returns {'doi', 'arxiv_id', 'limited'}. S2 has the best CS/ML coverage,
+    which CrossRef lacks (many NeurIPS/ICML papers)."""
+    none = {"doi": None, "arxiv_id": None, "limited": False}
     q = re.sub(r"^\[(@?[^\]]+)\]\s*", "", entry_raw).strip()[:300]
     if len(q) < 15:
-        return None, None
+        return none
     try:
         r = requests.get(
             "https://api.semanticscholar.org/graph/v1/paper/search",
@@ -133,13 +161,15 @@ def _s2_lookup(entry_raw: str, entry_year: int | None) -> tuple[str | None, str 
                     "limit": 3},
             headers=UA, timeout=20)
     except requests.RequestException:
-        return None, None
+        return none
+    if r.status_code == 429:
+        return {"doi": None, "arxiv_id": None, "limited": True}
     if r.status_code != 200:
-        return None, None
+        return none
     try:
         data = r.json().get("data", [])
     except ValueError:
-        return None, None
+        return none
     norm_entry = _norm(entry_raw)
     for p in data:
         title = p.get("title") or ""
@@ -153,29 +183,32 @@ def _s2_lookup(entry_raw: str, entry_year: int | None) -> tuple[str | None, str 
         doi = ids.get("DOI")
         arxiv = ids.get("ArXiv")
         if doi or arxiv:
-            return doi, arxiv
-    return None, None
+            return {"doi": doi, "arxiv_id": arxiv, "limited": False}
+    return none
 
 
-def _dblp_lookup(entry_raw: str, entry_year: int | None) -> tuple[str | None, str | None]:
+def _dblp_lookup(entry_raw: str, entry_year: int | None) -> dict:
     """DBLP title search (computer-science bibliography); same acceptance gate.
-    Returns (doi, None); (None, None) on any failure."""
+    Returns {'doi', 'arxiv_id', 'limited'}."""
+    none = {"doi": None, "arxiv_id": None, "limited": False}
     q = re.sub(r"^\[(@?[^\]]+)\]\s*", "", entry_raw).strip()[:300]
     if len(q) < 15:
-        return None, None
+        return none
     try:
         r = requests.get(
             "https://dblp.org/search/publ/api/",
             params={"q": q, "format": "json", "h": 3},
             headers=UA, timeout=20)
     except requests.RequestException:
-        return None, None
+        return none
+    if r.status_code == 429:
+        return {"doi": None, "arxiv_id": None, "limited": True}
     if r.status_code != 200:
-        return None, None
+        return none
     try:
         hits = (r.json().get("result") or {}).get("hits", {}).get("hit", [])
     except ValueError:
-        return None, None
+        return none
     norm_entry = _norm(entry_raw)
     for h in hits:
         info = (h or {}).get("info") or {}
@@ -191,42 +224,48 @@ def _dblp_lookup(entry_raw: str, entry_year: int | None) -> tuple[str | None, st
         if entry_year and y and abs(y - entry_year) > 1:
             continue
         if info.get("doi"):
-            return str(info["doi"]), None
-    return None, None
+            return {"doi": str(info["doi"]), "arxiv_id": None, "limited": False}
+    return none
 
 
 def _bibliographic_lookup(entry_raw: str, entry_year: int | None) -> dict:
     """CrossRef, Semantic Scholar, then DBLP. Same acceptance gate."""
-    doi = _crossref_lookup(entry_raw, entry_year)
-    if doi:
-        return {"doi": doi, "arxiv_id": None, "via": "crossref"}
-    doi2, ax = _s2_lookup(entry_raw, entry_year)
-    if doi2 or ax:
-        return {"doi": doi2, "arxiv_id": ax, "via": "semanticscholar"}
-    doi3, _ = _dblp_lookup(entry_raw, entry_year)
-    if doi3:
-        return {"doi": doi3, "arxiv_id": None, "via": "dblp"}
-    return {"doi": None, "arxiv_id": None, "via": "none"}
+    cr = _crossref_lookup(entry_raw, entry_year)
+    if cr["doi"]:
+        return {"doi": cr["doi"], "arxiv_id": None, "via": "crossref", "limited": False}
+    s2 = _s2_lookup(entry_raw, entry_year)
+    if s2["doi"] or s2["arxiv_id"]:
+        return {"doi": s2["doi"], "arxiv_id": s2["arxiv_id"],
+                "via": "semanticscholar", "limited": False}
+    db = _dblp_lookup(entry_raw, entry_year)
+    if db["doi"]:
+        return {"doi": db["doi"], "arxiv_id": None, "via": "dblp", "limited": False}
+    return {"doi": None, "arxiv_id": None, "via": "none",
+            "limited": bool(cr["limited"] or s2["limited"] or db["limited"])}
 
 
-def _crossref_lookup(entry_raw: str, entry_year: int | None) -> str | None:
-    """Unstructured bibliographic query; accept only on title-in-entry + year match."""
+def _crossref_lookup(entry_raw: str, entry_year: int | None) -> dict:
+    """Unstructured bibliographic query; accept only on title-in-entry + year match.
+    Returns {'doi', 'arxiv_id', 'limited'}."""
+    none = {"doi": None, "arxiv_id": None, "limited": False}
     q = re.sub(r"^\[(@?[^\]]+)\]\s*", "", entry_raw).strip()[:500]
     if len(q) < 15:
-        return None
+        return none
     try:
         r = requests.get(CROSSREF_QUERY, params={
             "query.bibliographic": q, "rows": 3,
             "select": "DOI,title,published,author",
         }, headers=UA, timeout=20)
     except requests.RequestException:
-        return None
+        return none
+    if r.status_code == 429:
+        return {"doi": None, "arxiv_id": None, "limited": True}
     if r.status_code != 200:
-        return None
+        return none
     try:
         items = r.json()["message"]["items"]
     except (ValueError, KeyError):
-        return None
+        return none
     norm_entry = _norm(entry_raw)
     for it in items:
         title = ((it.get("title") or [""])[0])
@@ -243,14 +282,16 @@ def _crossref_lookup(entry_raw: str, entry_year: int | None) -> str | None:
                 continue
         doi = it.get("DOI")
         if doi:
-            return doi
-    return None
+            return {"doi": doi, "arxiv_id": None, "limited": False}
+    return none
 
 
 def resolve_marker(marker_type: str, marker_id: str, refmap: dict) -> dict:
     """Resolve an in-text marker to identifiers.
 
-    Returns {'doi', 'arxiv_id', 'via', 'note'}; doi/arxiv_id None when unresolved.
+    Returns {'doi', 'arxiv_id', 'via', 'note', 'entry_raw', 'limited'}.
+    'entry_raw' on success paths (for chimeric detection); 'limited' True when
+    every source answered HTTP 429 — rate-limited is NOT not-found.
     via: embedded | crossref | semanticscholar | none. Ambiguity → none + note.
     """
     entry = None
@@ -277,11 +318,16 @@ def resolve_marker(marker_type: str, marker_id: str, refmap: dict) -> dict:
                 "note": f"no reference entry for [{marker_id}]"}
     if entry["doi"] or entry["arxiv_id"]:
         return {"doi": entry["doi"], "arxiv_id": entry["arxiv_id"],
-                "via": "embedded", "note": "identifier found in reference entry"}
+                "via": "embedded", "entry_raw": entry["raw"],
+                "note": "identifier found in reference entry"}
     bl = _bibliographic_lookup(entry["raw"], entry["year"])
     if bl["doi"] or bl["arxiv_id"]:
         src = {"crossref": "CrossRef", "dblp": "DBLP"}.get(bl["via"], "Semantic Scholar")
         return {"doi": bl["doi"], "arxiv_id": bl["arxiv_id"], "via": bl["via"],
+                "entry_raw": entry["raw"],
                 "note": f"{src} bibliographic match (title-in-entry + year)"}
     return {"doi": None, "arxiv_id": None, "via": "none",
-            "note": "reference entry has no DOI/arXiv ID and no confident bibliographic match"}
+            "limited": bool(bl.get("limited")),
+            "note": ("sources rate-limited while checking this entry — "
+                     "not checked, not proven fake") if bl.get("limited")
+            else "reference entry has no DOI/arXiv ID and no confident bibliographic match"}

@@ -19,7 +19,20 @@ from __future__ import annotations
 import re
 
 # --- marker patterns (ordered: most specific first) ---
-DOI_RE = re.compile(r"(?:https?://(?:dx\.)?doi\.org/)?(10\.\d{4,}/[^\s\]\)\"'<>]+)", re.I)
+DOI_RE = re.compile(r"(?:https?://(?:dx\.)?doi\.org/)?(10\.\d{4,}/[^\s\]\"'<>]+)", re.I)
+
+
+def clean_doi(raw: str) -> str:
+    """Strip trailing punctuation and unbalanced trailing ')'.
+
+    DOIs may legally contain balanced parentheses (e.g. Wiley's
+    10.1016/S0140-6736(97)11096-0); the regex lets them through and this
+    keeps them, trimming only what cannot be part of the DOI.
+    """
+    d = re.sub(r"[.,;:]+$", "", raw or "")
+    while d.endswith(")") and d.count("(") < d.count(")"):
+        d = re.sub(r"[.,;:]+$", "", d[:-1])
+    return d
 ARXIV_RE = re.compile(r"(?:arXiv:)?(\d{4}\.\d{4,5}(?:v\d+)?|[a-z\-]+/\d{7}(?:v\d+)?)", re.I)
 PANDOC_RE = re.compile(r"\[@([^\]]+)\]")
 NUMERIC_RE = re.compile(r"\[(\d{1,3})\]")
@@ -92,7 +105,7 @@ def _markers(sentence: str) -> list[dict]:
         found.append({"raw": raw, "type": cite_type, "id": cite_id})
 
     for m in DOI_RE.finditer(sentence):
-        doi = m.group(1).rstrip(".,;:")
+        doi = clean_doi(m.group(1))
         # avoid double-counting arXiv IDs as DOIs handled separately is fine;
         # DOI form wins when explicit
         add(m.group(0), "doi", doi)

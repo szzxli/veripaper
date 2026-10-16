@@ -353,18 +353,22 @@ const esc = s => String(s||'').replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;',
 function show(html){ $out.innerHTML = html; }
 function busy(b){ $btn.disabled = b; $btn.textContent = b ? 'Checking…' : 'Verify'; }
 
+const RETR_RE = /^\s*(retracted|withdrawn)\s*:/i;
+
 async function checkCrossRef(doi){
   const r = await fetch('https://api.crossref.org/works/' + encodeURIComponent(doi), {
     headers: { 'Accept': 'application/json' } });
-  if(!r.ok) return null;
+  if(!r.ok) return r.status === 429 ? {limited:true} : null;
   const m = (await r.json()).message;
   const yr = (m['published-print']||m['published-online']||m.created||{})['date-parts'];
+  const title = (m.title||['(no title)'])[0];
   return {
-    title: (m.title||['(no title)'])[0],
+    title,
     authors: (m.author||[]).map(a=>((a.given||'')+' '+(a.family||'')).trim()).filter(Boolean).slice(0,5).join(', '),
     venue: (m['container-title']||[m.publisher||''])[0],
     year: yr ? yr[0][0] : '',
-    type: m.type || ''
+    type: m.type || '',
+    retracted: RETR_RE.test(title)
   };
 }
 async function checkArxiv(id){
@@ -393,29 +397,33 @@ async function checkArxiv(id){
 async function checkDataCite(doi){
   const r = await fetch('https://api.datacite.org/dois/' + encodeURIComponent(doi), {
     headers: { 'Accept': 'application/vnd.api+json' } });
-  if(!r.ok) return null;
+  if(!r.ok) return r.status === 429 ? {limited:true} : null;
   const a = (await r.json()).data.attributes;
+  const dcTitle = ((a.titles||[])[0]||{}).title || '(no title)';
   return {
-    title: ((a.titles||[])[0]||{}).title || '(no title)',
+    title: dcTitle,
     authors: (a.creators||[]).map(c=>c.name).filter(Boolean).slice(0,5).join(', '),
     venue: a.publisher || '',
     year: a.publicationYear || '',
-    type: 'via DataCite'
+    type: 'via DataCite',
+    retracted: RETR_RE.test(dcTitle)
   };
 }
 async function checkEuropePMC(doi){
   const r = await fetch('https://www.ebi.ac.uk/europepmc/webservices/rest/search?' + new URLSearchParams({
     query: 'DOI:"' + doi + '"', format: 'json', resultType: 'core', pageSize: '1' }));
-  if(!r.ok) return null;
+  if(!r.ok) return r.status === 429 ? {limited:true} : null;
   const res = (((await r.json()).resultList||{}).result||[]);
   if(!res.length) return null;
   const p = res[0];
+  const epmcTitle = p.title || '(no title)';
   return {
-    title: p.title || '(no title)',
+    title: epmcTitle,
     authors: (p.authorString||'').split(/,\s*/).slice(0,5).join(', '),
     venue: (((p.journalInfo||{}).journal||{}).title||''),
     year: p.pubYear || '',
-    type: 'via Europe PMC'
+    type: 'via Europe PMC',
+    retracted: RETR_RE.test(epmcTitle)
   };
 }
 async function verify(){
@@ -426,11 +434,18 @@ async function verify(){
   try{
     const doi = raw.replace(/^https?:\/\/(dx\.)?doi\.org\//i,'').replace(/^arxiv:/i,'').trim();
     const isArxiv = /^(\d{4}\.\d{4,5}(v\d+)?|[a-z-]+\/\d{7}(v\d+)?)$/i.test(doi);
-    const meta = isArxiv ? await checkArxiv(doi) : (await checkCrossRef(doi) || await checkDataCite(doi) || await checkEuropePMC(doi));
+    let limited = false;
+    const wrapLimited = async (fn) => { const m = await fn(); if(m && m.limited){ limited = true; return null; } return m; };
+    const meta = isArxiv
+      ? await wrapLimited(() => checkArxiv(doi))
+      : (await wrapLimited(() => checkCrossRef(doi)) || await wrapLimited(() => checkDataCite(doi)) || await wrapLimited(() => checkEuropePMC(doi)));
     if(meta){
-      show(`<span class="label l-cited">CITED</span><b>Source exists.</b> Content support not yet checked — this is honest downgrade, not verification.<br><br>
+      const retr = meta.retracted ? `<br><span class="label l-unverified">RETRACTED</span> <b style="color:var(--crimson)">This paper has been retracted — do not cite it as support.</b><br>` : '';
+      show(`<span class="label l-cited">CITED</span><b>Source exists.</b> Content support not yet checked — this is honest downgrade, not verification.${retr}<br>
         <b>${esc(meta.title)}</b><br>
         <span style="color:var(--ink-soft)">${esc(meta.authors)}${meta.year?' · '+esc(meta.year):''}${meta.venue?' · <i>'+esc(meta.venue)+'</i>':''}</span>`);
+    }else if(limited){
+      show(`<span class="label l-stale">RATE_LIMITED</span><b>Sources were rate-limited (HTTP 429).</b> Not checked — NOT proven fake. Wait a minute and retry.`);
     }else{
       show(`<span class="label l-unverified">UNVERIFIED</span><b>No record found.</b> The identifier does not resolve in CrossRef / DataCite${isArxiv?' / arXiv':''} — do not cite it.`);
     }

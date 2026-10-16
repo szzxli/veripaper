@@ -15,6 +15,15 @@ CROSSREF = "https://api.crossref.org/works/"
 DATACITE = "https://api.datacite.org/dois/"
 UA = {"User-Agent": "veripaper/0.1 (mailto:dev@veripaper.local)"}
 
+# Retraction signal: CrossRef prefixes retracted titles with "RETRACTED:"
+# (verified against known-retracted DOIs). Only CrossRef carries it —
+# no signal means "unknown", never "not retracted".
+RETRACTED_RE = re.compile(r"^\s*(retracted|withdrawn)\s*:", re.I)
+
+
+def is_retracted_title(title: str | None) -> bool:
+    return bool(RETRACTED_RE.match(title or ""))
+
 
 def _get(url: str) -> requests.Response | None:
     try:
@@ -24,30 +33,52 @@ def _get(url: str) -> requests.Response | None:
 
 
 def verify_doi(doi: str) -> dict:
-    """Return {'exists': bool, 'title': str|None, 'reason': str}."""
+    """Return {'exists', 'title', 'reason', 'limited', 'retracted'}.
+
+    'limited' is True when every reachable source answered HTTP 429 —
+    rate-limited is NOT not-found, and callers must say so explicitly.
+    """
     doi = doi.strip()
     r = _get(CROSSREF + doi)
     if r is None:
-        return {"exists": False, "title": None, "reason": "network: crossref unreachable"}
+        return {"exists": False, "title": None, "reason": "network: crossref unreachable",
+                "limited": False, "retracted": False}
     if r.status_code == 200:
         try:
-            title = (r.json()["message"].get("title") or [None])[0]
+            msg = r.json()["message"]
+            title = (msg.get("title") or [None])[0]
+            authors = [((a.get("given") or "") + " " + (a.get("family") or "")).strip()
+                       for a in (msg.get("author") or [])][:8]
+            authors = [a for a in authors if a]
         except (ValueError, KeyError):
-            title = None
-        return {"exists": True, "title": title, "reason": "crossref match"}
+            title, authors = None, []
+        return {"exists": True, "title": title, "reason": "crossref match",
+                "limited": False, "retracted": is_retracted_title(title),
+                "authors": authors}
+    cr_limited = (r.status_code == 429)
     # Fallback: DataCite (arXiv DOIs live here, not in CrossRef)
     r2 = _get(DATACITE + doi)
     if r2 is None:
-        return {"exists": False, "title": None, "reason": "network: datacite unreachable"}
+        return {"exists": False, "title": None, "reason": "network: datacite unreachable",
+                "limited": cr_limited, "retracted": False}
+    if r2.status_code == 429:
+        return {"exists": False, "title": None,
+                "reason": "rate-limited by crossref and datacite",
+                "limited": True, "retracted": False}
     if r2.status_code != 200:
         return {"exists": False, "title": None,
-                "reason": f"crossref http {r.status_code}, datacite http {r2.status_code}"}
+                "reason": f"crossref http {r.status_code}, datacite http {r2.status_code}",
+                "limited": cr_limited, "retracted": False}
     try:
         attrs = r2.json()["data"]["attributes"]
         title = (attrs.get("titles") or [{}])[0].get("title")
+        authors = [c.get("name") for c in (attrs.get("creators") or [])][:8]
+        authors = [a for a in authors if a]
     except (ValueError, KeyError, IndexError, AttributeError):
-        title = None
-    return {"exists": True, "title": title, "reason": "datacite match"}
+        title, authors = None, []
+    return {"exists": True, "title": title, "reason": "datacite match",
+            "limited": False, "retracted": is_retracted_title(title),
+            "authors": authors}
 
 
 def verify_arxiv(arxiv_id: str) -> dict:
@@ -57,11 +88,18 @@ def verify_arxiv(arxiv_id: str) -> dict:
     base = re.sub(r"v\d+$", "", aid, flags=re.I)
     d = verify_doi(f"10.48550/arXiv.{base}")
     if d["exists"]:
-        return {"exists": True, "title": d["title"], "reason": "arxiv via datacite"}
+        return {"exists": True, "title": d["title"], "reason": "arxiv via datacite",
+                "limited": False, "retracted": d["retracted"],
+                "authors": d.get("authors", [])}
+    if d["limited"]:
+        return {"exists": False, "title": None, "reason": d["reason"],
+                "limited": True, "retracted": False}
     url = f"https://export.arxiv.org/api/query?id_list={aid}"
     r = _get(url)
     if r is None:
-        return {"exists": False, "title": None, "reason": "network: arxiv unreachable"}
+        return {"exists": False, "title": None, "reason": "network: arxiv unreachable",
+                "limited": False, "retracted": False}
     ok = r.status_code == 200 and "<entry>" in r.text and base in r.text
     return {"exists": ok, "title": None,
-            "reason": "arxiv match" if ok else "arxiv no entry"}
+            "reason": "arxiv match" if ok else "arxiv no entry",
+            "limited": False, "retracted": False}
