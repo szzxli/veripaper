@@ -18,6 +18,9 @@ from veripaper.verify import citations, claims, extract, freshness, references
 
 
 def _verify_ids(doi: str | None, arxiv_id: str | None, via_note: str) -> dict:
+    # fabricated: an explicit identifier checked against its registry and
+    # positively NOT found — evidence of fabrication, never folded into
+    # UNVERIFIED (which is absence of evidence).
     if doi:
         res = citations.verify_doi(doi)
         return {"exists": res["exists"], "title": res.get("title"),
@@ -25,6 +28,7 @@ def _verify_ids(doi: str | None, arxiv_id: str | None, via_note: str) -> dict:
                 "limited": res.get("limited", False),
                 "retracted": res.get("retracted", False),
                 "authors": res.get("authors", []),
+                "fabricated": (not res["exists"]) and (not res.get("limited", False)),
                 "note": f"{via_note}; {res['reason']}"}
     if arxiv_id:
         res = citations.verify_arxiv(arxiv_id)
@@ -34,10 +38,11 @@ def _verify_ids(doi: str | None, arxiv_id: str | None, via_note: str) -> dict:
                 "limited": res.get("limited", False),
                 "retracted": res.get("retracted", False),
                 "authors": res.get("authors", []),
+                "fabricated": (not res["exists"]) and (not res.get("limited", False)),
                 "note": f"{via_note}; {res['reason']}"}
     return {"exists": False, "title": None, "doi": None, "arxiv_id": None,
             "limited": False, "retracted": False, "authors": [],
-            "note": via_note}
+            "fabricated": False, "note": via_note}
 
 
 def _resolve(pair: dict, cache: dict, refmap: dict) -> dict:
@@ -63,12 +68,13 @@ def _resolve(pair: dict, cache: dict, refmap: dict) -> dict:
         else:
             out = {"exists": False, "title": None, "doi": None, "arxiv_id": None,
                    "limited": bool(rm.get("limited")), "retracted": False,
-                   "chimeric": False, "authors": [],
+                   "chimeric": False, "authors": [], "fabricated": False,
                    "note": f"reference-list: {rm['note']}"}
     else:
         out = {"exists": False, "title": None, "doi": None, "arxiv_id": None,
                "limited": False, "retracted": False, "chimeric": False,
-               "authors": [], "note": f"marker type '{t}' is not resolvable"}
+               "authors": [], "fabricated": False,
+               "note": f"marker type '{t}' is not resolvable"}
     cache[key] = out
     out.setdefault("chimeric", False)
     return out
@@ -101,6 +107,13 @@ def run_ground(draft_path: str, out_path: str) -> str:
                     label="RATE_LIMITED" + tag_str,
                     note=("source(s) rate-limited (HTTP 429) while checking — "
                           "not checked, NOT proven fake. Try again later.")))
+            elif res.get("fabricated"):
+                evidence.append(EvidenceRef(
+                    claim=p["claim"], source_doi=res["doi"],
+                    label="FABRICATED" + tag_str,
+                    note=("identifier checked against its registry and does not "
+                          "exist — fabricated or mistyped; do not cite. "
+                          + res["note"])))
             else:
                 evidence.append(EvidenceRef(
                     claim=p["claim"], source_doi=res["doi"],
@@ -142,7 +155,7 @@ def _write_report(out_path: str, draft_path: str, pairs: list[dict],
         "## Summary",
         "",
     ]
-    for label in ("VERIFIED", "CITED", "UNVERIFIED", "RATE_LIMITED"):
+    for label in ("VERIFIED", "CITED", "UNVERIFIED", "RATE_LIMITED", "FABRICATED"):
         n = sum(v for k, v in counts.items() if k == label or k.startswith(label + ":"))
         # count STALE tags separately
         lines.append(f"- {label}: {n}")
@@ -173,7 +186,10 @@ def _write_report(out_path: str, draft_path: str, pairs: list[dict],
         "---",
         "Labels: VERIFIED = abstract substantively supports the claim; "
         "CITED = source exists but support is uncertain/unchecked (author decides); "
-        "UNVERIFIED = no record found or marker not auto-resolvable; "
+        "UNVERIFIED = no record found or marker not auto-resolvable "
+        "(absence of evidence, not evidence of fabrication); "
+        "FABRICATED = identifier checked against its registry and found not "
+        "to exist — fabricated or mistyped; "
         "RATE_LIMITED = sources were rate-limited while checking — not checked, NOT proven fake; "
         "[STALE:YYYY] = numeric claim older than the freshness window; "
         "[CHIMERIC:author-mismatch] = title matches a real paper but the listed authors do not; "

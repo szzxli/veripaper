@@ -406,13 +406,22 @@ async function resolveCitation(pair, refmap, cache) {
   if (cache.has(key)) return cache.get(key);
   const t = pair.cite_type, cid = pair.cite_id;
   let out;
-  const wrap = (res, doi, arxivId, note, extra) => ({
-    exists: res.exists, title: res.title, doi: res.exists ? doi : null,
-    arxiv_id: res.exists ? arxivId : null,
-    authors: res.authors || [], venue: res.venue || '', year: res.year || '',
-    limited: !!res.limited, retracted: !!res.retracted,
-    chimeric: !!(extra && extra.chimeric),
-    note });
+  /* fabricated: an explicit identifier (DOI / arXiv ID) was checked against
+   * its authoritative registry and positively does NOT exist. That is evidence
+   * of fabrication, not mere absence of evidence — hence a label of its own,
+   * never folded into UNVERIFIED. */
+  const wrap = (res, doi, arxivId, note, extra) => {
+    const claimed = doi || arxivId || null;
+    return {
+      exists: res.exists, title: res.title, doi: res.exists ? doi : null,
+      arxiv_id: res.exists ? arxivId : null,
+      authors: res.authors || [], venue: res.venue || '', year: res.year || '',
+      limited: !!res.limited, retracted: !!res.retracted,
+      chimeric: !!(extra && extra.chimeric),
+      fabricated: !res.exists && !res.limited && !!claimed,
+      claimed,
+      note };
+  };
   if (t === 'doi') {
     out = wrap(await verifyDoi(cid), cid, null, 'raw DOI in text');
   } else if (t === 'arxiv') {
@@ -433,11 +442,13 @@ async function resolveCitation(pair, refmap, cache) {
         { chimeric: detectChimeric(rm.entryRaw, v.authors) });
     } else out = { exists: false, title: null, doi: null, arxiv_id: null,
       authors: [], venue: '', year: '', limited: !!rm.limited,
-      retracted: false, chimeric: false, note: 'reference-list: ' + rm.note };
+      retracted: false, chimeric: false, fabricated: false, claimed: null,
+      note: 'reference-list: ' + rm.note };
   } else {
     out = { exists: false, title: null, doi: null, arxiv_id: null,
       authors: [], venue: '', year: '', limited: false,
-      retracted: false, chimeric: false, note: `marker type '${t}' is not resolvable` };
+      retracted: false, chimeric: false, fabricated: false, claimed: null,
+      note: `marker type '${t}' is not resolvable` };
   }
   cache.set(key, out);
   return out;
@@ -598,6 +609,13 @@ async function groundDraft(text, opts, onStep) {
       // rate-limited is NOT not-found: say so explicitly, never imply fabrication
       base = 'RATE_LIMITED';
       note = 'source(s) rate-limited (HTTP 429) while checking — not checked, NOT proven fake. Try again later.';
+    } else if (res.fabricated) {
+      base = 'FABRICATED';
+      const id = res.claimed || '';
+      const what = /^10\./.test(id) ? 'DOI ' + id
+        : /^\d{4}\./.test(id) || /^arXiv:/i.test(id) ? 'arXiv ID ' + id.replace(/^10\.48550\/arXiv\./i, '')
+        : 'identifier ' + id;
+      note = `${what} checked against its registry and does not exist — fabricated or mistyped; do not cite.`;
     }
     const fr = checkFreshness(p.claim, opts.windowYears);
     const tags = [
@@ -679,11 +697,11 @@ Verizon. 2023 Data Breach Investigations Report. 2023.`;
 
 function labelClass(base) {
   return { VERIFIED: 'l-verified', CITED: 'l-cited', UNVERIFIED: 'l-unverified',
-    RATE_LIMITED: 'l-stale' }[base] || 'l-cited';
+    RATE_LIMITED: 'l-stale', FABRICATED: 'l-unverified' }[base] || 'l-cited';
 }
 
 function renderReport(evidence) {
-  const counts = { VERIFIED: 0, CITED: 0, UNVERIFIED: 0, RATE_LIMITED: 0 };
+  const counts = { VERIFIED: 0, CITED: 0, UNVERIFIED: 0, RATE_LIMITED: 0, FABRICATED: 0 };
   let staleN = 0, chimericN = 0, retractedN = 0;
   for (const e of evidence) {
     counts[e.base] = (counts[e.base] || 0) + 1;
@@ -697,6 +715,7 @@ function renderReport(evidence) {
     `<span class="label l-cited">CITED ${counts.CITED}</span> ` +
     `<span class="label l-unverified">UNVERIFIED ${counts.UNVERIFIED}</span>` +
     (counts.RATE_LIMITED ? ` <span class="label l-stale">RATE_LIMITED ${counts.RATE_LIMITED}</span>` : '') +
+    (counts.FABRICATED ? ` <span class="label l-unverified">FABRICATED ${counts.FABRICATED}</span>` : '') +
     (staleN ? ` <span class="label l-stale">STALE ×${staleN}</span>` : '') +
     (chimericN ? ` <span class="label l-unverified">CHIMERIC ×${chimericN}</span>` : '') +
     (retractedN ? ` <span class="label l-unverified">RETRACTED ×${retractedN}</span>` : '') +
@@ -716,7 +735,8 @@ function renderReport(evidence) {
   });
   html += `<p style="font-size:12.5px;color:var(--ink-soft);margin-top:14px">` +
     `Labels: VERIFIED = abstract substantively supports the claim; CITED = source exists but support is uncertain/unchecked (author decides); ` +
-    `UNVERIFIED = no record found or marker not resolvable; ` +
+    `UNVERIFIED = no record found or marker not resolvable (absence of evidence, not evidence of fabrication); ` +
+    `FABRICATED = identifier checked against its registry and found not to exist — fabricated or mistyped; ` +
     `RATE_LIMITED = sources were rate-limited while checking — not checked, NOT proven fake; ` +
     `[STALE:YYYY] = data older than the freshness window; ` +
     `[CHIMERIC:author-mismatch] = title matches a real paper but the listed authors do not; ` +

@@ -145,6 +145,30 @@ const ok = (name, cond, extra) => {
   ok('parallel faster than sequential (6 claims x ~1050ms sequential -> well under 6300ms)', dt < 4000, dt + 'ms');
   ok('all UNVERIFIED (404s)', ev.every(e => e.base === 'UNVERIFIED'));
 
+  console.log('— FABRICATED vs UNVERIFIED —');
+  // all registries answer 404: positive non-existence
+  const sb404 = makeSandbox(async () => ({ ok: false, status: 404 }));
+  const fabMd = '# T\n\nFake paper arXiv:2401.99999. Fake DOI 10.9999/fake.doi.1234. ' +
+    'Dangling marker [9]. Entry without identifiers [7].\n\n## References\n\n' +
+    '[9] No identifiers in this entry at all.\n\n[7] Anonymous. A title no database knows. 2020.';
+  const evFab = await sb404.groundDraft(fabMd, {}, null);
+  const byClaim = {};
+  evFab.forEach(e => { byClaim[e.claim] = e.base; });
+  ok('fake arXiv -> FABRICATED', byClaim['Fake paper arXiv:2401.99999.'] === 'FABRICATED',
+    JSON.stringify(byClaim));
+  ok('fake DOI -> FABRICATED', byClaim['Fake DOI 10.9999/fake.doi.1234.'] === 'FABRICATED');
+  ok('dangling marker -> UNVERIFIED not FABRICATED', byClaim['Dangling marker [9].'] === 'UNVERIFIED');
+  ok('entry without identifiers -> UNVERIFIED not FABRICATED',
+    byClaim['Entry without identifiers [7].'] === 'UNVERIFIED');
+  ok('fabricated note names the identifier',
+    evFab[0].note.includes('2401.99999') && /fabricated or mistyped/i.test(evFab[0].note));
+  // 429 stays RATE_LIMITED, never FABRICATED
+  const ev429 = await sb429.groundDraft('# T\n\nFake arXiv:2401.99999.\n', {}, null);
+  ok('429 -> RATE_LIMITED not FABRICATED', ev429[0].base === 'RATE_LIMITED', ev429[0].base);
+  // report counts it
+  const htmlFab = renderReport([{ claim: 'x', base: 'FABRICATED', label: 'FABRICATED', note: 'n' }]);
+  ok('FABRICATED counted', /FABRICATED 1/.test(htmlFab));
+
   console.log(`\n${pass} passed, ${fail} failed`);
   process.exit(fail ? 1 : 0);
 })().catch(e => { console.error('FATAL', e); process.exit(1); });

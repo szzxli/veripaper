@@ -15,7 +15,7 @@ class EvidenceRef:
     """A single piece of evidence backing a claim."""
     claim: str
     source_doi: str | None = None
-    label: str = "UNVERIFIED"  # VERIFIED | CITED | UNVERIFIED | RATE_LIMITED | STALE:YYYY | EXTRAPOLATED (+ [CHIMERIC:author-mismatch] / [RETRACTED] tags)
+    label: str = "UNVERIFIED"  # VERIFIED | CITED | UNVERIFIED | RATE_LIMITED | FABRICATED | STALE:YYYY | EXTRAPOLATED (+ [CHIMERIC:author-mismatch] / [RETRACTED] tags)
     note: str = ""
 
 

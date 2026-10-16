@@ -192,7 +192,7 @@ footer .colophon a{color:var(--navy)}
 
 <section id="contract">
   <div class="sec-head"><span class="sec-no">§3</span><h2>The honesty contract</h2></div>
-  <p class="sec-lede">Four labels, three tags. No fifth option, no hedging.</p>
+  <p class="sec-lede">Five labels, three tags. No sixth option, no hedging.</p>
   <dl class="contract">
     <dt><span class="label l-verified">VERIFIED</span></dt>
     <dd>The source exists <i>and</i> its abstract substantively supports the claim's key assertion.</dd>
@@ -203,6 +203,8 @@ footer .colophon a{color:var(--navy)}
     <dt><span class="label l-unverified">UNVERIFIED</span></dt>
     <dd>No record found, the marker cannot be resolved, or the match is ambiguous. Do not cite it as-is.</dd>
     <dd class="example">Example: "Our method outperforms all baselines on every benchmark" — an author assertion with no source attached.</dd>
+    <dt><span class="label l-unverified">FABRICATED</span></dt>
+    <dd>An explicit identifier (DOI / arXiv ID) checked against its registry and found not to exist — fabricated or mistyped. Absence of evidence is UNVERIFIED; this is evidence of absence.</dd>
     <dt><span class="label l-stale">RATE_LIMITED</span></dt>
     <dd>Sources were rate-limited while checking — not checked, <i>not</i> proven fake. A limit is never presented as a fabrication.</dd>
     <dt><span class="label l-stale">[STALE:YYYY]</span> <span class="label l-unverified">[CHIMERIC:author-mismatch]</span> <span class="label l-unverified">[RETRACTED]</span></dt>
@@ -448,7 +450,7 @@ async function verify(){
     }else if(limited){
       show(`<span class="label l-stale">RATE_LIMITED</span><b>Sources were rate-limited (HTTP 429).</b> Not checked — NOT proven fake. Wait a minute and retry.`);
     }else{
-      show(`<span class="label l-unverified">UNVERIFIED</span><b>No record found.</b> The identifier does not resolve in CrossRef / DataCite${isArxiv?' / arXiv':''} — do not cite it.`);
+      show(`<span class="label l-unverified">FABRICATED</span><b>No record in any registry.</b> This ${isArxiv ? 'arXiv ID' : 'DOI'} does not exist — fabricated or mistyped; do not cite it.`);
     }
   }catch(err){
     if(err && err.message === 'arxiv-down'){
