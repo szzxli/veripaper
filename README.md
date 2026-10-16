@@ -5,6 +5,9 @@ Open-source academic paper tool: **the paper is just the final presentation.**
 Researchers should only do three things: **creative ideas, logical reasoning, empirical proof**.
 Everything else — writing, benchmarking, venue targeting, rebuttals — is handled by the tool.
 
+The tool automates bureaucratic taxes on thinking, not thinking itself.
+It can't give you taste — taste is the whole PhD.
+
 ```
 idea → proposal decision → idea distillation → evidence grounding → top-venue benchmarking → reviewer simulation → venue targeting → rebuttal → publishable
 ```
