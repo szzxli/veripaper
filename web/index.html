@@ -220,6 +220,69 @@ footer .colophon a{color:var(--navy)}
   </ol>
 </section>
 
+<section id="datasets">
+  <div class="sec-head"><span class="sec-no">§6</span><h2>Dataset &amp; methods checklist</h2></div>
+  <p class="sec-lede">Pick the paper type and target venue. Get the checklist: where data is needed, how to collect it, and the bar for "done".</p>
+  <div class="toolcard">
+    <div class="btnrow" style="margin-top:0">
+      <select id="ds-type" style="flex:1;min-width:180px;padding:11px;border:1px solid var(--line);font-family:var(--sans);font-size:14px;background:#fff">
+        <option value="empirical-ml">Empirical ML</option>
+        <option value="survey">Survey / position</option>
+        <option value="theory">Theory</option>
+        <option value="systems">Systems / engineering</option>
+        <option value="human-study">Human study / annotation</option>
+      </select>
+      <select id="ds-venue" style="flex:1;min-width:180px;padding:11px;border:1px solid var(--line);font-family:var(--sans);font-size:14px;background:#fff">
+        <option value="generic">Any venue (core)</option>
+        <option value="neurips">NeurIPS</option>
+        <option value="icml">ICML</option>
+        <option value="iclr">ICLR</option>
+        <option value="acl">ACL / EMNLP / NAACL</option>
+        <option value="nature">Nature / Science family</option>
+      </select>
+      <button id="ds-btn" class="btn primary">Build checklist</button>
+    </div>
+    <div id="ds-result" style="margin-top:14px"></div>
+  </div>
+</section>
+
+<section id="venues">
+  <div class="sec-head"><span class="sec-no">§7</span><h2>Where to submit</h2></div>
+  <p class="sec-lede">Describe the topic. Get a ranked venue shortlist with fit reasons — a starting filter, not a prediction.</p>
+  <div class="toolcard">
+    <div class="btnrow" style="margin:0 0 12px">
+      <button id="vn-sample" class="btn ghost">Load sample</button>
+    </div>
+    <div class="btnrow" style="margin-top:0">
+      <input id="vn-topic" type="text" placeholder="e.g. retrieval-augmented citation verification" style="flex:2;min-width:200px;padding:11px 13px;border:1px solid var(--line);font-family:var(--sans);font-size:14px">
+      <select id="vn-type" style="flex:1;min-width:150px;padding:11px;border:1px solid var(--line);font-family:var(--sans);font-size:14px;background:#fff">
+        <option value="empirical-ml">Empirical ML</option>
+        <option value="survey">Survey / position</option>
+        <option value="theory">Theory</option>
+        <option value="systems">Systems / engineering</option>
+        <option value="human-study">Human study</option>
+      </select>
+      <button id="vn-btn" class="btn primary">Match venues</button>
+    </div>
+    <div id="vn-result" style="margin-top:14px"></div>
+  </div>
+</section>
+
+<section id="rebuttal">
+  <div class="sec-head"><span class="sec-no">§8</span><h2>Rebuttal manager</h2></div>
+  <p class="sec-lede">Paste the reviews. Each point is split out, classified, and given a response template. Track what is addressed — export when done.</p>
+  <div class="toolcard">
+    <textarea id="rb-input" rows="7" placeholder="Paste reviews here — prefix reviewers (Reviewer 1: …) and number points (1. 2. 3.) for best parsing…"></textarea>
+    <div class="btnrow">
+      <button id="rb-btn" class="btn primary">Split into points</button>
+      <button id="rb-clear" class="btn ghost">Clear all</button>
+    </div>
+    <div id="rb-progress" class="progress"></div>
+    <div id="rb-result" style="margin-top:14px"></div>
+    <p class="hint">State is saved in this browser (localStorage). The tool structures the work; the science in each response is yours.</p>
+  </div>
+</section>
+
 <section id="references">
   <div class="sec-head"><span class="sec-no">Refs</span><h2>References</h2></div>
   <ol class="refs">
@@ -239,6 +302,9 @@ footer .colophon a{color:var(--navy)}
 
 <script src="ground.js"></script>
 <script src="idea.js"></script>
+<script src="datasets.js"></script>
+<script src="venues.js"></script>
+<script src="rebuttal.js"></script>
 <script>
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});}
 
