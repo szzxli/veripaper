@@ -96,7 +96,7 @@ footer a{color:var(--blue)}
 <body>
 <header class="top"><div class="wrap">
   <a class="brand" href="#">veri<span>paper</span></a>
-  <nav><a href="#pipeline">Pipeline</a><a href="#toolbox">Toolbox</a><a href="#board">Board</a><a href="#demo">Demo</a><a href="#verify">Verify</a><a href="https://github.com/szzxli/veripaper">GitHub</a></nav>
+  <nav><a href="#pipeline">Pipeline</a><a href="#toolbox">Toolbox</a><a href="#board">Board</a><a href="#demo">Demo</a><a href="#ground">Ground</a><a href="#verify">Verify</a><a href="https://github.com/szzxli/veripaper">GitHub</a></nav>
 </div></header>
 
 <div class="hero wrap">
@@ -189,6 +189,27 @@ footer a{color:var(--blue)}
       <div class="verdict"><span class="label l-extra">EXTRAPOLATED</span>Frontier-track inference, not verified knowledge. Kept separate from empirical claims.</div></div>
     <div class="claim"><p>"The dataset contains 1.2M annotated examples (Smith et al.)."</p>
       <div class="verdict"><span class="label l-cited">CITED</span>Source exists, but content not yet verified against the abstract. Downgraded honestly.</div></div>
+  </div>
+</div></section>
+
+<section id="ground"><div class="wrap">
+  <h2 class="sec serif">Ground your draft</h2>
+  <p class="lead">Paste a markdown draft. Every cited claim gets an honest label — verified, cited, unverified, or stale. Everything runs in your browser; nothing is uploaded.</p>
+  <div class="demo">
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+      <button id="ground-sample" class="btn ghost" style="border:1.5px solid var(--blue);color:var(--blue);background:none;cursor:pointer;padding:9px 18px;font-size:14px;margin:0">Load sample</button>
+      <span style="font-size:13px;color:var(--ink-soft);align-self:center">or paste your own markdown below</span>
+    </div>
+    <textarea id="ground-input" rows="10" placeholder="Paste your draft here — claims with [@key], [1], (Author, 2020), DOI or arXiv citations, plus a References section…"
+      style="width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;font-size:14px;background:#fffdf7;font-family:inherit;resize:vertical"></textarea>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;align-items:center">
+      <input id="ground-key" type="password" placeholder="OpenRouter key (optional — enables abstract-vs-claim judgment)"
+        style="flex:1;min-width:220px;padding:11px 14px;border:1.5px solid var(--line);border-radius:10px;font-size:14px;background:#fffdf7">
+      <button id="ground-btn" class="btn primary" style="border:none;cursor:pointer;margin:0">Ground this draft</button>
+    </div>
+    <div id="ground-progress" style="margin-top:10px;font-size:13.5px;color:var(--ink-soft)"></div>
+    <div id="ground-result" style="margin-top:14px"></div>
+    <p style="font-size:12.5px;color:var(--ink-soft);margin-top:12px">Without a key, existing sources are honestly labeled CITED (support not checked). With a key, the abstract is compared against each claim — PARTIAL or unclear cases still downgrade, never pretend.</p>
   </div>
 </div></section>
 
@@ -305,5 +326,6 @@ async function verify(){
 $btn.addEventListener('click', verify);
 $in.addEventListener('keydown', e => { if(e.key==='Enter') verify(); });
 </script>
+<script src="ground.js"></script>
 </body>
 </html>
