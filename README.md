@@ -36,6 +36,11 @@ veripaper solves "getting published":
    failure mode entirely.
 6. **Lightweight by design**: verification is database lookups, not model training.
    The heaviest operation is an HTTP GET. No GPU farms required to check a citation.
+7. **Nuance over binary** (from r/PhD feedback): a reference can be real, relevant,
+   and still not support the specific claim. Claim-level verification must report
+   *which parts* are supported — "supports the method claim, silent on the
+   generalization, weaker sample than implied" — with quotes, never a flat yes/no.
+   Today's `[CITED]` label is the honest placeholder for this until then.
 
 ## Quickstart (v0.1)
 
