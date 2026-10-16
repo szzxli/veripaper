@@ -24,7 +24,8 @@ ARXIV_RE = re.compile(r"(?:arXiv:)?(\d{4}\.\d{4,5}(?:v\d+)?|[a-z\-]+/\d{7}(?:v\d
 PANDOC_RE = re.compile(r"\[@([^\]]+)\]")
 NUMERIC_RE = re.compile(r"\[(\d{1,3})\]")
 AUTHOR_YEAR_RE = re.compile(
-    r"\(([A-Z][A-Za-z'’\-]+(?:\s+(?:et al\.|&|and)\s+[A-Z][A-Za-z'’\-]+)?(?:\s*,\s*[A-Z][A-Za-z'’\-]+)*,?\s*\d{4}[a-z]?(?:\s*;\s*[A-Z][A-Za-z'’\-]+[^)]*?)?)\)")
+    r"\(([A-Z][A-Za-z'’\-]+(?:\s+et al\.)?(?:\s*(?:&|and)\s+[A-Z][A-Za-z'’\-]+)?"
+    r"(?:\s*,\s*[A-Z][A-Za-z'’\-]+)*,?\s*\d{4}[a-z]?(?:\s*;\s*[^)]+)?)\)")
 URL_RE = re.compile(r"https?://[^\s\]\)\"'<>]+", re.I)
 
 REF_HEADING_RE = re.compile(r"^#{1,6}\s*(references|bibliography|works cited)\s*$", re.I | re.M)
