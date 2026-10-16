@@ -62,9 +62,10 @@ async function topVenues(query, onStep) {
   try {
     const d = await oaGet({
       search: query, filter: 'from_publication_date:2023-01-01',
-      'group_by': 'primary_location.source.display_name', 'per-page': '1',
+      'group_by': 'primary_location.source.id', 'per-page': '1',
     });
-    return (d.group_by || []).slice(0, 5).map(g => ({ venue: g.key, count: g.count }));
+    return (d.group_by || []).filter(g => g.key && g.key !== 'unknown').slice(0, 5)
+      .map(g => ({ venue: g.key_display_name || g.key, count: g.count }));
   } catch { return null; }
 }
 
