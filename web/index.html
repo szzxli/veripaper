@@ -192,7 +192,7 @@ footer .colophon a{color:var(--navy)}
 
 <section id="contract">
   <div class="sec-head"><span class="sec-no">§3</span><h2>The honesty contract</h2></div>
-  <p class="sec-lede">Four labels. No fifth option, no hedging.</p>
+  <p class="sec-lede">Four labels, three tags. No fifth option, no hedging.</p>
   <dl class="contract">
     <dt><span class="label l-verified">VERIFIED</span></dt>
     <dd>The source exists <i>and</i> its abstract substantively supports the claim's key assertion.</dd>
@@ -203,9 +203,10 @@ footer .colophon a{color:var(--navy)}
     <dt><span class="label l-unverified">UNVERIFIED</span></dt>
     <dd>No record found, the marker cannot be resolved, or the match is ambiguous. Do not cite it as-is.</dd>
     <dd class="example">Example: "Our method outperforms all baselines on every benchmark" — an author assertion with no source attached.</dd>
-    <dt><span class="label l-stale">STALE:YYYY</span></dt>
-    <dd>A numeric claim older than the freshness window (3 years). Find a newer source before submitting.</dd>
-    <dd class="example">Example: "According to 2019 statistics, 40% of enterprises suffered attacks."</dd>
+    <dt><span class="label l-stale">RATE_LIMITED</span></dt>
+    <dd>Sources were rate-limited while checking — not checked, <i>not</i> proven fake. A limit is never presented as a fabrication.</dd>
+    <dt><span class="label l-stale">[STALE:YYYY]</span> <span class="label l-unverified">[CHIMERIC:author-mismatch]</span> <span class="label l-unverified">[RETRACTED]</span></dt>
+    <dd>Tags, not labels: stale data, a real title carrying the wrong authors, a retracted paper. A retracted paper can never be VERIFIED.</dd>
   </dl>
   <p class="footnote">The governing rule is <i>downgrade-only</i>: uncertainty always resolves toward the weaker label. A tool that cannot verify must say so.</p>
 </section>

@@ -552,16 +552,20 @@ function heuristicSupportHint(claim, abstract) {
 
 /* ---------------- pipeline ---------------- */
 
+/* Claims are checked with bounded concurrency (4 at a time): the old
+ * sequential loop with a 350ms sleep made a 20-claim draft take ~10 minutes.
+ * The shared cache is a plain Map — concurrent duplicate fetches are possible
+ * but harmless (same result, just redundant work). */
+const GROUND_CONCURRENCY = 4;
 async function groundDraft(text, opts, onStep) {
   opts = opts || {};
   const pairs = extractPairs(text);
   const refmap = parseReferences(text);
   const cache = new Map();
-  const evidence = [];
-  let n = 0;
-  for (const p of pairs) {
-    n++;
-    if (onStep) onStep(`Checking claim ${n}/${pairs.length}…`);
+  const evidence = new Array(pairs.length);
+  let next = 0, done = 0;
+  async function checkOne(i) {
+    const p = pairs[i];
     const res = await resolveCitation(p, refmap, cache);
     let base = 'UNVERIFIED', note = res.note;
     if (res.exists) {
@@ -601,14 +605,26 @@ async function groundDraft(text, opts, onStep) {
       res.chimeric ? '[CHIMERIC:author-mismatch]' : '',
       res.retracted ? '[RETRACTED]' : '',
     ].filter(Boolean);
-    evidence.push({
+    evidence[i] = {
       claim: p.claim, base,
       label: base + (tags.length ? ' ' + tags.join(' ') : ''),
       doi: res.doi || '', arxiv_id: res.arxiv_id || '', title: res.title || '', note,
       authors: res.authors || [], venue: res.venue || '', year: res.year || '',
-    });
-    await sleep(350);
+    };
+    done++;
+    if (onStep) onStep(`Checking claim ${done}/${pairs.length}…`);
+    await sleep(150);
   }
+  async function worker() {
+    while (true) {
+      const i = next++;
+      if (i >= pairs.length) return;
+      await checkOne(i);
+    }
+  }
+  const workers = [];
+  for (let w = 0; w < Math.min(GROUND_CONCURRENCY, pairs.length); w++) workers.push(worker());
+  await Promise.all(workers);
   return evidence;
 }
 
@@ -687,12 +703,12 @@ function renderReport(evidence) {
     `</div>`;
   evidence.forEach((e, i) => {
     const tags = e.label.split(' ').slice(1).map(t =>
-      `<span class="label ${/CHIMERIC|RETRACTED/.test(t) ? 'l-unverified' : 'l-stale'}">${gesc(t)}</span>`).join('');
+      `<span class="label ${/CHIMERIC|RETRACTED/.test(t) ? 'l-unverified' : 'l-stale'}">${gesc(t)}</span>`).join(' ');
     html += `<div class="claim open" style="cursor:default">` +
       `<p><b>${i + 1}.</b> ${gesc(e.claim)}</p>` +
       `<div class="verdict" style="display:block">` +
       `<span class="label ${labelClass(e.base)}">${gesc(e.base)}</span>` +
-      tags +
+      (tags ? ' ' + tags : '') +
       (e.title ? `<div style="margin:8px 0 4px"><b>${gesc(e.title)}</b></div>` : '') +
       (e.doi ? `<div style="color:var(--ink-soft);font-size:13px">DOI: ${gesc(e.doi)}</div>` : '') +
       `<div style="margin-top:6px;color:var(--ink-soft)">${gesc(e.note)}</div>` +

@@ -17,7 +17,9 @@ function mkEl() {
 }
 function makeSandbox(fetchImpl) {
   const sandbox = {
-    console, setTimeout: (fn) => 0, clearTimeout: () => {},
+    console,
+    // real timers: ground.js awaits sleep() between claims
+    setTimeout: (fn, ms) => setTimeout(fn, ms), clearTimeout: (id) => clearTimeout(id),
     document: {
       readyState: 'complete', addEventListener: () => {},
       getElementById: () => mkEl(), createElement: () => mkEl(), body: mkEl(),
@@ -125,6 +127,23 @@ const ok = (name, cond, extra) => {
   ok('RATE_LIMITED counted', /RATE_LIMITED 1/.test(html));
   ok('RETRACTED counted', /RETRACTED ×1/.test(html));
   ok('CHIMERIC counted', /CHIMERIC ×1/.test(html));
+
+  console.log('— parallel grounding: order + speedup —');
+  // 6 claims, each fetch takes ~300ms; sequential would take ~1800ms+
+  const sbPar = makeSandbox(async (url) => {
+    await new Promise(r => setTimeout(r, 300));
+    return { ok: false, status: 404 };
+  });
+  const parMd = '# T\n\n' + [1, 2, 3, 4, 5, 6].map(i => `Claim number ${i} [${i}].`).join(' ') +
+    '\n\n## References\n\n' + [1, 2, 3, 4, 5, 6].map(i => `[${i}] Author${i}, A. Some title ${i}. 2020.`).join('\n\n');
+  const t0 = Date.now();
+  const ev = await sbPar.groundDraft(parMd, {}, null);
+  const dt = Date.now() - t0;
+  ok('all 6 claims processed', ev.length === 6, JSON.stringify(ev.length));
+  ok('evidence order preserved', ev.every((e, i) => e.claim === `Claim number ${i + 1} [${i + 1}].`),
+    JSON.stringify(ev.map(e => e.claim)));
+  ok('parallel faster than sequential (6 claims x ~1050ms sequential -> well under 6300ms)', dt < 4000, dt + 'ms');
+  ok('all UNVERIFIED (404s)', ev.every(e => e.base === 'UNVERIFIED'));
 
   console.log(`\n${pass} passed, ${fail} failed`);
   process.exit(fail ? 1 : 0);
