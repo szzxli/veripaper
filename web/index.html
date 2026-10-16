@@ -115,6 +115,16 @@ footer .colophon a{color:var(--navy)}
 </div></header>
 
 <div class="wrap">
+<div id="project-bar" class="toolcard" style="margin:26px 0 0">
+  <div class="btnrow" style="margin-top:0;align-items:center">
+    <span class="sec-no">PROJECT</span>
+    <select id="pj-select" style="flex:1;min-width:160px;padding:10px;border:1px solid var(--line);font-family:var(--sans);font-size:14px;background:#fff"></select>
+    <button id="pj-new" class="btn ghost" style="padding:9px 16px;font-size:13px">+ New</button>
+    <button id="pj-rename" class="btn ghost" style="padding:9px 16px;font-size:13px">Rename</button>
+    <button id="pj-del" class="btn ghost" style="padding:9px 16px;font-size:13px">Delete</button>
+  </div>
+  <p class="hint" id="pj-hint" style="margin-bottom:0"></p>
+</div>
 <div class="titleblock">
   <h1>Ground every claim<br>before you submit.</h1>
   <div class="byline">Researchers do ideas, logic, and proof — veripaper checks the evidence.</div>
@@ -283,6 +293,25 @@ footer .colophon a{color:var(--navy)}
   </div>
 </section>
 
+<section id="submissions">
+  <div class="sec-head"><span class="sec-no">§9</span><h2>Track to acceptance</h2></div>
+  <p class="sec-lede">Where the draft went, what state it is in, and when the clock runs out. Per project.</p>
+  <div class="toolcard">
+    <div class="btnrow" style="margin-top:0">
+      <input id="sub-venue" type="text" placeholder="Venue (e.g. NeurIPS 2027)" style="flex:2;min-width:160px;padding:11px 13px;border:1px solid var(--line);font-family:var(--sans);font-size:14px">
+      <select id="sub-status" style="padding:11px;border:1px solid var(--line);font-family:var(--sans);font-size:14px;background:#fff">
+        <option>drafting</option><option>submitted</option><option>under review</option>
+        <option>revision</option><option>accepted</option><option>rejected</option>
+      </select>
+      <input id="sub-date" type="date" title="Submitted" style="padding:10px;border:1px solid var(--line);font-family:var(--sans);font-size:13px">
+      <input id="sub-deadline" type="date" title="Deadline" style="padding:10px;border:1px solid var(--line);font-family:var(--sans);font-size:13px">
+      <input id="sub-note" type="text" placeholder="Note (optional)" style="flex:1;min-width:120px;padding:11px 13px;border:1px solid var(--line);font-family:var(--sans);font-size:14px">
+      <button id="sub-add" class="btn primary">Add</button>
+    </div>
+    <div id="sub-list" style="margin-top:14px"></div>
+  </div>
+</section>
+
 <section id="references">
   <div class="sec-head"><span class="sec-no">Refs</span><h2>References</h2></div>
   <ol class="refs">
@@ -300,6 +329,7 @@ footer .colophon a{color:var(--navy)}
   <div class="colophon">VERIPAPER · v0.1 · SET IN GEORGIA · MIT LICENSE · <a href="https://github.com/szzxli/veripaper">GITHUB</a></div>
 </div></footer>
 
+<script src="project.js"></script>
 <script src="ground.js"></script>
 <script src="idea.js"></script>
 <script src="datasets.js"></script>

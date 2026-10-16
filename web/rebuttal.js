@@ -57,9 +57,20 @@ function rbParse(raw) {
   return out;
 }
 
-const RB_KEY = 'veripaper.rebuttal.v1';
-function rbLoad() { try { return JSON.parse(localStorage.getItem(RB_KEY) || '{}'); } catch { return {}; } }
-function rbSave(s) { try { localStorage.setItem(RB_KEY, JSON.stringify(s)); } catch {} }
+function rbKey() { return (window.VP ? VP.rbKey() : 'veripaper.rebuttal.v1.none'); }
+function rbLoad() {
+  try {
+    const k = rbKey();
+    let raw = localStorage.getItem(k);
+    if (!raw) {
+      // one-time migration from the pre-project global key
+      const legacy = localStorage.getItem('veripaper.rebuttal.v1');
+      if (legacy && k !== 'veripaper.rebuttal.v1') { localStorage.setItem(k, legacy); return JSON.parse(legacy); }
+    }
+    return JSON.parse(raw || '{}');
+  } catch { return {}; }
+}
+function rbSave(s) { try { localStorage.setItem(rbKey(), JSON.stringify(s)); } catch {} }
 
 const RB_TEMPLATE = pt =>
 `We thank the reviewer for raising this point regarding ${pt.cat}.
@@ -145,6 +156,8 @@ function initRebuttal() {
     if (!confirm('Clear all rebuttal state?')) return;
     state = {}; rbSave(state); points = []; ta.value = ''; render();
   });
+  // re-render when the active project switches (project.js calls this)
+  window.RB_refresh = () => { state = rbLoad(); render(); };
 }
 const escRb = s => String(s || '').replace(/[&<>"]/g,
   m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[m]));

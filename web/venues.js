@@ -50,6 +50,10 @@ function initVenues() {
   const sample = document.getElementById('vn-sample');
   const out = document.getElementById('vn-result');
   if (!topic) return;
+  if (window.VP) {
+    const p = VP.active();
+    if (p && p.idea && p.idea.text) topic.value = p.idea.text.slice(0, 120);
+  }
   sample.addEventListener('click', () => { topic.value = 'retrieval-augmented citation verification for academic drafts'; });
   btn.addEventListener('click', () => {
     const t = topic.value.trim();
@@ -64,6 +68,21 @@ function initVenues() {
     ).join('') + `</ol></div></div>`;
     html += `<p class="hint">Scoring is keyword overlap + paper-type fit — a starting filter, not a prediction. Acceptance rates move yearly; verify on the venue site. When torn between two, read last year's accepted papers in both and ask which room your paper belongs in.</p>`;
     out.innerHTML = html;
+    if (window.VP) {
+      const wrap = document.createElement('div');
+      wrap.className = 'btnrow';
+      const sb = document.createElement('button');
+      sb.className = 'btn ghost'; sb.textContent = 'Save shortlist to project';
+      sb.addEventListener('click', () => {
+        VP.update(p => {
+          p.venueShortlist = ranked.map(v => ({ name: v.name, url: v.url, why: v.reasons.join('; ') }));
+          p.paperType = tSel.value;
+        });
+        sb.textContent = 'Saved';
+      });
+      wrap.appendChild(sb);
+      out.appendChild(wrap);
+    }
   });
 }
 const escVn = s => String(s || '').replace(/[&<>"]/g,

@@ -491,6 +491,7 @@ function initGround() {
         s => { prog.textContent = s; });
       prog.textContent = '';
       out.innerHTML = renderReport(evidence);
+      if (window.VP) { try { VP.recordGround(evidence); } catch {} }
     } catch (err) {
       prog.textContent = '';
       out.innerHTML = `<p style="color:var(--red)">Something failed: ${gesc(err.message || err)}. Your draft never left this page — try again.</p>`;

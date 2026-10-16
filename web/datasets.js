@@ -165,20 +165,42 @@ function initDatasets() {
   const btn = document.getElementById('ds-btn');
   const out = document.getElementById('ds-result');
   if (!tSel) return;
+  const fromProject = () => {
+    if (!window.VP) return;
+    const p = VP.active();
+    if (p) { tSel.value = p.paperType || 'empirical-ml'; vSel.value = p.targetVenue || 'generic'; }
+  };
   const render = () => {
     const items = dsChecklist(tSel.value, vSel.value);
-    let html = `<div class="finding"><p class="claim"><b>${items.length} checks</b> — ${iesc(DS_TYPES[tSel.value])} × ${iesc(DS_VENUES[vSel.value])}</p><div class="detail">`;
+    const p = window.VP ? VP.active() : null;
+    const ck = p ? p.checklist : {};
+    let html = `<div class="finding"><p class="claim"><b>${items.length} checks</b> — ${iesc(DS_TYPES[tSel.value])} × ${iesc(DS_VENUES[vSel.value])}` +
+      (p ? ` · saved to project "${iesc(p.name)}"` : '') + `</p><div class="detail">`;
     let sec = '';
-    for (const it of items) {
+    items.forEach((it, idx) => {
+      const key = tSel.value + '|' + vSel.value + '|' + idx;
       if (it.sec !== sec) { sec = it.sec; html += `<div style="margin:10px 0 4px;color:var(--navy)"><b>${iesc(sec)}</b></div>`; }
-      html += `<div style="margin-bottom:10px"><b>${iesc(it.item)}</b><br>` +
-        `<span style="font-size:12.5px">Where: ${iesc(it.where)} · How: ${iesc(it.how)}<br>` +
+      html += `<div style="margin-bottom:10px"><label style="cursor:pointer"><input type="checkbox" data-ds="${iesc(key)}"${ck[key] ? ' checked' : ''} style="margin-right:8px;accent-color:var(--navy)">` +
+        `<b>${iesc(it.item)}</b></label><br>` +
+        `<span style="font-size:12.5px;margin-left:24px">Where: ${iesc(it.where)} · How: ${iesc(it.how)}<br>` +
         `<i>Bar: ${iesc(it.bar)}</i></span></div>`;
-    }
+    });
     html += `</div></div><p class="hint">Guidance aligned with public venue checklists — not a guarantee of acceptance. When in doubt, read three accepted papers from the venue and copy their Methods section's rigor, not their prose.</p>`;
     out.innerHTML = html;
+    out.querySelectorAll('input[data-ds]').forEach(cb => cb.addEventListener('change', e => {
+      if (!window.VP) return;
+      const k = e.target.dataset.ds;
+      VP.update(p => { if (e.target.checked) p.checklist[k] = true; else delete p.checklist[k]; });
+    }));
   };
-  btn.addEventListener('click', render);
+  const syncProject = () => {
+    if (!window.VP) return;
+    VP.update(p => { p.paperType = tSel.value; p.targetVenue = vSel.value; });
+  };
+  btn.addEventListener('click', () => { syncProject(); render(); });
+  tSel.addEventListener('change', syncProject);
+  vSel.addEventListener('change', syncProject);
+  fromProject();
   render();
 }
 

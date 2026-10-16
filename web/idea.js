@@ -205,6 +205,23 @@ function initIdea() {
       }
       prog.textContent = '';
       out.innerHTML = renderIdea({ heat, trend, total, venues, papers, judgment, keyError });
+      if (window.VP) {
+        const wrap = document.createElement('div');
+        wrap.className = 'btnrow';
+        wrap.innerHTML = `<button id="idea-save-pj" class="btn ghost">Save as new project</button>
+          <button id="idea-update-pj" class="btn ghost">Update active project</button>`;
+        out.appendChild(wrap);
+        const data = { text: idea, heat, trend: trend.label, total, venues, papers, judgment: judgment && !judgment.error ? judgment : null };
+        document.getElementById('idea-save-pj').addEventListener('click', () => {
+          const p = VP.create(idea.slice(0, 42) + (idea.length > 42 ? '…' : ''));
+          VP.update(x => { x.idea = data; x.paperType = x.paperType || 'empirical-ml'; });
+          document.getElementById('idea-save-pj').textContent = 'Saved to "' + p.name + '"';
+        });
+        document.getElementById('idea-update-pj').addEventListener('click', () => {
+          VP.update(x => { x.idea = data; });
+          document.getElementById('idea-update-pj').textContent = 'Updated';
+        });
+      }
     } catch (err) {
       prog.textContent = '';
       out.innerHTML = `<p class="hint" style="color:var(--crimson)">The index did not respond (${iesc(err.message || err)}). Your idea never left this page — try again in a minute.</p>`;
