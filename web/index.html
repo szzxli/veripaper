@@ -251,6 +251,19 @@ async function checkArxiv(id){
     type: 'preprint'
   };
 }
+async function checkDataCite(doi){
+  const r = await fetch('https://api.datacite.org/dois/' + encodeURIComponent(doi), {
+    headers: { 'Accept': 'application/vnd.api+json' } });
+  if(!r.ok) return null;
+  const a = (await r.json()).data.attributes;
+  return {
+    title: ((a.titles||[])[0]||{}).title || '(no title)',
+    authors: (a.creators||[]).map(c=>c.name).filter(Boolean).slice(0,5).join(', '),
+    venue: a.publisher || '',
+    year: a.publicationYear || '',
+    type: 'via DataCite'
+  };
+}
 async function verify(){
   const raw = $in.value.trim();
   if(!raw){ show('<p style="color:var(--ink-soft)">Paste a DOI or arXiv ID first.</p>'); return; }
@@ -259,13 +272,13 @@ async function verify(){
   try{
     const doi = raw.replace(/^https?:\/\/(dx\.)?doi\.org\//i,'').trim();
     const isArxiv = /^(\d{4}\.\d{4,5}(v\d+)?|[a-z-]+\/\d{7}(v\d+)?)$/i.test(doi);
-    const meta = isArxiv ? await checkArxiv(doi) : await checkCrossRef(doi);
+    const meta = isArxiv ? await checkArxiv(doi) : (await checkCrossRef(doi) || await checkDataCite(doi));
     if(meta){
       show(`<span class="label l-cited">CITED</span><b>Source exists.</b> Content support not yet checked — this is honest downgrade, not verification.<br><br>
         <b>${esc(meta.title)}</b><br>
         <span style="color:var(--ink-soft)">${esc(meta.authors)}${meta.year?' · '+esc(meta.year):''}${meta.venue?' · <i>'+esc(meta.venue)+'</i>':''}</span>`);
     }else{
-      show(`<span class="label l-unverified">UNVERIFIED</span><b>No record found.</b> The identifier does not resolve in CrossRef${isArxiv?' / arXiv':''} — do not cite it.`);
+      show(`<span class="label l-unverified">UNVERIFIED</span><b>No record found.</b> The identifier does not resolve in CrossRef / DataCite${isArxiv?' / arXiv':''} — do not cite it.`);
     }
   }catch(err){
     if(err && err.message === 'arxiv-down'){
