@@ -96,7 +96,7 @@ footer a{color:var(--blue)}
 <body>
 <header class="top"><div class="wrap">
   <a class="brand" href="#">veri<span>paper</span></a>
-  <nav><a href="#pipeline">Pipeline</a><a href="#toolbox">Toolbox</a><a href="#board">Board</a><a href="#demo">Demo</a><a href="https://github.com/szzxli/veripaper">GitHub</a></nav>
+  <nav><a href="#pipeline">Pipeline</a><a href="#toolbox">Toolbox</a><a href="#board">Board</a><a href="#demo">Demo</a><a href="#verify">Verify</a><a href="https://github.com/szzxli/veripaper">GitHub</a></nav>
 </div></header>
 
 <div class="hero wrap">
@@ -192,6 +192,19 @@ footer a{color:var(--blue)}
   </div>
 </div></section>
 
+<section id="verify"><div class="wrap">
+  <h2 class="sec serif">Try it — verify a citation</h2>
+  <p class="lead">Paste a DOI or arXiv ID. The page queries CrossRef / arXiv directly — no server, no signup.</p>
+  <div class="demo">
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <input id="doi-input" type="text" placeholder="e.g. 10.1145/3377811.3380366 or 2301.12345"
+        style="flex:1;min-width:220px;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;font-size:15px;background:#fffdf7">
+      <button id="doi-btn" class="btn primary" style="border:none;cursor:pointer;margin:0">Verify</button>
+    </div>
+    <div id="verify-result" style="margin-top:16px;font-size:14.5px"></div>
+  </div>
+</div></section>
+
 <footer><div class="wrap">
   <p class="serif" style="font-size:17px;color:var(--blue);margin-bottom:8px">veripaper</p>
   <p>MIT licensed · <a href="https://github.com/szzxli/veripaper">GitHub</a> · Built for researchers, not shortcuts.</p>
@@ -199,6 +212,72 @@ footer a{color:var(--blue)}
 <script>
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});}
 document.querySelectorAll('.claim').forEach(c=>c.addEventListener('click',()=>c.classList.toggle('open')));
+
+// --- In-browser citation verification (CrossRef + arXiv, no backend) ---
+const $in = document.getElementById('doi-input');
+const $btn = document.getElementById('doi-btn');
+const $out = document.getElementById('verify-result');
+const esc = s => String(s||'').replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+
+function show(html){ $out.innerHTML = html; }
+function busy(b){ $btn.disabled = b; $btn.textContent = b ? 'Checking…' : 'Verify'; }
+
+async function checkCrossRef(doi){
+  const r = await fetch('https://api.crossref.org/works/' + encodeURIComponent(doi), {
+    headers: { 'Accept': 'application/json' } });
+  if(!r.ok) return null;
+  const m = (await r.json()).message;
+  const yr = (m['published-print']||m['published-online']||m.created||{})['date-parts'];
+  return {
+    title: (m.title||['(no title)'])[0],
+    authors: (m.author||[]).map(a=>((a.given||'')+' '+(a.family||'')).trim()).filter(Boolean).slice(0,5).join(', '),
+    venue: (m['container-title']||[m.publisher||''])[0],
+    year: yr ? yr[0][0] : '',
+    type: m.type || ''
+  };
+}
+async function checkArxiv(id){
+  const r = await fetch('https://export.arxiv.org/api/query?id_list=' + encodeURIComponent(id));
+  if(r.status >= 500) throw new Error('arxiv-down');
+  if(!r.ok) return null;
+  const xml = new DOMParser().parseFromString(await r.text(), 'text/xml');
+  const e = xml.querySelector('entry');
+  if(!e || e.querySelector('title').textContent.trim().startsWith('Error')) return null;
+  return {
+    title: e.querySelector('title').textContent.trim().replace(/\s+/g,' '),
+    authors: [...e.querySelectorAll('author name')].map(n=>n.textContent).slice(0,5).join(', '),
+    venue: 'arXiv preprint',
+    year: (e.querySelector('published')||{}).textContent?.slice(0,4) || '',
+    type: 'preprint'
+  };
+}
+async function verify(){
+  const raw = $in.value.trim();
+  if(!raw){ show('<p style="color:var(--ink-soft)">Paste a DOI or arXiv ID first.</p>'); return; }
+  busy(true);
+  show('<p style="color:var(--ink-soft)">Querying…</p>');
+  try{
+    const doi = raw.replace(/^https?:\/\/(dx\.)?doi\.org\//i,'').trim();
+    const isArxiv = /^(\d{4}\.\d{4,5}(v\d+)?|[a-z-]+\/\d{7}(v\d+)?)$/i.test(doi);
+    const meta = isArxiv ? await checkArxiv(doi) : await checkCrossRef(doi);
+    if(meta){
+      show(`<span class="label l-cited">CITED</span><b>Source exists.</b> Content support not yet checked — this is honest downgrade, not verification.<br><br>
+        <b>${esc(meta.title)}</b><br>
+        <span style="color:var(--ink-soft)">${esc(meta.authors)}${meta.year?' · '+esc(meta.year):''}${meta.venue?' · <i>'+esc(meta.venue)+'</i>':''}</span>`);
+    }else{
+      show(`<span class="label l-unverified">UNVERIFIED</span><b>No record found.</b> The identifier does not resolve in CrossRef${isArxiv?' / arXiv':''} — do not cite it.`);
+    }
+  }catch(err){
+    if(err && err.message === 'arxiv-down'){
+      show('<p style="color:var(--amber)">arXiv is not responding right now — try a DOI instead, or retry in a minute.</p>');
+    }else{
+      show('<p style="color:var(--red)">Network error — check your connection and try again.</p>');
+    }
+  }
+  busy(false);
+}
+$btn.addEventListener('click', verify);
+$in.addEventListener('keydown', e => { if(e.key==='Enter') verify(); });
 </script>
 </body>
 </html>
