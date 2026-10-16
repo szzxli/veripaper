@@ -589,16 +589,20 @@ function initGround() {
         { apiKey: key.value.trim() || null },
         s => { prog.textContent = s; });
       prog.textContent = '';
-      out.innerHTML = renderReport(evidence);
+      // export toolbar FIRST: BibTeX download (Zotero/Mendeley/LaTeX-ready) + DOI list
+      const bar = document.createElement('div');
+      bar.className = 'btnrow';
+      bar.id = 'expbar';
+      bar.innerHTML = `<button id="exp-bib" class="btn ghost">Export BibTeX (.bib)</button>
+        <button id="exp-doi" class="btn ghost">Copy DOI list</button>
+        <span class="hint" style="margin:0">.bib imports directly into Zotero / Mendeley / JabRef</span>`;
+      out.innerHTML = '';
+      out.appendChild(bar);
+      const rep = document.createElement('div');
+      rep.innerHTML = renderReport(evidence);
+      out.appendChild(rep);
       if (window.VP) { try { VP.recordGround(evidence); } catch {} }
-      // export toolbar: BibTeX download (Zotero/Mendeley/LaTeX-ready) + DOI list
       try {
-        const bar = document.createElement('div');
-        bar.className = 'btnrow';
-        bar.innerHTML = `<button id="exp-bib" class="btn ghost">Export BibTeX (.bib)</button>
-          <button id="exp-doi" class="btn ghost">Copy DOI list</button>
-          <span class="hint" style="margin:0">.bib imports directly into Zotero / Mendeley / JabRef</span>`;
-        out.appendChild(bar);
         document.getElementById('exp-bib').addEventListener('click', () => {
           const bib = evidenceToBibTeX(evidence);
           if (!bib.trim()) { document.getElementById('exp-bib').textContent = 'Nothing to export'; return; }
