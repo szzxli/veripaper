@@ -28,7 +28,19 @@ AUTHOR_YEAR_RE = re.compile(
     r"(?:\s*,\s*[A-Z][A-Za-z'’\-]+)*,?\s*\d{4}[a-z]?(?:\s*;\s*[^)]+)?)\s*\)")
 URL_RE = re.compile(r"https?://[^\s\]\)\"'<>]+", re.I)
 
-REF_HEADING_RE = re.compile(r"^#{1,6}\s*(references|bibliography|works cited)\s*$", re.I | re.M)
+REF_HEADING_RE = re.compile(r"^#{1,6}\s*(references|bibliography|works cited)\b", re.I | re.M)
+REF_HEADING_INLINE_RE = re.compile(r"([.!?:])\s*(#{1,6}\s*(?:references|bibliography|works cited)\b)", re.I)
+
+
+def normalize_ref_heading(text: str) -> str:
+    """Break an inline references heading onto its own line.
+
+    Pasted drafts often run the heading together with body text
+    ("...folding [1]. ## References [1] Smith..."), which the
+    line-anchored heading regex would otherwise miss — reference
+    entries then leak into claims as fragments/duplicates.
+    """
+    return REF_HEADING_INLINE_RE.sub(r"\1\n\2", text)
 FENCE_RE = re.compile(r"```.*?```", re.S)
 SENT_SPLIT_RE = re.compile(r"(?<=[.!?])\s+(?=[A-Z0-9\"'“(\[])")
 
@@ -47,6 +59,7 @@ def _strip_code(text: str) -> str:
 
 
 def _cut_references(text: str) -> str:
+    text = normalize_ref_heading(text)
     m = REF_HEADING_RE.search(text)
     return text[:m.start()] if m else text
 

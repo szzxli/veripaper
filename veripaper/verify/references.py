@@ -19,7 +19,7 @@ import urllib.parse
 import requests
 
 from veripaper.verify.extract import (
-    ARXIV_RE, DOI_RE, REF_HEADING_RE, normalize_ws,
+    ARXIV_RE, DOI_RE, REF_HEADING_RE, normalize_ref_heading, normalize_ws,
 )
 
 UA = {"User-Agent": "veripaper/0.1 (mailto:dev@veripaper.local)"}
@@ -37,6 +37,7 @@ def _norm(s: str) -> str:
 
 def split_references(markdown: str) -> tuple[str, str]:
     """Return (body, references_section). Section is '' when absent."""
+    markdown = normalize_ref_heading(markdown)
     m = REF_HEADING_RE.search(markdown)
     if not m:
         return markdown, ""

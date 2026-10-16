@@ -16,7 +16,15 @@ const URL_RE = /https?:\/\/[^\s\]\)\"'<>]+/gi;
 const YEAR_RE = /\b((?:19|20)\d{2})\b/g;
 const NUMERIC_ENTRY_RE = /^\[(\d{1,3})\]\s*(.*)$/;
 const CITEKEY_ENTRY_RE = /^\[@([^\]]+)\]\s*(.*)$/;
-const REF_HEADING_RE = /^#{1,6}\s*(references|bibliography|works cited)\s*$/im;
+const REF_HEADING_RE = /^#{1,6}\s*(references|bibliography|works cited)\b/im;
+const REF_HEADING_INLINE_RE = /([.!?:])\s*(#{1,6}\s*(?:references|bibliography|works cited)\b)/gi;
+/* Pasted drafts often run the heading together with body text
+ * ("...folding [1]. ## References [1] Smith..."), which the line-anchored
+ * heading regex would otherwise miss — reference entries then leak into
+ * claims as fragments/duplicates. Break it onto its own line first. */
+function normalizeRefHeading(md) {
+  return md.replace(REF_HEADING_INLINE_RE, '$1\n$2');
+}
 const FENCE_RE = /```[\s\S]*?```/g;
 const SENT_SPLIT_RE = /(?<=[.!?])\s+(?=[A-Z0-9"'“(\[])/;
 
@@ -27,6 +35,7 @@ const gesc = s => String(s || '').replace(/[&<>"]/g,
 /* ---------------- extraction ---------------- */
 
 function cutReferences(md) {
+  md = normalizeRefHeading(md);
   const m = REF_HEADING_RE.exec(md);
   return m ? md.slice(0, m.index) : md;
 }
@@ -93,6 +102,7 @@ function extractPairs(md) {
 /* ---------------- reference list ---------------- */
 
 function splitRefSection(md) {
+  md = normalizeRefHeading(md);
   const m = REF_HEADING_RE.exec(md);
   return m ? md.slice(m.index + m[0].length) : '';
 }
