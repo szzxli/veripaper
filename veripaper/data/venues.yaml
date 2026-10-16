@@ -1,0 +1,100 @@
+# Top venues curated for veripaper data collection.
+# Used to filter OpenAlex/Semantic Scholar by venue. Tier: T1 only.
+# Fields: name, abbr, type (conference|journal), field.
+
+venues:
+  # ---------- AI / ML ----------
+  - {name: "Conference on Neural Information Processing Systems", abbr: "NeurIPS", type: conference, field: ai_ml}
+  - {name: "International Conference on Machine Learning", abbr: "ICML", type: conference, field: ai_ml}
+  - {name: "International Conference on Learning Representations", abbr: "ICLR", type: conference, field: ai_ml}
+  - {name: "AAAI Conference on Artificial Intelligence", abbr: "AAAI", type: conference, field: ai_ml}
+  - {name: "International Joint Conference on Artificial Intelligence", abbr: "IJCAI", type: conference, field: ai_ml}
+  - {name: "Conference on Uncertainty in Artificial Intelligence", abbr: "UAI", type: conference, field: ai_ml}
+  - {name: "International Conference on Artificial Intelligence and Statistics", abbr: "AISTATS", type: conference, field: ai_ml}
+  - {name: "Journal of Machine Learning Research", abbr: "JMLR", type: journal, field: ai_ml}
+  - {name: "Nature Machine Intelligence", abbr: "Nat. Mach. Intell.", type: journal, field: ai_ml}
+  - {name: "Artificial Intelligence", abbr: "AIJ", type: journal, field: ai_ml}
+
+  # ---------- NLP ----------
+  - {name: "Annual Meeting of the Association for Computational Linguistics", abbr: "ACL", type: conference, field: nlp}
+  - {name: "Conference on Empirical Methods in Natural Language Processing", abbr: "EMNLP", type: conference, field: nlp}
+  - {name: "Conference of the North American Chapter of the ACL", abbr: "NAACL", type: conference, field: nlp}
+  - {name: "International Conference on Computational Linguistics", abbr: "COLING", type: conference, field: nlp}
+
+  # ---------- Computer Vision ----------
+  - {name: "IEEE/CVF Conference on Computer Vision and Pattern Recognition", abbr: "CVPR", type: conference, field: vision}
+  - {name: "IEEE/CVF International Conference on Computer Vision", abbr: "ICCV", type: conference, field: vision}
+  - {name: "European Conference on Computer Vision", abbr: "ECCV", type: conference, field: vision}
+  - {name: "IEEE Transactions on Pattern Analysis and Machine Intelligence", abbr: "TPAMI", type: journal, field: vision}
+
+  # ---------- Data Mining / IR / Web ----------
+  - {name: "ACM SIGKDD Conference on Knowledge Discovery and Data Mining", abbr: "KDD", type: conference, field: data_mining}
+  - {name: "The Web Conference", abbr: "WWW", type: conference, field: data_mining}
+  - {name: "ACM SIGIR Conference on Research and Development in Information Retrieval", abbr: "SIGIR", type: conference, field: data_mining}
+  - {name: "ACM International Conference on Web Search and Data Mining", abbr: "WSDM", type: conference, field: data_mining}
+  - {name: "IEEE International Conference on Data Mining", abbr: "ICDM", type: conference, field: data_mining}
+
+  # ---------- Systems / Networks ----------
+  - {name: "USENIX Symposium on Operating Systems Design and Implementation", abbr: "OSDI", type: conference, field: systems}
+  - {name: "ACM Symposium on Operating Systems Principles", abbr: "SOSP", type: conference, field: systems}
+  - {name: "USENIX Symposium on Networked Systems Design and Implementation", abbr: "NSDI", type: conference, field: systems}
+  - {name: "ACM SIGCOMM", abbr: "SIGCOMM", type: conference, field: systems}
+  - {name: "European Conference on Computer Systems", abbr: "EuroSys", type: conference, field: systems}
+  - {name: "USENIX Annual Technical Conference", abbr: "ATC", type: conference, field: systems}
+  - {name: "Journal of the ACM", abbr: "JACM", type: journal, field: systems}
+  - {name: "Communications of the ACM", abbr: "CACM", type: journal, field: systems}
+
+  # ---------- Security / Crypto ----------
+  - {name: "IEEE Symposium on Security and Privacy", abbr: "S&P", type: conference, field: security}
+  - {name: "ACM Conference on Computer and Communications Security", abbr: "CCS", type: conference, field: security}
+  - {name: "USENIX Security Symposium", abbr: "USENIX Security", type: conference, field: security}
+  - {name: "Network and Distributed System Security Symposium", abbr: "NDSS", type: conference, field: security}
+  - {name: "Annual International Cryptology Conference", abbr: "CRYPTO", type: conference, field: security}
+  - {name: "Annual International Conference on the Theory and Applications of Cryptographic Techniques", abbr: "EUROCRYPT", type: conference, field: security}
+
+  # ---------- PL / SE / HCI / Robotics / DB ----------
+  - {name: "ACM SIGPLAN Conference on Programming Language Design and Implementation", abbr: "PLDI", type: conference, field: pl}
+  - {name: "ACM SIGPLAN Symposium on Principles of Programming Languages", abbr: "POPL", type: conference, field: pl}
+  - {name: "International Conference on Software Engineering", abbr: "ICSE", type: conference, field: se}
+  - {name: "ACM Joint European Software Engineering Conference and Symposium on the Foundations of Software Engineering", abbr: "FSE", type: conference, field: se}
+  - {name: "ACM CHI Conference on Human Factors in Computing Systems", abbr: "CHI", type: conference, field: hci}
+  - {name: "Robotics: Science and Systems", abbr: "RSS", type: conference, field: robotics}
+  - {name: "IEEE International Conference on Robotics and Automation", abbr: "ICRA", type: conference, field: robotics}
+  - {name: "ACM SIGMOD International Conference on Management of Data", abbr: "SIGMOD", type: conference, field: db}
+  - {name: "International Conference on Very Large Data Bases", abbr: "VLDB", type: conference, field: db}
+  - {name: "IEEE Transactions on Knowledge and Data Engineering", abbr: "TKDE", type: journal, field: db}
+
+  # ---------- General science ----------
+  - {name: "Nature", abbr: "Nature", type: journal, field: general}
+  - {name: "Science", abbr: "Science", type: journal, field: general}
+  - {name: "Proceedings of the National Academy of Sciences", abbr: "PNAS", type: journal, field: general}
+  - {name: "Nature Communications", abbr: "Nat. Commun.", type: journal, field: general}
+  - {name: "Science Advances", abbr: "Sci. Adv.", type: journal, field: general}
+  - {name: "Cell", abbr: "Cell", type: journal, field: general}
+
+  # ---------- Medicine ----------
+  - {name: "New England Journal of Medicine", abbr: "NEJM", type: journal, field: medicine}
+  - {name: "The Lancet", abbr: "Lancet", type: journal, field: medicine}
+  - {name: "JAMA", abbr: "JAMA", type: journal, field: medicine}
+  - {name: "BMJ", abbr: "BMJ", type: journal, field: medicine}
+  - {name: "Nature Medicine", abbr: "Nat. Med.", type: journal, field: medicine}
+
+  # ---------- Biology ----------
+  - {name: "Nature Genetics", abbr: "Nat. Genet.", type: journal, field: biology}
+  - {name: "Nature Biotechnology", abbr: "Nat. Biotechnol.", type: journal, field: biology}
+  - {name: "Genome Research", abbr: "Genome Res.", type: journal, field: biology}
+
+  # ---------- Physics ----------
+  - {name: "Physical Review Letters", abbr: "PRL", type: journal, field: physics}
+  - {name: "Physical Review X", abbr: "PRX", type: journal, field: physics}
+  - {name: "Nature Physics", abbr: "Nat. Phys.", type: journal, field: physics}
+
+  # ---------- Chemistry ----------
+  - {name: "Journal of the American Chemical Society", abbr: "JACS", type: journal, field: chemistry}
+  - {name: "Angewandte Chemie", abbr: "Angew. Chem.", type: journal, field: chemistry}
+  - {name: "Nature Chemistry", abbr: "Nat. Chem.", type: journal, field: chemistry}
+
+  # ---------- Economics ----------
+  - {name: "American Economic Review", abbr: "AER", type: journal, field: economics}
+  - {name: "Quarterly Journal of Economics", abbr: "QJE", type: journal, field: economics}
+  - {name: "Econometrica", abbr: "Econometrica", type: journal, field: economics}
