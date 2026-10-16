@@ -39,9 +39,7 @@ Input: paper markdown. Output: claim-by-claim verification report.
 ## Roadmap
 
 - v0.1: Evidence grounding (current state of this repo)
-- v0.2: Proposal decision (heat index + multi-direction comparison + frontier extrapolation mode)
-- v0.3: Idea distillation
-- v0.4: Top-venue benchmarking (gap analysis against real accepted papers)
-- v0.5: Reviewer simulation
-- v0.6: Venue targeting (acceptance-probability estimates; highest time-ROI)
-- v0.7: Rebuttal assistance
+- v1.0 (Phase 1 assembly): end-to-end — proposal decision → impact assessment →
+  productization direction → evidence grounding → template generation →
+  venue auto-optimization → reviewer simulation → venue targeting →
+  rebuttal management → acceptance-rate review loop (learning)
