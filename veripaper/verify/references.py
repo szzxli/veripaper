@@ -156,14 +156,55 @@ def _s2_lookup(entry_raw: str, entry_year: int | None) -> tuple[str | None, str 
     return None, None
 
 
+def _dblp_lookup(entry_raw: str, entry_year: int | None) -> tuple[str | None, str | None]:
+    """DBLP title search (computer-science bibliography); same acceptance gate.
+    Returns (doi, None); (None, None) on any failure."""
+    q = re.sub(r"^\[(@?[^\]]+)\]\s*", "", entry_raw).strip()[:300]
+    if len(q) < 15:
+        return None, None
+    try:
+        r = requests.get(
+            "https://dblp.org/search/publ/api/",
+            params={"q": q, "format": "json", "h": 3},
+            headers=UA, timeout=20)
+    except requests.RequestException:
+        return None, None
+    if r.status_code != 200:
+        return None, None
+    try:
+        hits = (r.json().get("result") or {}).get("hits", {}).get("hit", [])
+    except ValueError:
+        return None, None
+    norm_entry = _norm(entry_raw)
+    for h in hits:
+        info = (h or {}).get("info") or {}
+        title = re.sub(r"<[^>]*>", "", str(info.get("title") or ""))
+        if len(_norm(title)) < 10:
+            continue
+        if _norm(title) not in norm_entry:
+            continue
+        try:
+            y = int(str(info.get("year") or "")[:4])
+        except ValueError:
+            y = None
+        if entry_year and y and abs(y - entry_year) > 1:
+            continue
+        if info.get("doi"):
+            return str(info["doi"]), None
+    return None, None
+
+
 def _bibliographic_lookup(entry_raw: str, entry_year: int | None) -> dict:
-    """CrossRef first, Semantic Scholar second. Same acceptance gate."""
+    """CrossRef, Semantic Scholar, then DBLP. Same acceptance gate."""
     doi = _crossref_lookup(entry_raw, entry_year)
     if doi:
         return {"doi": doi, "arxiv_id": None, "via": "crossref"}
     doi2, ax = _s2_lookup(entry_raw, entry_year)
     if doi2 or ax:
         return {"doi": doi2, "arxiv_id": ax, "via": "semanticscholar"}
+    doi3, _ = _dblp_lookup(entry_raw, entry_year)
+    if doi3:
+        return {"doi": doi3, "arxiv_id": None, "via": "dblp"}
     return {"doi": None, "arxiv_id": None, "via": "none"}
 
 
@@ -238,7 +279,7 @@ def resolve_marker(marker_type: str, marker_id: str, refmap: dict) -> dict:
                 "via": "embedded", "note": "identifier found in reference entry"}
     bl = _bibliographic_lookup(entry["raw"], entry["year"])
     if bl["doi"] or bl["arxiv_id"]:
-        src = "CrossRef" if bl["via"] == "crossref" else "Semantic Scholar"
+        src = {"crossref": "CrossRef", "dblp": "DBLP"}.get(bl["via"], "Semantic Scholar")
         return {"doi": bl["doi"], "arxiv_id": bl["arxiv_id"], "via": bl["via"],
                 "note": f"{src} bibliographic match (title-in-entry + year)"}
     return {"doi": None, "arxiv_id": None, "via": "none",

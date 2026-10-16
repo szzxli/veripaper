@@ -214,6 +214,8 @@ async function bibliographicLookup(entryRaw, entryYear) {
   if (doi) return { doi, arxiv_id: null, via: 'crossref' };
   const [doi2, ax] = await s2Lookup(entryRaw, entryYear);
   if (doi2 || ax) return { doi: doi2, arxiv_id: ax, via: 'semanticscholar' };
+  const [doi3] = await dblpLookup(entryRaw, entryYear);
+  if (doi3) return { doi: doi3, arxiv_id: null, via: 'dblp' };
   return { doi: null, arxiv_id: null, via: 'none' };
 }
 
@@ -241,7 +243,7 @@ async function resolveMarker(type, id, refmap) {
     return { doi: entry.doi, arxiv_id: entry.arxiv_id, via: 'embedded', note: 'identifier found in reference entry' };
   const bl = await bibliographicLookup(entry.raw, entry.year);
   if (bl.doi || bl.arxiv_id) {
-    const src = bl.via === 'crossref' ? 'CrossRef' : 'Semantic Scholar';
+    const src = bl.via === 'crossref' ? 'CrossRef' : bl.via === 'dblp' ? 'DBLP' : 'Semantic Scholar';
     return { doi: bl.doi, arxiv_id: bl.arxiv_id, via: bl.via,
       note: src + ' bibliographic match (title-in-entry + year)' };
   }
@@ -257,23 +259,80 @@ async function pgCheckCrossRef(doi) {
   if (!r.ok) return null;
   const m = (await r.json()).message;
   const yr = (m['published-print'] || m['published-online'] || m.created || {})['date-parts'];
-  return { title: (m.title || ['(no title)'])[0], year: yr ? yr[0][0] : '', exists: true };
+  return {
+    title: (m.title || ['(no title)'])[0],
+    authors: (m.author || []).map(a => ((a.given || '') + ' ' + (a.family || '')).trim()).filter(Boolean).slice(0, 8),
+    venue: ((m['container-title'] || [])[0] || ''),
+    year: yr ? yr[0][0] : '',
+    exists: true,
+  };
 }
 async function pgCheckDataCite(doi) {
   const r = await fetch('https://api.datacite.org/dois/' + encodeURIComponent(doi),
     { headers: { Accept: 'application/vnd.api+json' } });
   if (!r.ok) return null;
   const a = (await r.json()).data.attributes;
-  return { title: (((a.titles || [])[0] || {}).title || '(no title)'), year: a.publicationYear || '', exists: true };
+  return {
+    title: (((a.titles || [])[0] || {}).title || '(no title)'),
+    authors: (a.creators || []).map(c => c.name).filter(Boolean).slice(0, 8),
+    venue: a.publisher || '',
+    year: a.publicationYear || '',
+    exists: true,
+  };
+}
+/* Europe PMC: biomedical/life-science coverage incl. abstracts; CORS-enabled. */
+async function pgCheckEuropePMC(doi) {
+  const r = await fetch('https://www.ebi.ac.uk/europepmc/webservices/rest/search?' + new URLSearchParams({
+    query: 'DOI:"' + doi + '"', format: 'json', resultType: 'core', pageSize: '1' }));
+  if (!r.ok) return null;
+  const res = (((await r.json()).resultList || {}).result || []);
+  if (!res.length) return null;
+  const p = res[0];
+  return {
+    title: p.title || '(no title)',
+    abstract: (p.abstractText || '').trim() || null,
+    authors: (p.authorString || '').split(/,\s*/).slice(0, 5).join(', '),
+    venue: (((p.journalInfo || {}).journal || {}).title || ''),
+    year: p.pubYear || '',
+    exists: true,
+  };
+}
+/* DBLP: computer-science bibliography; title search for entries without IDs. */
+async function dblpLookup(entryRaw, entryYear) {
+  const q = entryRaw.replace(/^\[(@?[^\]]+)\]\s*/, '').trim().slice(0, 300);
+  if (q.length < 15) return [null, null];
+  let r;
+  try {
+    r = await fetch('https://dblp.org/search/publ/api/?' + new URLSearchParams({ q, format: 'json', h: '3' }));
+  } catch { return [null, null]; }
+  if (!r.ok) return [null, null];
+  let hits;
+  try { hits = ((((await r.json()).result || {}).hits || {}).hit || []); } catch { return [null, null]; }
+  const nEntry = norm(entryRaw);
+  for (const h of hits) {
+    const info = h.info || {};
+    const title = String(info.title || '').replace(/<[^>]*>/g, '');
+    if (norm(title).length < 10) continue;
+    if (!nEntry.includes(norm(title))) continue;
+    if (entryYear && info.year && Math.abs(+info.year - entryYear) > 1) continue;
+    if (info.doi) return [String(info.doi), null];
+  }
+  return [null, null];
 }
 async function verifyDoi(doi) {
-  const hit = await pgCheckCrossRef(doi).catch(() => null) || await pgCheckDataCite(doi).catch(() => null);
-  return hit ? { exists: true, title: hit.title } : { exists: false, title: null };
+  const hit = await pgCheckCrossRef(doi).catch(() => null)
+    || await pgCheckDataCite(doi).catch(() => null)
+    || await pgCheckEuropePMC(doi).catch(() => null);
+  return hit
+    ? { exists: true, title: hit.title, authors: hit.authors || [], venue: hit.venue || '', year: hit.year || '' }
+    : { exists: false, title: null, authors: [], venue: '', year: '' };
 }
 async function verifyArxiv(id) {
   const base = id.replace(/v\d+$/i, '');
   const hit = await pgCheckDataCite('10.48550/arXiv.' + base).catch(() => null);
-  return hit ? { exists: true, title: hit.title } : { exists: false, title: null };
+  return hit
+    ? { exists: true, title: hit.title, authors: hit.authors || [], venue: 'arXiv preprint', year: hit.year || '' }
+    : { exists: false, title: null, authors: [], venue: '', year: '' };
 }
 
 async function resolveCitation(pair, refmap, cache) {
@@ -283,7 +342,9 @@ async function resolveCitation(pair, refmap, cache) {
   let out;
   const wrap = (res, doi, arxivId, note) => ({
     exists: res.exists, title: res.title, doi: res.exists ? doi : null,
-    arxiv_id: res.exists ? arxivId : null, note });
+    arxiv_id: res.exists ? arxivId : null,
+    authors: res.authors || [], venue: res.venue || '', year: res.year || '',
+    note });
   if (t === 'doi') {
     out = wrap(await verifyDoi(cid), cid, null, 'raw DOI in text');
   } else if (t === 'arxiv') {
@@ -328,6 +389,10 @@ async function fetchAbstract(res) {
         const ab = (await r.json()).abstract;
         if (ab && ab.trim()) return ab.trim();
       }
+    } catch { /* fall through */ }
+    try {
+      const epmc = await pgCheckEuropePMC(res.doi);
+      if (epmc && epmc.abstract) return epmc.abstract;
     } catch { /* fall through */ }
   }
   return null;
@@ -414,11 +479,45 @@ async function groundDraft(text, opts, onStep) {
     evidence.push({
       claim: p.claim, base, stale: fr.stale ? fr.tag : '',
       label: base + (fr.stale ? ' ' + fr.tag : ''),
-      doi: res.doi || '', title: res.title || '', note,
+      doi: res.doi || '', arxiv_id: res.arxiv_id || '', title: res.title || '', note,
+      authors: res.authors || [], venue: res.venue || '', year: res.year || '',
     });
     await sleep(350);
   }
   return evidence;
+}
+
+/* ---------------- BibTeX export ---------------- */
+
+function bibEscape(s) {
+  return String(s || '').replace(/\\/g, '\\\\').replace(/([{}])/g, '\\$1');
+}
+function evidenceToBibTeX(evidence) {
+  const seen = new Set();
+  const entries = [];
+  for (const e of evidence) {
+    if (!e.title) continue;
+    const id = String(e.doi || e.arxiv_id || e.title).toLowerCase();
+    if (seen.has(id)) continue;
+    seen.add(id);
+    const key = 'veripaper' + String(entries.length + 1).padStart(3, '0');
+    const authors = (e.authors || []).join(' and ');
+    const venue = e.venue || '';
+    const isProc = /proceeding|conference|workshop|symposium|neural information processing|neurips|icml|iclr|aaai|acl|emnlp|naacl|cvpr|iccv|eccv|kdd|www|sigir|chi/i.test(venue);
+    const type = isProc ? 'inproceedings' : venue ? 'article' : 'misc';
+    const lines = [`@${type}{${key},`];
+    lines.push(`  title = {${bibEscape(e.title)}},`);
+    if (authors) lines.push(`  author = {${bibEscape(authors)}},`);
+    if (isProc) lines.push(`  booktitle = {${bibEscape(venue)}},`);
+    else if (venue) lines.push(`  journal = {${bibEscape(venue)}},`);
+    if (e.year) lines.push(`  year = {${e.year}},`);
+    if (e.doi) lines.push(`  doi = {${e.doi}},`);
+    else if (e.arxiv_id) lines.push(`  eprint = {${e.arxiv_id}},`, `  archivePrefix = {arXiv},`);
+    lines.push(`  note = {grounded by veripaper: ${(e.base || 'CITED').toLowerCase()}}`);
+    lines.push('}');
+    entries.push(lines.join('\n'));
+  }
+  return entries.join('\n\n');
 }
 
 /* ---------------- UI ---------------- */
@@ -492,6 +591,32 @@ function initGround() {
       prog.textContent = '';
       out.innerHTML = renderReport(evidence);
       if (window.VP) { try { VP.recordGround(evidence); } catch {} }
+      // export toolbar: BibTeX download (Zotero/Mendeley/LaTeX-ready) + DOI list
+      try {
+        const bar = document.createElement('div');
+        bar.className = 'btnrow';
+        bar.innerHTML = `<button id="exp-bib" class="btn ghost">Export BibTeX (.bib)</button>
+          <button id="exp-doi" class="btn ghost">Copy DOI list</button>
+          <span class="hint" style="margin:0">.bib imports directly into Zotero / Mendeley / JabRef</span>`;
+        out.appendChild(bar);
+        document.getElementById('exp-bib').addEventListener('click', () => {
+          const bib = evidenceToBibTeX(evidence);
+          if (!bib.trim()) { document.getElementById('exp-bib').textContent = 'Nothing to export'; return; }
+          const blob = new Blob([bib], { type: 'text/plain' });
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = 'veripaper-references.bib';
+          document.body.appendChild(a); a.click();
+          setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+        });
+        document.getElementById('exp-doi').addEventListener('click', () => {
+          const dois = [...new Set(evidence.map(e => e.doi).filter(Boolean))];
+          if (!dois.length) return;
+          navigator.clipboard.writeText(dois.join('\n')).then(
+            () => { document.getElementById('exp-doi').textContent = 'Copied'; },
+            () => { document.getElementById('exp-doi').textContent = 'Copy failed'; });
+        });
+      } catch { /* export is best-effort */ }
     } catch (err) {
       prog.textContent = '';
       out.innerHTML = `<p style="color:var(--red)">Something failed: ${gesc(err.message || err)}. Your draft never left this page — try again.</p>`;

@@ -319,6 +319,8 @@ footer .colophon a{color:var(--navy)}
     <li>DataCite. <a href="https://datacite.org">datacite.org</a> — DOI registry; mints arXiv DOIs (10.48550).</li>
     <li>arXiv. <a href="https://arxiv.org">arxiv.org</a> — preprint server and API.</li>
     <li>Semantic Scholar. <a href="https://www.semanticscholar.org">semanticscholar.org</a> — citation graph.</li>
+    <li>DBLP. <a href="https://dblp.org">dblp.org</a> — computer-science bibliography.</li>
+    <li>Europe PMC. <a href="https://europepmc.org">europepmc.org</a> — life-science literature, abstracts.</li>
     <li>OpenAlex. <a href="https://openalex.org">openalex.org</a> — 250M+ works index.</li>
     <li>veripaper source. <a href="https://github.com/szzxli/veripaper">github.com/szzxli/veripaper</a> — MIT.</li>
   </ol>
@@ -397,6 +399,21 @@ async function checkDataCite(doi){
     type: 'via DataCite'
   };
 }
+async function checkEuropePMC(doi){
+  const r = await fetch('https://www.ebi.ac.uk/europepmc/webservices/rest/search?' + new URLSearchParams({
+    query: 'DOI:"' + doi + '"', format: 'json', resultType: 'core', pageSize: '1' }));
+  if(!r.ok) return null;
+  const res = (((await r.json()).resultList||{}).result||[]);
+  if(!res.length) return null;
+  const p = res[0];
+  return {
+    title: p.title || '(no title)',
+    authors: (p.authorString||'').split(/,\s*/).slice(0,5).join(', '),
+    venue: (((p.journalInfo||{}).journal||{}).title||''),
+    year: p.pubYear || '',
+    type: 'via Europe PMC'
+  };
+}
 async function verify(){
   const raw = $in.value.trim();
   if(!raw){ show('<p style="color:var(--ink-soft)">Paste a DOI or arXiv ID first.</p>'); return; }
@@ -405,7 +422,7 @@ async function verify(){
   try{
     const doi = raw.replace(/^https?:\/\/(dx\.)?doi\.org\//i,'').replace(/^arxiv:/i,'').trim();
     const isArxiv = /^(\d{4}\.\d{4,5}(v\d+)?|[a-z-]+\/\d{7}(v\d+)?)$/i.test(doi);
-    const meta = isArxiv ? await checkArxiv(doi) : (await checkCrossRef(doi) || await checkDataCite(doi));
+    const meta = isArxiv ? await checkArxiv(doi) : (await checkCrossRef(doi) || await checkDataCite(doi) || await checkEuropePMC(doi));
     if(meta){
       show(`<span class="label l-cited">CITED</span><b>Source exists.</b> Content support not yet checked — this is honest downgrade, not verification.<br><br>
         <b>${esc(meta.title)}</b><br>

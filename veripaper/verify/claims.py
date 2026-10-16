@@ -4,7 +4,8 @@ Abstract sources, in priority order (first hit wins):
   1. arXiv API          — for arXiv IDs and 10.48550/ DOIs (no key needed)
   2. DataCite           — descriptions with descriptionType=Abstract
   3. Semantic Scholar   — optional S2_API_KEY env; graceful on 429
-  4. OpenAlex           — abstract_inverted_index reconstruction; graceful on 429
+  4. Europe PMC         — biomedical/life-science abstracts
+  5. OpenAlex           — abstract_inverted_index reconstruction; graceful on 429
 
 Support judgment goes through veripaper.llm (BYOK). No key or no abstract
 → honest downgrade to [CITED]; never a fabricated verdict.
@@ -24,6 +25,7 @@ ARXIV_API = "https://export.arxiv.org/api/query?id_list="
 DATACITE_API = "https://api.datacite.org/dois/"
 S2_API = "https://api.semanticscholar.org/graph/v1/paper/DOI:"
 OPENALEX_API = "https://api.openalex.org/works/https://doi.org/"
+EPMC_API = "https://www.ebi.ac.uk/europepmc/webservices/rest/search"
 
 
 def _get(url: str, headers: dict | None = None, timeout: int = 20):
@@ -87,6 +89,24 @@ def _s2_abstract(doi: str) -> str | None:
         return None
 
 
+def _europepmc_abstract(doi: str) -> str | None:
+    """Europe PMC abstract (biomedical/life-science coverage)."""
+    from urllib.parse import quote
+    url = (EPMC_API + "?query=" + quote(f'DOI:"{doi.strip()}"')
+           + "&format=json&resultType=core&pageSize=1")
+    r = _get(url)
+    if r is None:
+        return None
+    try:
+        res = (r.json().get("resultList") or {}).get("result") or []
+        if not res:
+            return None
+        ab = (res[0].get("abstractText") or "").strip()
+        return " ".join(ab.split()) if ab else None
+    except ValueError:
+        return None
+
+
 def _openalex_abstract(doi: str) -> str | None:
     r = _get(OPENALEX_API + doi.strip())
     if r is None:
@@ -120,7 +140,8 @@ def fetch_abstract(doi: str | None = None, arxiv_id: str | None = None) -> str |
                 ab = _arxiv_abstract(m.group(1))
                 if ab:
                     return ab
-        for fn in (_datacite_abstract, _s2_abstract, _openalex_abstract):
+        for fn in (_datacite_abstract, _s2_abstract, _europepmc_abstract,
+                   _openalex_abstract):
             ab = fn(d)
             if ab:
                 return ab
