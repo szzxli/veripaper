@@ -7,6 +7,8 @@ does not index).
 """
 from __future__ import annotations
 
+import re
+
 import requests
 
 CROSSREF = "https://api.crossref.org/works/"
@@ -49,12 +51,17 @@ def verify_doi(doi: str) -> dict:
 
 
 def verify_arxiv(arxiv_id: str) -> dict:
-    """Existence check for an arXiv id via export.arxiv.org."""
-    url = f"https://export.arxiv.org/api/query?id_list={arxiv_id.strip()}"
-    try:
-        r = requests.get(url, timeout=15)
-    except requests.RequestException as e:
-        return {"exists": False, "title": None, "reason": f"network: {e}"}
-    ok = "<entry>" in r.text and arxiv_id.split("v")[0] in r.text
+    """Existence check for an arXiv id: DataCite DOI first (also yields title),
+    then export.arxiv.org as fallback."""
+    aid = arxiv_id.strip()
+    base = re.sub(r"v\d+$", "", aid, flags=re.I)
+    d = verify_doi(f"10.48550/arXiv.{base}")
+    if d["exists"]:
+        return {"exists": True, "title": d["title"], "reason": "arxiv via datacite"}
+    url = f"https://export.arxiv.org/api/query?id_list={aid}"
+    r = _get(url)
+    if r is None:
+        return {"exists": False, "title": None, "reason": "network: arxiv unreachable"}
+    ok = r.status_code == 200 and "<entry>" in r.text and base in r.text
     return {"exists": ok, "title": None,
             "reason": "arxiv match" if ok else "arxiv no entry"}

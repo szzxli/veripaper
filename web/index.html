@@ -237,19 +237,30 @@ async function checkCrossRef(doi){
   };
 }
 async function checkArxiv(id){
-  const r = await fetch('https://export.arxiv.org/api/query?id_list=' + encodeURIComponent(id));
-  if(r.status >= 500) throw new Error('arxiv-down');
-  if(!r.ok) return null;
-  const xml = new DOMParser().parseFromString(await r.text(), 'text/xml');
-  const e = xml.querySelector('entry');
-  if(!e || e.querySelector('title').textContent.trim().startsWith('Error')) return null;
-  return {
-    title: e.querySelector('title').textContent.trim().replace(/\s+/g,' '),
-    authors: [...e.querySelectorAll('author name')].map(n=>n.textContent).slice(0,5).join(', '),
-    venue: 'arXiv preprint',
-    year: (e.querySelector('published')||{}).textContent?.slice(0,4) || '',
-    type: 'preprint'
-  };
+  // Primary: the arXiv DOI via DataCite (CORS-friendly; arXiv minted DOIs
+  // for its whole corpus as 10.48550/arXiv.<id>)
+  const base = id.replace(/v\d+$/i,'');
+  const via = await checkDataCite('10.48550/arXiv.' + base);
+  if(via) return {...via, venue: 'arXiv preprint'};
+  // Fallback: direct arXiv API (often blocked by CORS in browsers)
+  try{
+    const r = await fetch('https://export.arxiv.org/api/query?id_list=' + encodeURIComponent(id));
+    if(r.status >= 500) throw new Error('arxiv-down');
+    if(!r.ok) return null;
+    const xml = new DOMParser().parseFromString(await r.text(), 'text/xml');
+    const e = xml.querySelector('entry');
+    if(!e || e.querySelector('title').textContent.trim().startsWith('Error')) return null;
+    return {
+      title: e.querySelector('title').textContent.trim().replace(/\s+/g,' '),
+      authors: [...e.querySelectorAll('author name')].map(n=>n.textContent).slice(0,5).join(', '),
+      venue: 'arXiv preprint',
+      year: (e.querySelector('published')||{}).textContent?.slice(0,4) || '',
+      type: 'preprint'
+    };
+  }catch(err){
+    if(err && err.message === 'arxiv-down') throw err;
+    throw new Error('arxiv-cors');
+  }
 }
 async function checkDataCite(doi){
   const r = await fetch('https://api.datacite.org/dois/' + encodeURIComponent(doi), {
@@ -270,7 +281,7 @@ async function verify(){
   busy(true);
   show('<p style="color:var(--ink-soft)">Querying…</p>');
   try{
-    const doi = raw.replace(/^https?:\/\/(dx\.)?doi\.org\//i,'').trim();
+    const doi = raw.replace(/^https?:\/\/(dx\.)?doi\.org\//i,'').replace(/^arxiv:/i,'').trim();
     const isArxiv = /^(\d{4}\.\d{4,5}(v\d+)?|[a-z-]+\/\d{7}(v\d+)?)$/i.test(doi);
     const meta = isArxiv ? await checkArxiv(doi) : (await checkCrossRef(doi) || await checkDataCite(doi));
     if(meta){
@@ -283,6 +294,8 @@ async function verify(){
   }catch(err){
     if(err && err.message === 'arxiv-down'){
       show('<p style="color:var(--amber)">arXiv is not responding right now — try a DOI instead, or retry in a minute.</p>');
+    }else if(err && err.message === 'arxiv-cors'){
+      show('<p style="color:var(--amber)">arXiv blocks direct browser queries and no DataCite record was found — try the paper\'s DOI form (10.48550/arXiv.…) instead.</p>');
     }else{
       show('<p style="color:var(--red)">Network error — check your connection and try again.</p>');
     }
