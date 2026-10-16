@@ -27,6 +27,15 @@ veripaper solves "getting published":
 2. Honest labels: `[VERIFIED]` / `[CITED]` / `[UNVERIFIED]` / `[STALE:YYYY]` / `[EXTRAPOLATED]` —
    downgrade rather than pretend verification happened.
 3. The tool assists writing; it does not replace research. Final judgment always belongs to the author.
+4. **The rules apply to the tool itself** (dogfood): documentation, marketing claims,
+   and tool outputs all get the same honest labels. An illustrative number is labeled
+   illustrative — never presented as measured.
+5. **Lookup, not generation**: the verifier generates nothing — it only queries
+   databases (CrossRef, arXiv, OpenAlex) and reports back. Hallucinations happen when
+   AI *invents* references; asking "does this DOI resolve" is a lookup, a different
+   failure mode entirely.
+6. **Lightweight by design**: verification is database lookups, not model training.
+   The heaviest operation is an HTTP GET. No GPU farms required to check a citation.
 
 ## Quickstart (v0.1)
 
