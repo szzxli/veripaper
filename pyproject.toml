@@ -1,0 +1,9 @@
+[project]
+name = "veripaper"
+version = "0.1.0"
+description = "Open-source academic paper tool: idea to publishable, with claim-level verification"
+requires-python = ">=3.10"
+dependencies = ["requests"]
+
+[project.optional-dependencies]
+llm = ["anthropic"]
