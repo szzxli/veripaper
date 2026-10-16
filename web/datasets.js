@@ -202,6 +202,8 @@ function initDatasets() {
   vSel.addEventListener('change', syncProject);
   fromProject();
   render();
+  // re-sync when the active project switches (project.js fires onSwitch)
+  if (window.VP && VP.onSwitch) VP.onSwitch(() => { fromProject(); render(); });
 }
 
 if (document.readyState === 'loading')

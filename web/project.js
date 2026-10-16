@@ -35,9 +35,19 @@ function pjSaveStore(s) { try { localStorage.setItem(PJ_KEY, JSON.stringify(s));
 
 const VP = {
   _s: pjLoadStore(),
+  _lastId: null,
   _cbs: [],
+  _switchCbs: [],
   onChange(cb) { this._cbs.push(cb); },
-  _emit() { pjSaveStore(this._s); this._cbs.forEach(cb => { try { cb(); } catch {} }); },
+  onSwitch(cb) { this._switchCbs.push(cb); },
+  _emit() {
+    pjSaveStore(this._s);
+    const nowId = this._s.activeId;
+    const switched = this._lastId !== null && nowId !== this._lastId;
+    this._lastId = nowId;
+    this._cbs.forEach(cb => { try { cb(); } catch {} });
+    if (switched) this._switchCbs.forEach(cb => { try { cb(); } catch {} });
+  },
   list() { return this._s.projects; },
   active() { return this._s.projects.find(p => p.id === this._s.activeId) || null; },
   create(name) {
@@ -93,6 +103,64 @@ function pjSummary(p) {
   return parts.join(' · ');
 }
 
+/* ---------------- in-page dialog (replaces native prompt/confirm) ----------------
+ * Native dialogs are silently suppressed in some contexts (automation,
+ * popup blockers, some mobile browsers), leaving dead buttons. This modal
+ * matches the journal aesthetic and always renders. Returns a Promise:
+ *   vpPrompt(title, message, initial) -> string | null
+ *   vpConfirm(title, message, okLabel) -> boolean
+ */
+function vpDialog(opts) {
+  return new Promise(resolve => {
+    const done = v => { try { document.body.removeChild(ov); } catch {} resolve(v); };
+    const ov = document.createElement('div');
+    ov.setAttribute('role', 'dialog');
+    ov.style.cssText = 'position:fixed;inset:0;background:rgba(22,50,79,.45);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px';
+    const card = document.createElement('div');
+    card.style.cssText = 'background:#fffdf8;border:1px solid #ddd2ba;border-top:4px solid #16324f;max-width:430px;width:100%;padding:24px 26px;font-family:Georgia,"Times New Roman",serif;color:#211d16;box-shadow:0 12px 40px rgba(22,50,79,.25)';
+    const t = document.createElement('div');
+    t.style.cssText = 'font-size:19px;font-weight:700;color:#16324f;margin-bottom:10px';
+    t.textContent = opts.title || '';
+    const m = document.createElement('div');
+    m.style.cssText = 'font-size:14.5px;line-height:1.65;color:#5c554a;margin-bottom:14px';
+    m.textContent = opts.message || '';
+    card.appendChild(t); card.appendChild(m);
+    let input = null;
+    if (opts.input) {
+      input = document.createElement('input');
+      input.type = 'text'; input.value = opts.initial || '';
+      input.style.cssText = 'width:100%;padding:10px 12px;border:1px solid #ddd2ba;background:#fff;font-family:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;font-size:14px;color:#211d16;margin-bottom:6px';
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter') done(input.value);
+        else if (e.key === 'Escape') done(null);
+        e.stopPropagation();
+      });
+      card.appendChild(input);
+    }
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;gap:10px;justify-content:flex-end;margin-top:14px';
+    const cancel = document.createElement('button');
+    cancel.textContent = 'Cancel';
+    cancel.style.cssText = 'padding:9px 20px;font-family:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;font-weight:600;font-size:13.5px;cursor:pointer;background:none;color:#16324f;border:1px solid #16324f';
+    const okb = document.createElement('button');
+    okb.textContent = opts.okLabel || 'OK';
+    const danger = !!opts.danger;
+    okb.style.cssText = 'padding:9px 20px;font-family:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;font-weight:600;font-size:13.5px;cursor:pointer;color:#fff;border:1px solid ' + (danger ? '#8c2f1b' : '#16324f') + ';background:' + (danger ? '#8c2f1b' : '#16324f');
+    cancel.addEventListener('click', () => done(opts.input ? null : false));
+    okb.addEventListener('click', () => done(opts.input ? (input ? input.value : '') : true));
+    row.appendChild(cancel); row.appendChild(okb); card.appendChild(row);
+    ov.appendChild(card);
+    ov.addEventListener('click', e => { if (e.target === ov) done(opts.input ? null : false); });
+    document.addEventListener('keydown', function esc(e) {
+      if (e.key === 'Escape') { document.removeEventListener('keydown', esc); done(opts.input ? null : false); }
+    });
+    document.body.appendChild(ov);
+    if (input) { input.focus(); input.select(); } else okb.focus();
+  });
+}
+window.vpPrompt = (title, message, initial) => vpDialog({ title, message, input: true, initial });
+window.vpConfirm = (title, message, okLabel, danger) => vpDialog({ title, message, okLabel, danger });
+
 function initProjectBar() {
   const sel = document.getElementById('pj-select');
   if (!sel) return;
@@ -106,18 +174,21 @@ function initProjectBar() {
     if (window.PJ_refresh) window.PJ_refresh();
   };
   sel.addEventListener('change', () => VP.setActive(sel.value));
-  document.getElementById('pj-new').addEventListener('click', () => {
-    const name = prompt('Project name:', 'New project');
-    if (name !== null) VP.create(name || 'Untitled project');
+  document.getElementById('pj-new').addEventListener('click', async () => {
+    const name = await window.vpPrompt('New project', 'Give this research project a name. It will carry your idea, checklist, venues, ground runs and submissions.', 'New project');
+    if (name !== null) VP.create(name.trim() || 'Untitled project');
   });
-  document.getElementById('pj-rename').addEventListener('click', () => {
+  document.getElementById('pj-rename').addEventListener('click', async () => {
     const cur = VP.active(); if (!cur) return;
-    const name = prompt('Rename project:', cur.name);
-    if (name !== null) VP.rename(cur.id, name);
+    const name = await window.vpPrompt('Rename project', 'Rename this project.', cur.name);
+    if (name !== null && name.trim()) VP.rename(cur.id, name);
   });
-  document.getElementById('pj-del').addEventListener('click', () => {
+  document.getElementById('pj-del').addEventListener('click', async () => {
     const cur = VP.active(); if (!cur) return;
-    if (confirm(`Delete project "${cur.name}"? This cannot be undone.`)) VP.remove(cur.id);
+    const yes = await window.vpConfirm('Delete project',
+      `Delete "${cur.name}"? Its idea, checklist, venue shortlist, ground runs, submissions and rebuttal state go with it. This cannot be undone.`,
+      'Delete', true);
+    if (yes) VP.remove(cur.id);
   });
   VP.onChange(render);
   render();

@@ -152,8 +152,11 @@ function initRebuttal() {
     rbSave(state);
     render();
   });
-  clear.addEventListener('click', () => {
-    if (!confirm('Clear all rebuttal state?')) return;
+  clear.addEventListener('click', async () => {
+    const yes = window.vpConfirm
+      ? await window.vpConfirm('Clear rebuttal state', 'Clear all rebuttal points and drafted responses for the current project? This cannot be undone.', 'Clear', true)
+      : confirm('Clear all rebuttal state?');
+    if (!yes) return;
     state = {}; rbSave(state); points = []; ta.value = ''; render();
   });
   // re-render when the active project switches (project.js calls this)
