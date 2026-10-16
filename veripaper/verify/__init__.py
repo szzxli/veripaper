@@ -1,4 +1,4 @@
-"""verify 子包：引用存在性 / 论点内容 / 数据新鲜度。"""
+"""verify subpackage: citation existence / claim content / freshness."""
 from . import citations, claims, freshness
 
 __all__ = ["citations", "claims", "freshness"]
