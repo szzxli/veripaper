@@ -22,9 +22,12 @@ API = "https://api.openalex.org"
 UA = {"User-Agent": "veripaper/0.1 (mailto:dev@veripaper.local)"}
 
 
-def _get(url: str, params: dict | None = None) -> dict:
-    q = ("?" + urllib.parse.urlencode(params)) if params else ""
-    req = urllib.request.Request(API + url + q, headers=UA)
+def _get(url: str, params: dict | None = None, mailto: str | None = None) -> dict:
+    q = dict(params or {})
+    if mailto:
+        q["mailto"] = mailto  # polite pool: higher rate limit
+    qs = ("?" + urllib.parse.urlencode(q)) if q else ""
+    req = urllib.request.Request(API + url + qs, headers=UA)
     # Exponential backoff: OpenAlex rate-limits shared IPs (429).
     # Tip: add ?mailto=you@example.com or an API key for the polite pool.
     for attempt in range(6):
@@ -43,22 +46,23 @@ def _get(url: str, params: dict | None = None) -> dict:
     raise RuntimeError("unreachable")
 
 
-def resolve_source(venue_name: str) -> dict | None:
+def resolve_source(venue_name: str, mailto: str | None = None) -> dict | None:
     """Venue name → OpenAlex source {id, display_name} (best match)."""
-    data = _get("/sources", {"search": venue_name, "per-page": 5})
+    data = _get("/sources", {"search": venue_name, "per-page": 5}, mailto)
     results = data.get("results", [])
     return {"id": results[0]["id"], "display_name": results[0]["display_name"]} if results else None
 
 
 def collect_venue(source_id: str, from_year: int, per_page: int = 200,
-                  max_pages: int = 50, cursor: str = "*"):
+                  max_pages: int = 50, cursor: str = "*",
+                  mailto: str | None = None):
     """Yield slim work dicts for one OpenAlex source."""
     filt = f"primary_location.source.id:{source_id},from_publication_date:{from_year}-01-01"
     params = {"filter": filt, "per-page": per_page, "cursor": cursor,
               "select": "id,doi,title,publication_year,primary_location,cited_by_count,topics,authorships"}
     pages = 0
     while pages < max_pages:
-        data = _get("/works", params)
+        data = _get("/works", params, mailto)
         for w in data.get("results", []):
             yield {
                 "id": w["id"],
@@ -85,16 +89,18 @@ def main() -> None:
     ap.add_argument("--from-year", type=int, default=2021)
     ap.add_argument("--out", required=True)
     ap.add_argument("--max-pages", type=int, default=50)
+    ap.add_argument("--mailto", default=None, help="email for OpenAlex polite pool")
     args = ap.parse_args()
 
-    src = resolve_source(args.venue)
+    src = resolve_source(args.venue, args.mailto)
     if not src:
         raise SystemExit(f"venue not found in OpenAlex: {args.venue}")
     print(f"resolved: {src['display_name']} ({src['id']})")
 
     n = 0
     with open(args.out, "w", encoding="utf-8") as f:
-        for work in collect_venue(src["id"], args.from_year, max_pages=args.max_pages):
+        for work in collect_venue(src["id"], args.from_year, max_pages=args.max_pages,
+                                 mailto=args.mailto):
             f.write(json.dumps(work, ensure_ascii=False) + "\n")
             n += 1
     print(f"wrote {n} works → {args.out}")

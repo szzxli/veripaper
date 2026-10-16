@@ -1,4 +1,4 @@
-"""verify subpackage: citation existence / claim content / freshness."""
-from . import citations, claims, freshness
+"""verify subpackage: citation existence / claim content / freshness / extraction."""
+from . import citations, claims, extract, freshness
 
-__all__ = ["citations", "claims", "freshness"]
+__all__ = ["citations", "claims", "extract", "freshness"]
