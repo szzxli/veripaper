@@ -80,9 +80,34 @@ def _resolve(pair: dict, cache: dict, refmap: dict) -> dict:
     return out
 
 
+def _read_draft(draft_path: str) -> str:
+    """Read a draft from .md/.txt, .docx, or .pdf.
+
+    .docx via python-docx, .pdf via pypdf — same local-extraction contract
+    as the web client (nothing uploaded anywhere).
+    """
+    lp = draft_path.lower()
+    if lp.endswith(".docx"):
+        try:
+            from docx import Document
+        except ImportError:
+            raise SystemExit("reading .docx needs python-docx: pip install python-docx")
+        doc = Document(draft_path)
+        return "\n\n".join(p.text for p in doc.paragraphs if p.text.strip())
+    if lp.endswith(".pdf"):
+        try:
+            from pypdf import PdfReader
+        except ImportError:
+            raise SystemExit("reading .pdf needs pypdf: pip install pypdf")
+        reader = PdfReader(draft_path)
+        pages = [(page.extract_text() or "") for page in reader.pages[:60]]
+        return "\n\n".join(pages)
+    return open(draft_path, encoding="utf-8").read()
+
+
 def run_ground(draft_path: str, out_path: str) -> str:
     """Run the full pipeline; write report markdown; return out_path."""
-    text = open(draft_path, encoding="utf-8").read()
+    text = _read_draft(draft_path)
     pairs = extract.extract_pairs(text)
     refmap = references.parse_references(text)
 

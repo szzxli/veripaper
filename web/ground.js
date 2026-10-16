@@ -26,7 +26,9 @@ const URL_RE = /https?:\/\/[^\s\]\)\"'<>]+/gi;
 const YEAR_RE = /\b((?:19|20)\d{2})\b/g;
 const NUMERIC_ENTRY_RE = /^\[(\d{1,3})\]\s*(.*)$/;
 const CITEKEY_ENTRY_RE = /^\[@([^\]]+)\]\s*(.*)$/;
-const REF_HEADING_RE = /^#{1,6}\s*(references|bibliography|works cited)\b/im;
+/* Uploaded files (.docx/.pdf) yield plain text where the heading has no
+ * markdown marks — a bare "References" line must also split the section. */
+const REF_HEADING_RE = /^(?:#{1,6}\s*)?(references|bibliography|works cited)\b/im;
 const REF_HEADING_INLINE_RE = /([.!?:])\s*(#{1,6}\s*(?:references|bibliography|works cited)\b)/gi;
 /* Pasted drafts often run the heading together with body text
  * ("...folding [1]. ## References [1] Smith..."), which the line-anchored
@@ -561,13 +563,109 @@ function heuristicSupportHint(claim, abstract) {
   return `heuristic: ${band} keyword overlap (${pct}% of claim keywords appear in the abstract) — a number, not a verdict; author decides`;
 }
 
-/* ---------------- pipeline ---------------- */
+/* ---------------- file upload (.docx / .pdf) ---------------- */
+/* Text is extracted locally in the browser (mammoth for .docx, pdf.js for
+ * .pdf, lazy-loaded from CDN on first use) — the file never leaves the page.
+ * Extracted text lands in the textarea for the user to review before
+ * grounding; nothing is auto-submitted. */
+
+const VENDOR_CDN = {
+  mammoth: 'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.9.1/mammoth.browser.min.js',
+  pdf: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
+  pdfWorker: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js',
+};
+
+function loadVendorScript(src) {
+  return new Promise((resolve, reject) => {
+    if (document.querySelector('script[data-vendor="' + src + '"]')) return resolve();
+    const s = document.createElement('script');
+    s.src = src;
+    s.dataset.vendor = src;
+    s.onload = () => resolve();
+    s.onerror = () => reject(new Error('failed to load parser library (network needed once)'));
+    document.head.appendChild(s);
+  });
+}
+
+async function extractDocxText(buf) {
+  await loadVendorScript(VENDOR_CDN.mammoth);
+  if (!window.mammoth) throw new Error('docx parser unavailable');
+  const out = await window.mammoth.extractRawText({ arrayBuffer: buf });
+  return (out.value || '').replace(/\r\n?/g, '\n');
+}
+
+function groupPdfLines(items) {
+  // cluster text items into lines by y-coordinate, order words left-to-right
+  // by x, then lines top-to-bottom (pdf y grows upward)
+  const lines = [];
+  let cur = null;
+  for (const it of items) {
+    const str = it.str;
+    if (!str || !str.trim()) continue;
+    const y = Math.round(it.transform[5]);
+    if (!cur || Math.abs(cur.y - y) > 3) { cur = { y, parts: [] }; lines.push(cur); }
+    cur.parts.push({ str, x: it.transform[4] });
+  }
+  lines.sort((a, b) => b.y - a.y);
+  return lines
+    .map(l => l.parts.sort((p, q) => p.x - q.x).map(p => p.str).join(' ')
+      .replace(/\s+/g, ' ').trim())
+    .filter(Boolean);
+}
+
+async function extractPdfText(buf) {
+  await loadVendorScript(VENDOR_CDN.pdf);
+  if (!window.pdfjsLib) throw new Error('pdf parser unavailable');
+  window.pdfjsLib.GlobalWorkerOptions.workerSrc = VENDOR_CDN.pdfWorker;
+  const pdf = await window.pdfjsLib.getDocument({ data: new Uint8Array(buf) }).promise;
+  const pages = [];
+  const n = Math.min(pdf.numPages, 60);
+  for (let i = 1; i <= n; i++) {
+    const page = await pdf.getPage(i);
+    const tc = await page.getTextContent();
+    pages.push(groupPdfLines(tc.items).join('\n'));
+  }
+  return pages.join('\n\n').replace(/(\w)-\n(\w)/g, '$1$2');  // de-hyphenate
+}
+
+function initFileUpload(ta, prog) {
+  const upBtn = document.getElementById('ground-upload');
+  const fileIn = document.getElementById('ground-file');
+  if (!upBtn || !fileIn) return;
+  upBtn.addEventListener('click', () => fileIn.click());
+  fileIn.addEventListener('change', async () => {
+    const f = fileIn.files[0];
+    fileIn.value = '';
+    if (!f) return;
+    if (f.size > 15 * 1024 * 1024) { prog.textContent = 'File too large (max 15 MB).'; return; }
+    const name = f.name.toLowerCase();
+    if (!name.endsWith('.docx') && !name.endsWith('.pdf')) {
+      prog.textContent = 'Only .docx and .pdf are supported.';
+      return;
+    }
+    prog.textContent = 'Extracting text locally…';
+    try {
+      const buf = await f.arrayBuffer();
+      const text = (name.endsWith('.docx') ? await extractDocxText(buf) : await extractPdfText(buf)).trim();
+      if (!text) {
+        prog.textContent = 'No text found in this file (a scanned image has no text layer).';
+        return;
+      }
+      ta.value = text;
+      prog.textContent = `Extracted ${text.length.toLocaleString()} characters — review above, then Ground this draft.`;
+    } catch (err) {
+      prog.textContent = 'Could not read this file: ' + (err.message || err);
+    }
+  });
+}
 
 /* Claims are checked with bounded concurrency (4 at a time): the old
  * sequential loop with a 350ms sleep made a 20-claim draft take ~10 minutes.
  * The shared cache is a plain Map — concurrent duplicate fetches are possible
  * but harmless (same result, just redundant work). */
 const GROUND_CONCURRENCY = 4;
+/* ---------------- pipeline ---------------- */
+
 async function groundDraft(text, opts, onStep) {
   opts = opts || {};
   const pairs = extractPairs(text);
@@ -753,6 +851,7 @@ function initGround() {
   const out = document.getElementById('ground-result');
   if (!ta) return;
   sample.addEventListener('click', () => { ta.value = SAMPLE; });
+  initFileUpload(ta, prog);
   // 30-second demo: load the sample, run it, scroll to results
   const demo = document.getElementById('demo-btn');
   if (demo) demo.addEventListener('click', () => {

@@ -160,10 +160,12 @@ footer .colophon a{color:var(--navy)}
 
 <section id="ground">
   <div class="sec-head"><span class="sec-no">§1</span><h2>Ground a draft</h2></div>
-  <p class="sec-lede">Paste a markdown draft. Each cited claim is checked and labeled. Everything runs in your browser — nothing is uploaded.</p>
+  <p class="sec-lede">Paste a markdown draft, or upload a .docx / .pdf — text is extracted in your browser, never uploaded. Each cited claim is checked and labeled. Everything runs in your browser — nothing is uploaded.</p>
   <div class="toolcard">
     <div class="btnrow" style="margin:0 0 12px">
       <button id="ground-sample" class="btn ghost">Load sample</button>
+      <button id="ground-upload" class="btn ghost">Upload .docx / .pdf</button>
+      <input id="ground-file" type="file" accept=".docx,.pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf" style="display:none">
       <span class="hint" style="margin:0">or paste your own markdown below</span>
     </div>
     <textarea id="ground-input" rows="9" placeholder="Paste your draft — claims with [@key], [1], (Author, 2020), DOI or arXiv citations, plus a References section…"></textarea>

@@ -41,7 +41,7 @@ AUTHOR_YEAR_RE = re.compile(
     r"(?:\s*,\s*[A-Z][A-Za-z'’\-]+)*,?\s*\d{4}[a-z]?(?:\s*;\s*[^)]+)?)\s*\)")
 URL_RE = re.compile(r"https?://[^\s\]\)\"'<>]+", re.I)
 
-REF_HEADING_RE = re.compile(r"^#{1,6}\s*(references|bibliography|works cited)\b", re.I | re.M)
+REF_HEADING_RE = re.compile(r"^(?:#{1,6}\s*)?(references|bibliography|works cited)\b", re.I | re.M)
 REF_HEADING_INLINE_RE = re.compile(r"([.!?:])\s*(#{1,6}\s*(?:references|bibliography|works cited)\b)", re.I)
 
 
