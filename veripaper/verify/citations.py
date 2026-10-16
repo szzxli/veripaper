@@ -1,6 +1,6 @@
-"""引用存在性核验：DOI → CrossRef/arXiv 查库 → 元数据比对。
+"""Citation existence verification: DOI → CrossRef/arXiv lookup → metadata match.
 
-抄 OpenDraft 的已验证方案：不通过直接丢弃，绝不编造。
+Borrowed from OpenDraft's proven approach: reject on failure, never fabricate.
 """
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ CROSSREF = "https://api.crossref.org/works/"
 
 
 def verify_doi(doi: str) -> dict:
-    """返回 {'exists': bool, 'title': str|None, 'reason': str}。"""
+    """Return {'exists': bool, 'title': str|None, 'reason': str}."""
     doi = doi.strip()
     try:
         r = requests.get(CROSSREF + doi, timeout=15,
@@ -27,7 +27,7 @@ def verify_doi(doi: str) -> dict:
 
 
 def verify_arxiv(arxiv_id: str) -> dict:
-    """arXiv id 存在性核验（export.arxiv.org）。"""
+    """Existence check for an arXiv id via export.arxiv.org."""
     url = f"https://export.arxiv.org/api/query?id_list={arxiv_id.strip()}"
     try:
         r = requests.get(url, timeout=15)

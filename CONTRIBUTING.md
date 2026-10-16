@@ -1,13 +1,16 @@
 # CONTRIBUTING
 
-## 铁律（PR 合并前必读）
+## Iron rules (read before opening a PR)
 
-1. **绝不编造引用**：所有引用必须来自真实检索返回。任何让模型"生成一条看起来对的引用"的代码直接拒掉。
-2. **标签诚实**：`[VERIFIED]` / `[CITED]` / `[UNVERIFIED]` / `[STALE:YYYY]` ——
-   证据不够就降级，不许假装核验过。
-3. **最终判定权在作者**：工具只给核验报告和修改建议，不替作者下结论。
-4. **学术伦理**：本工具辅助写作、不替代研究；不得用于代写代投。
+1. **Never fabricate citations**: every citation must come from a real retrieval result.
+   Any code that lets a model "generate a plausible-looking citation" will be rejected outright.
+2. **Honest labels**: `[VERIFIED]` / `[CITED]` / `[UNVERIFIED]` / `[STALE:YYYY]` / `[EXTRAPOLATED]` —
+   downgrade on insufficient evidence; never pretend verification happened.
+3. **Final judgment belongs to the author**: the tool produces verification reports and suggestions,
+   never conclusions on the author's behalf.
+4. **Academic ethics**: this tool assists writing, it does not replace research.
+   Never use it for ghostwriting or contract cheating.
 
-## 路线图
+## Roadmap
 
-见 README。v0.1 先做 Phase 2（证据锚定），单点打透再扩展。
+See README. v0.1 starts with evidence grounding — nail the single point before expanding.
