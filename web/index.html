@@ -3,236 +3,224 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>veripaper — the paper is just the final presentation</title>
-<meta name="description" content="Open-source research workbench: from idea to acceptance. Researchers do ideas, logic, proof — the tool handles the rest.">
+<title>veripaper — ground every claim</title>
+<meta name="description" content="Open-source workbench for evidence-grounded research. Verify citations, ground drafts, label honestly.">
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#1e3a5f">
+<meta name="theme-color" content="#16324f">
 <style>
 :root{
-  --paper:#faf7f0; --paper2:#f3eee2; --ink:#232323; --ink-soft:#5a5a5a;
-  --blue:#1e3a5f; --blue-soft:#2f5379; --gold:#c9a227; --gold-soft:#e8d48b;
-  --green:#2e7d4f; --red:#b3402e; --amber:#b97f1f; --grey:#6b7280;
-  --card:#ffffff; --line:#e5ddc9;
+  --paper:#fbf9f3; --card:#fffdf8; --ink:#211d16; --ink-soft:#5c554a;
+  --navy:#16324f; --navy-soft:#2a4a6b; --crimson:#8c2f1b; --bronze:#8a6d1d;
+  --green:#2e6b46; --amber:#96690f; --grey:#6b7280;
+  --line:#ddd2ba; --line-soft:#e9e1cc;
+  --serif:Georgia,"Iowan Old Style","Times New Roman","Noto Serif",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--paper);color:var(--ink);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif;
-  line-height:1.65;-webkit-font-smoothing:antialiased}
-.serif{font-family:Georgia,"Times New Roman","Noto Serif SC","Songti SC",serif}
-.wrap{max-width:1060px;margin:0 auto;padding:0 22px}
-header.top{position:sticky;top:0;z-index:50;background:rgba(250,247,240,.94);
-  backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-header.top .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
-.brand{font-family:Georgia,serif;font-size:22px;color:var(--blue);text-decoration:none;font-weight:bold}
-.brand span{color:var(--gold)}
-nav a{margin-left:20px;color:var(--ink-soft);text-decoration:none;font-size:14px}
-nav a:hover{color:var(--blue)}
-.hero{padding:88px 0 60px;text-align:center}
-.hero .kicker{letter-spacing:.28em;text-transform:uppercase;font-size:12px;color:var(--gold);font-weight:700}
-.hero h1{font-size:clamp(34px,6vw,58px);line-height:1.25;margin:18px 0 14px;color:var(--blue)}
-.hero p.sub{font-size:18px;color:var(--ink-soft);max-width:640px;margin:0 auto}
-.hero .cta{margin-top:30px}
-.btn{display:inline-block;padding:13px 30px;border-radius:10px;text-decoration:none;font-weight:600;font-size:15px;margin:6px}
-.btn.primary{background:var(--blue);color:#fff}
-.btn.primary:hover{background:var(--blue-soft)}
-.btn.ghost{border:1.5px solid var(--blue);color:var(--blue)}
-.stats{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin:44px 0 10px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 26px;text-align:center;min-width:130px}
-.stat b{display:block;font-size:26px;color:var(--blue);font-family:Georgia,serif}
-.stat span{font-size:12px;color:var(--ink-soft);letter-spacing:.06em}
-section{padding:56px 0}
-section h2.sec{font-family:Georgia,serif;font-size:30px;color:var(--blue);text-align:center;margin-bottom:8px}
-section p.lead{text-align:center;color:var(--ink-soft);max-width:640px;margin:0 auto 36px}
-.timeline{position:relative;max-width:760px;margin:0 auto}
-.timeline::before{content:"";position:absolute;left:23px;top:8px;bottom:8px;width:2px;background:var(--line)}
-.phase{position:relative;padding:0 0 26px 64px}
-.phase .dot{position:absolute;left:12px;top:4px;width:24px;height:24px;border-radius:50%;
-  background:var(--blue);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
-.phase h3{font-size:18px;color:var(--blue);margin-bottom:4px}
-.phase p{font-size:14.5px;color:var(--ink-soft)}
-.phase .tag{display:inline-block;font-size:11px;background:var(--paper2);border:1px solid var(--line);
-  border-radius:20px;padding:2px 10px;margin-top:6px;color:var(--ink-soft)}
-.toolgroups{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
-.tgroup{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px}
-.tgroup h3{font-family:Georgia,serif;font-size:17px;color:var(--blue);margin-bottom:12px}
-.tool{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px dashed var(--line)}
-.tool:last-child{border-bottom:none}
-.tool a{color:var(--ink);text-decoration:none;font-weight:600;font-size:14.5px}
-.tool a:hover{color:var(--blue)}
-.tool span{font-size:12px;color:var(--ink-soft)}
-.board{background:var(--blue);border-radius:18px;padding:38px 30px;color:#f0ead8}
-.board h2.sec{color:#fff}
-.board p.lead{color:#cfc7ae}
-.bstats{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-bottom:28px}
-.bstat{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);
-  border-radius:12px;padding:14px 24px;text-align:center;min-width:140px}
-.bstat b{display:block;font-size:24px;color:var(--gold-soft);font-family:Georgia,serif}
-.bstat span{font-size:12px;color:#cfc7ae}
-.papers{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
-.paper{background:#fffdf7;border-radius:12px;padding:18px;color:var(--ink)}
-.paper .venue{font-size:11px;letter-spacing:.08em;color:var(--gold);font-weight:700;text-transform:uppercase}
-.paper h4{font-size:15px;margin:6px 0;color:var(--blue)}
-.paper p{font-size:13px;color:var(--ink-soft)}
-.paper .meta{display:flex;gap:12px;margin-top:10px;font-size:12px;color:var(--ink-soft)}
-.paper .meta b{color:var(--green)}
-.fine{font-size:12px;color:#a89e83;text-align:center;margin-top:20px}
-.demo{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px;max-width:760px;margin:0 auto}
-.claim{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:12px;cursor:pointer;transition:.15s}
-.claim:hover{border-color:var(--blue)}
-.claim p{font-size:15px}
-.claim .verdict{display:none;margin-top:10px;font-size:13.5px;border-top:1px dashed var(--line);padding-top:10px}
-.claim.open .verdict{display:block}
-.label{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;padding:2px 9px;margin-right:6px;letter-spacing:.04em}
-.l-verified{background:#e2f0e7;color:var(--green)}
-.l-cited{background:#e8eef5;color:var(--blue)}
-.l-unverified{background:#fbe9e4;color:var(--red)}
-.l-stale{background:#faf3df;color:var(--amber)}
-.l-extra{background:#f0eafa;color:#6a4fb3}
-footer{border-top:1px solid var(--line);padding:34px 0;text-align:center;color:var(--ink-soft);font-size:13px}
-footer a{color:var(--blue)}
-@media(max-width:640px){.hero{padding:60px 0 40px}nav a{margin-left:12px}}
+body{background:var(--paper);color:var(--ink);font-family:var(--serif);
+  line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:780px;margin:0 auto;padding:0 24px}
+/* ---------- masthead ---------- */
+.masthead{border-bottom:4px double var(--navy);padding:26px 0 18px;text-align:center}
+.masthead .journal{font-size:12px;letter-spacing:.42em;text-transform:uppercase;
+  color:var(--navy);font-weight:700;font-family:var(--sans)}
+.masthead .journal span{color:var(--bronze)}
+.masthead .tagline{font-style:italic;color:var(--ink-soft);font-size:14px;margin-top:6px}
+.masthead .meta{font-family:var(--sans);font-size:11.5px;color:var(--ink-soft);
+  letter-spacing:.08em;margin-top:8px}
+.masthead .meta a{color:var(--navy)}
+/* ---------- title block ---------- */
+.titleblock{padding:52px 0 10px;text-align:center}
+.titleblock h1{font-size:clamp(30px,5.4vw,44px);line-height:1.28;color:var(--navy);
+  font-weight:700;margin-bottom:14px}
+.titleblock .byline{font-size:14px;color:var(--ink-soft);font-style:italic}
+.titleblock .byline a{color:var(--navy)}
+.abstract{border:1px solid var(--line);border-left:4px solid var(--navy);
+  background:var(--card);padding:18px 22px;margin:30px 0 8px;text-align:left}
+.abstract .ah{font-family:var(--sans);font-size:12px;font-weight:700;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--navy);margin-bottom:8px}
+.abstract p{font-size:15px;color:var(--ink)}
+.abstract p+p{margin-top:8px}
+/* ---------- sections ---------- */
+section{padding:44px 0 8px}
+.sec-head{display:flex;align-items:baseline;gap:14px;border-bottom:1px solid var(--navy);
+  padding-bottom:8px;margin-bottom:6px}
+.sec-no{font-family:var(--sans);font-size:13px;font-weight:700;color:var(--bronze);
+  letter-spacing:.1em}
+.sec-head h2{font-size:24px;color:var(--navy);font-weight:700}
+.sec-lede{font-style:italic;color:var(--ink-soft);font-size:15px;margin:10px 0 22px}
+/* ---------- tool cards ---------- */
+.toolcard{background:var(--card);border:1px solid var(--line);padding:24px;
+  margin:0 0 10px}
+.toolcard textarea,.toolcard input[type=text],.toolcard input[type=password]{
+  width:100%;padding:11px 13px;border:1px solid var(--line);background:#fff;
+  font-family:var(--sans);font-size:14px;color:var(--ink)}
+.toolcard textarea:focus,.toolcard input:focus{outline:2px solid var(--navy-soft);border-color:var(--navy)}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;align-items:center}
+.btn{display:inline-block;padding:11px 26px;font-family:var(--sans);font-weight:600;
+  font-size:14px;cursor:pointer;border:1px solid var(--navy);text-decoration:none}
+.btn.primary{background:var(--navy);color:#fff}
+.btn.primary:hover{background:var(--navy-soft)}
+.btn.primary:disabled{background:var(--grey);border-color:var(--grey);cursor:wait}
+.btn.ghost{background:none;color:var(--navy)}
+.btn.ghost:hover{background:#eef2f7}
+.hint{font-family:var(--sans);font-size:12.5px;color:var(--ink-soft);margin-top:10px;line-height:1.6}
+/* ---------- labels ---------- */
+.label{display:inline-block;font-family:var(--sans);font-size:11px;font-weight:700;
+  letter-spacing:.06em;border-radius:3px;padding:2px 9px;margin-right:6px;
+  border:1px solid transparent}
+.l-verified{background:#e6f0e9;color:var(--green);border-color:#bcd6c4}
+.l-cited{background:#e7edf5;color:var(--navy);border-color:#bccadd}
+.l-unverified{background:#f9e8e2;color:var(--crimson);border-color:#e3b7a8}
+.l-stale{background:#faf2dc;color:var(--amber);border-color:#e3d3a3}
+/* ---------- findings ---------- */
+.finding{border:1px solid var(--line);border-top:3px solid var(--navy);
+  background:var(--card);padding:16px 18px;margin-bottom:12px}
+.finding p.claim{font-size:15px;margin-bottom:8px}
+.finding .detail{font-family:var(--sans);font-size:13px;color:var(--ink-soft);
+  border-top:1px dotted var(--line);padding-top:8px;margin-top:8px;line-height:1.6}
+.finding .detail b{color:var(--ink)}
+/* ---------- definition list (honesty contract) ---------- */
+dl.contract{margin:6px 0 10px}
+dl.contract dt{font-weight:700;color:var(--navy);margin-top:16px;font-size:16px}
+dl.contract dd{margin:4px 0 0 0;font-size:15px;color:var(--ink)}
+dl.contract dd.example{font-style:italic;color:var(--ink-soft);font-size:14px;margin-top:4px}
+/* ---------- numbered lists ---------- */
+ol.tight{margin:8px 0 8px 22px;font-size:15px}
+ol.tight li{margin-bottom:10px}
+ol.tight li::marker{color:var(--bronze);font-weight:700}
+/* ---------- references ---------- */
+ol.refs{margin:8px 0 8px 24px;font-size:14px;color:var(--ink-soft);font-family:var(--sans)}
+ol.refs li{margin-bottom:8px;line-height:1.6}
+ol.refs a{color:var(--navy);text-decoration:none;border-bottom:1px dotted var(--navy)}
+ol.refs a:hover{border-bottom-style:solid}
+/* ---------- footnotes / colophon ---------- */
+.footnote{font-size:13px;color:var(--ink-soft);font-style:italic;
+  border-top:1px solid var(--line);margin-top:26px;padding-top:12px}
+footer{border-top:4px double var(--navy);margin-top:56px;padding:26px 0 40px;
+  text-align:center}
+footer .colophon{font-family:var(--sans);font-size:12px;color:var(--ink-soft);
+  letter-spacing:.06em}
+footer .colophon a{color:var(--navy)}
+.progress{font-family:var(--sans);font-size:13px;color:var(--ink-soft);margin-top:10px}
+@media(max-width:640px){.wrap{padding:0 18px}.titleblock{padding:36px 0 6px}}
 </style>
 </head>
 <body>
-<header class="top"><div class="wrap">
-  <a class="brand" href="#">veri<span>paper</span></a>
-  <nav><a href="#pipeline">Pipeline</a><a href="#toolbox">Toolbox</a><a href="#board">Board</a><a href="#demo">Demo</a><a href="#ground">Ground</a><a href="#verify">Verify</a><a href="https://github.com/szzxli/veripaper">GitHub</a></nav>
+
+<header class="masthead"><div class="wrap">
+  <div class="journal">veri<span>paper</span></div>
+  <div class="tagline">An open workbench for evidence-grounded research</div>
+  <div class="meta">v0.1 &nbsp;·&nbsp; MIT License &nbsp;·&nbsp; <a href="https://github.com/szzxli/veripaper">github.com/szzxli/veripaper</a></div>
 </div></header>
 
-<div class="hero wrap">
-  <div class="kicker">Open-source · MIT</div>
-  <h1 class="serif">The paper is just<br>the final presentation.</h1>
-  <p class="sub">Researchers should do three things — <b>creative ideas, logical reasoning, empirical proof</b>.
-  veripaper handles everything else: from proposal decision to acceptance.</p>
-  <div class="cta">
-    <a class="btn primary" href="https://github.com/szzxli/veripaper">Get the code</a>
-    <a class="btn ghost" href="#demo">See how verification works</a>
-  </div>
-  <div class="stats">
-    <div class="stat"><b>7</b><span>PHASES</span></div>
-    <div class="stat"><b>70+</b><span>TOP VENUES</span></div>
-    <div class="stat"><b>5</b><span>HONEST LABELS</span></div>
-    <div class="stat"><b>100%</b><span>OPEN SOURCE</span></div>
+<div class="wrap">
+<div class="titleblock">
+  <h1>Ground every claim<br>before you submit.</h1>
+  <div class="byline">Researchers do ideas, logic, and proof — veripaper checks the evidence.</div>
+  <div class="abstract">
+    <div class="ah">Abstract</div>
+    <p>veripaper is an open-source workbench that verifies the citations in a research draft. It looks up whether each cited source exists (CrossRef, DataCite, arXiv, Semantic Scholar), resolves reference-list markers to identifiers, and — with your own API key — judges whether a source's abstract substantively supports the claim. Every claim receives an honest label: <i>verified</i>, <i>cited</i>, <i>unverified</i>, or <i>stale</i>.</p>
+    <p>It never generates content and never pretends. When evidence is uncertain, it downgrades the label and leaves the judgment to the author.</p>
   </div>
 </div>
 
-<section id="pipeline"><div class="wrap">
-  <h2 class="sec serif">One workbench, idea to acceptance</h2>
-  <p class="lead">Not a writing tool — a research workbench. Each phase hands a typed research contract to the next.</p>
-  <div class="timeline">
-    <div class="phase"><div class="dot">0</div><h3>Proposal decision</h3><p>Compare candidate directions: heat index from top venues, citation forecast, and a frontier-extrapolation mode for data-scarce bets.</p><span class="tag">NEW · dual-track</span></div>
-    <div class="phase"><div class="dot">1</div><h3>Idea distillation</h3><p>From rough notes to a concept note: novelty check, contribution statement, research questions, impact card.</p></div>
-    <div class="phase"><div class="dot">2</div><h3>Evidence grounding</h3><p>Every claim gets an honest label — verified, cited, unverified, stale, or extrapolated. Never pretend.</p><span class="tag">v0.1 · live</span></div>
-    <div class="phase"><div class="dot">3</div><h3>Top-venue benchmarking</h3><p>Measured against real accepted papers from top venues — not imagined standards.</p></div>
-    <div class="phase"><div class="dot">4</div><h3>Reviewer simulation</h3><p>Pre-submission critique in the voice of your target venue. Evidence gaps and stale data first.</p></div>
-    <div class="phase"><div class="dot">5</div><h3>Venue targeting</h3><p>Acceptance-probability estimates and submission strategy. A wrong venue costs months.</p></div>
-    <div class="phase"><div class="dot">6</div><h3>Rebuttal &amp; acceptance loop</h3><p>Point-by-point responses, revision tracking, and a review loop so acceptance rate compounds.</p></div>
-  </div>
-</div></section>
-
-<section id="toolbox" style="background:var(--paper2)"><div class="wrap">
-  <h2 class="sec serif">Toolbox — your daily hub</h2>
-  <p class="lead">The tools researchers open every day, one tap away. veripaper aims to be the WeChat of paper writing — the place you start.</p>
-  <div class="toolgroups">
-    <div class="tgroup"><h3>Literature</h3>
-      <div class="tool"><a href="https://arxiv.org">arXiv</a><span>preprints</span></div>
-      <div class="tool"><a href="https://www.semanticscholar.org">Semantic Scholar</a><span>citation graph</span></div>
-      <div class="tool"><a href="https://openalex.org">OpenAlex</a><span>250M+ works</span></div>
-      <div class="tool"><a href="https://scholar.google.com">Google Scholar</a><span>search</span></div>
-      <div class="tool"><a href="https://pubmed.ncbi.nlm.nih.gov">PubMed</a><span>biomedical</span></div>
-      <div class="tool"><a href="https://www.crossref.org">CrossRef</a><span>DOI authority</span></div>
+<section id="ground">
+  <div class="sec-head"><span class="sec-no">§1</span><h2>Ground a draft</h2></div>
+  <p class="sec-lede">Paste a markdown draft. Each cited claim is checked and labeled. Everything runs in your browser — nothing is uploaded.</p>
+  <div class="toolcard">
+    <div class="btnrow" style="margin:0 0 12px">
+      <button id="ground-sample" class="btn ghost">Load sample</button>
+      <span class="hint" style="margin:0">or paste your own markdown below</span>
     </div>
-    <div class="tgroup"><h3>Venue targeting</h3>
-      <div class="tool"><a href="https://journalfinder.elsevier.com">Elsevier Journal Finder</a><span>scope match</span></div>
-      <div class="tool"><a href="https://journalsuggester.springer.com">Springer Suggester</a><span>scope match</span></div>
-      <div class="tool"><a href="https://jane.biosemantics.org">JANE</a><span>bio journals</span></div>
-      <div class="tool"><a href="https://openreview.net">OpenReview</a><span>ML venues</span></div>
+    <textarea id="ground-input" rows="9" placeholder="Paste your draft — claims with [@key], [1], (Author, 2020), DOI or arXiv citations, plus a References section…"></textarea>
+    <div class="btnrow">
+      <input id="ground-key" type="password" placeholder="OpenRouter key (optional — enables abstract-vs-claim judgment)" style="flex:1;min-width:220px">
+      <button id="ground-btn" class="btn primary">Ground this draft</button>
     </div>
-    <div class="tgroup"><h3>Writing</h3>
-      <div class="tool"><a href="https://www.overleaf.com">Overleaf</a><span>LaTeX online</span></div>
-      <div class="tool"><a href="https://github.com/szzxli/veripaper">veripaper</a><span>this project</span></div>
-      <div class="tool"><a href="https://opendraft.xyz">OpenDraft</a><span>draft drafts</span></div>
-    </div>
-  </div>
-</div></section>
-
-<section id="board"><div class="wrap">
-  <div class="board">
-    <h2 class="sec serif">Acceptance board</h2>
-    <p class="lead">Papers that went through veripaper and got accepted. Anonymized and aggregated — no private data, compliant with information security law.</p>
-    <div class="bstats">
-      <div class="bstat"><b>12</b><span>ACCEPTED (SAMPLE)</span></div>
-      <div class="bstat"><b>68%</b><span>ACCEPTANCE RATE</span></div>
-      <div class="bstat"><b>4.2 mo</b><span>MEDIAN TIME TO ACCEPT</span></div>
-      <div class="bstat"><b>31</b><span>VENUES TARGETED</span></div>
-    </div>
-    <div class="papers">
-      <div class="paper"><div class="venue">NeurIPS · sample</div><h4>Claim-level verification for retrieval-augmented generation</h4><p>Heat index #3 in RAG evaluation · cited 40+ within a year</p><div class="meta"><span>First submission</span><b>Accepted</b></div></div>
-      <div class="paper"><div class="venue">Nature Communications · sample</div><h4>Cross-disciplinary extrapolation in materials discovery</h4><p>Frontier-track proposal · productization memo included</p><div class="meta"><span>After 1 revision</span><b>Accepted</b></div></div>
-      <div class="paper"><div class="venue">EMNLP · sample</div><h4>Reviewer-simulation loop for argument strengthening</h4><p>3 simulated rounds pre-submission · zero surprise reviews</p><div class="meta"><span>First submission</span><b>Accepted</b></div></div>
-    </div>
-    <p class="fine">Sample data for illustration. Real board aggregates anonymized outcomes only — authors opt in, nothing identifiable is shown.</p>
-  </div>
-</div></section>
-
-<section id="demo"><div class="wrap">
-  <h2 class="sec serif">How honest labels work</h2>
-  <p class="lead">Tap a claim to see its verification. Downgrade rather than pretend.</p>
-  <div class="demo">
-    <div class="claim"><p>"LLMs fabricate 23.4% of citations in academic drafts."</p>
-      <div class="verdict"><span class="label l-verified">VERIFIED</span>Source exists (CrossRef DOI match) and the abstract substantively supports the claim.</div></div>
-    <div class="claim"><p>"Our method outperforms all baselines on every benchmark."</p>
-      <div class="verdict"><span class="label l-unverified">UNVERIFIED</span>No source attached — this is an author assertion. Rewrite as hypothesis or add evidence.</div></div>
-    <div class="claim"><p>"According to 2019 statistics, 40% of enterprises suffered attacks."</p>
-      <div class="verdict"><span class="label l-stale">STALE:2019</span>Data is 7 years old — find a newer source before submitting.</div></div>
-    <div class="claim"><p>"This direction could lead to a fundamental breakthrough in materials science."</p>
-      <div class="verdict"><span class="label l-extra">EXTRAPOLATED</span>Frontier-track inference, not verified knowledge. Kept separate from empirical claims.</div></div>
-    <div class="claim"><p>"The dataset contains 1.2M annotated examples (Smith et al.)."</p>
-      <div class="verdict"><span class="label l-cited">CITED</span>Source exists, but content not yet verified against the abstract. Downgraded honestly.</div></div>
-  </div>
-</div></section>
-
-<section id="ground"><div class="wrap">
-  <h2 class="sec serif">Ground your draft</h2>
-  <p class="lead">Paste a markdown draft. Every cited claim gets an honest label — verified, cited, unverified, or stale. Everything runs in your browser; nothing is uploaded.</p>
-  <div class="demo">
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">
-      <button id="ground-sample" class="btn ghost" style="border:1.5px solid var(--blue);color:var(--blue);background:none;cursor:pointer;padding:9px 18px;font-size:14px;margin:0">Load sample</button>
-      <span style="font-size:13px;color:var(--ink-soft);align-self:center">or paste your own markdown below</span>
-    </div>
-    <textarea id="ground-input" rows="10" placeholder="Paste your draft here — claims with [@key], [1], (Author, 2020), DOI or arXiv citations, plus a References section…"
-      style="width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;font-size:14px;background:#fffdf7;font-family:inherit;resize:vertical"></textarea>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;align-items:center">
-      <input id="ground-key" type="password" placeholder="OpenRouter key (optional — enables abstract-vs-claim judgment)"
-        style="flex:1;min-width:220px;padding:11px 14px;border:1.5px solid var(--line);border-radius:10px;font-size:14px;background:#fffdf7">
-      <button id="ground-btn" class="btn primary" style="border:none;cursor:pointer;margin:0">Ground this draft</button>
-    </div>
-    <div id="ground-progress" style="margin-top:10px;font-size:13.5px;color:var(--ink-soft)"></div>
+    <div id="ground-progress" class="progress"></div>
     <div id="ground-result" style="margin-top:14px"></div>
-    <p style="font-size:12.5px;color:var(--ink-soft);margin-top:12px">Without a key, existing sources are honestly labeled CITED (support not checked). With a key, the abstract is compared against each claim — PARTIAL or unclear cases still downgrade, never pretend.</p>
+    <p class="hint">Without a key, existing sources are honestly labeled <i>cited</i> (support not checked). With a key, each abstract is compared against its claim — partial or unclear cases still downgrade, never pretend.</p>
   </div>
-</div></section>
+</section>
 
-<section id="verify"><div class="wrap">
-  <h2 class="sec serif">Try it — verify a citation</h2>
-  <p class="lead">Paste a DOI or arXiv ID. The page queries CrossRef / DataCite / arXiv directly — no server, no signup.</p>
-  <div class="demo">
-    <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <input id="doi-input" type="text" placeholder="e.g. 10.1145/3377811.3380366 or 2301.12345"
-        style="flex:1;min-width:220px;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;font-size:15px;background:#fffdf7">
-      <button id="doi-btn" class="btn primary" style="border:none;cursor:pointer;margin:0">Verify</button>
+<section id="verify">
+  <div class="sec-head"><span class="sec-no">§2</span><h2>Verify a citation</h2></div>
+  <p class="sec-lede">A single identifier, checked against the registries directly. No server, no signup.</p>
+  <div class="toolcard">
+    <div class="btnrow" style="margin-top:0">
+      <input id="doi-input" type="text" placeholder="e.g. 10.1145/3377811.3380366 or 2301.12345" style="flex:1;min-width:220px">
+      <button id="doi-btn" class="btn primary">Verify</button>
     </div>
-    <div id="verify-result" style="margin-top:16px;font-size:14.5px"></div>
+    <div id="verify-result" style="margin-top:14px;font-size:14.5px"></div>
+    <p class="hint">Queries CrossRef / DataCite / arXiv live. A result of <i>cited</i> means the source exists — it does not mean the source supports your claim.<span id="fn1"></span></p>
   </div>
-</div></section>
+</section>
+
+<section id="contract">
+  <div class="sec-head"><span class="sec-no">§3</span><h2>The honesty contract</h2></div>
+  <p class="sec-lede">Four labels. No fifth option, no hedging.</p>
+  <dl class="contract">
+    <dt><span class="label l-verified">VERIFIED</span></dt>
+    <dd>The source exists <i>and</i> its abstract substantively supports the claim's key assertion.</dd>
+    <dd class="example">Example: "LLMs fabricate 23.4% of citations in academic drafts" — matched against the cited paper's abstract.</dd>
+    <dt><span class="label l-cited">CITED</span></dt>
+    <dd>The source exists, but support is unchecked or only partial. The author decides.</dd>
+    <dd class="example">Example: "The dataset contains 1.2M annotated examples (Smith et al.)" — real source, content not yet compared.</dd>
+    <dt><span class="label l-unverified">UNVERIFIED</span></dt>
+    <dd>No record found, the marker cannot be resolved, or the match is ambiguous. Do not cite it as-is.</dd>
+    <dd class="example">Example: "Our method outperforms all baselines on every benchmark" — an author assertion with no source attached.</dd>
+    <dt><span class="label l-stale">STALE:YYYY</span></dt>
+    <dd>A numeric claim older than the freshness window (3 years). Find a newer source before submitting.</dd>
+    <dd class="example">Example: "According to 2019 statistics, 40% of enterprises suffered attacks."</dd>
+  </dl>
+  <p class="footnote">The governing rule is <i>downgrade-only</i>: uncertainty always resolves toward the weaker label. A tool that cannot verify must say so.</p>
+</section>
+
+<section id="pipeline">
+  <div class="sec-head"><span class="sec-no">§4</span><h2>From idea to acceptance</h2></div>
+  <p class="sec-lede">veripaper is a workbench, not a writing tool. Each phase hands a typed contract to the next.</p>
+  <ol class="tight">
+    <li><b>Proposal decision.</b> Compare candidate directions: heat index from top venues, citation forecast, frontier-extrapolation for data-scarce bets.</li>
+    <li><b>Idea distillation.</b> From rough notes to a concept note: novelty check, contribution statement, research questions.</li>
+    <li><b>Evidence grounding.</b> Every claim gets an honest label — §1 and §2 above. <i>Live in v0.1.</i></li>
+    <li><b>Top-venue benchmarking.</b> Measured against real accepted papers from top venues — not imagined standards.</li>
+    <li><b>Reviewer simulation.</b> Pre-submission critique in the voice of the target venue. Evidence gaps first.</li>
+    <li><b>Venue targeting.</b> Acceptance-probability estimates and submission strategy. A wrong venue costs months.</li>
+    <li><b>Rebuttal &amp; acceptance loop.</b> Point-by-point responses and revision tracking, so acceptance compounds.</li>
+  </ol>
+</section>
+
+<section id="principles">
+  <div class="sec-head"><span class="sec-no">§5</span><h2>Principles</h2></div>
+  <ol class="tight">
+    <li><b>Lookup, not generation.</b> The tool queries registries; it never writes your argument for you.</li>
+    <li><b>Downgrade, never pretend.</b> Uncertain evidence gets the weaker label. The author always has the last word.</li>
+    <li><b>Your keys, your data.</b> Optional BYOK for content judgment. Drafts never leave the browser.</li>
+    <li><b>Open and auditable.</b> MIT licensed. Every lookup, label rule, and threshold is in the source.</li>
+  </ol>
+</section>
+
+<section id="references">
+  <div class="sec-head"><span class="sec-no">Refs</span><h2>References</h2></div>
+  <ol class="refs">
+    <li>CrossRef. <a href="https://www.crossref.org">crossref.org</a> — DOI registry.</li>
+    <li>DataCite. <a href="https://datacite.org">datacite.org</a> — DOI registry; mints arXiv DOIs (10.48550).</li>
+    <li>arXiv. <a href="https://arxiv.org">arxiv.org</a> — preprint server and API.</li>
+    <li>Semantic Scholar. <a href="https://www.semanticscholar.org">semanticscholar.org</a> — citation graph.</li>
+    <li>OpenAlex. <a href="https://openalex.org">openalex.org</a> — 250M+ works index.</li>
+    <li>veripaper source. <a href="https://github.com/szzxli/veripaper">github.com/szzxli/veripaper</a> — MIT.</li>
+  </ol>
+</section>
+</div>
 
 <footer><div class="wrap">
-  <p class="serif" style="font-size:17px;color:var(--blue);margin-bottom:8px">veripaper</p>
-  <p>MIT licensed · <a href="https://github.com/szzxli/veripaper">GitHub</a> · Built for researchers, not shortcuts.</p>
+  <div class="colophon">VERIPAPER · v0.1 · SET IN GEORGIA · MIT LICENSE · <a href="https://github.com/szzxli/veripaper">GITHUB</a></div>
 </div></footer>
+
+<script src="ground.js"></script>
 <script>
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});}
-document.querySelectorAll('.claim').forEach(c=>c.addEventListener('click',()=>c.classList.toggle('open')));
 
 // --- In-browser citation verification (CrossRef + arXiv, no backend) ---
 const $in = document.getElementById('doi-input');
@@ -258,12 +246,9 @@ async function checkCrossRef(doi){
   };
 }
 async function checkArxiv(id){
-  // Primary: the arXiv DOI via DataCite (CORS-friendly; arXiv minted DOIs
-  // for its whole corpus as 10.48550/arXiv.<id>)
   const base = id.replace(/v\d+$/i,'');
   const via = await checkDataCite('10.48550/arXiv.' + base);
   if(via) return {...via, venue: 'arXiv preprint'};
-  // Fallback: direct arXiv API (often blocked by CORS in browsers)
   try{
     const r = await fetch('https://export.arxiv.org/api/query?id_list=' + encodeURIComponent(id));
     if(r.status >= 500) throw new Error('arxiv-down');
@@ -314,11 +299,11 @@ async function verify(){
     }
   }catch(err){
     if(err && err.message === 'arxiv-down'){
-      show('<p style="color:var(--amber)">arXiv is not responding right now — try a DOI instead, or retry in a minute.</p>');
+      show('<p style="color:#96690f">arXiv is not responding right now — try a DOI instead, or retry in a minute.</p>');
     }else if(err && err.message === 'arxiv-cors'){
-      show('<p style="color:var(--amber)">arXiv blocks direct browser queries and no DataCite record was found — try the paper\'s DOI form (10.48550/arXiv.…) instead.</p>');
+      show('<p style="color:#96690f">arXiv blocks direct browser queries and no DataCite record was found — try the paper\'s DOI form (10.48550/arXiv.…) instead.</p>');
     }else{
-      show('<p style="color:var(--red)">Network error — check your connection and try again.</p>');
+      show('<p style="color:var(--crimson)">Network error — check your connection and try again.</p>');
     }
   }
   busy(false);
@@ -326,6 +311,5 @@ async function verify(){
 $btn.addEventListener('click', verify);
 $in.addEventListener('keydown', e => { if(e.key==='Enter') verify(); });
 </script>
-<script src="ground.js"></script>
 </body>
 </html>
