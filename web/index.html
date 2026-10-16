@@ -125,6 +125,25 @@ footer .colophon a{color:var(--navy)}
   </div>
 </div>
 
+<section id="idea">
+  <div class="sec-head"><span class="sec-no">§0</span><h2>Evaluate an idea</h2></div>
+  <p class="sec-lede">Can this become a paper? Live publication heat, venue map, and key papers — then a scored assessment. Numbers are free; judgment needs your key.</p>
+  <div class="toolcard">
+    <div class="btnrow" style="margin:0 0 12px">
+      <button id="idea-sample" class="btn ghost">Load sample</button>
+      <span class="hint" style="margin:0">or describe your idea in 2–5 sentences</span>
+    </div>
+    <textarea id="idea-input" rows="5" placeholder="e.g. Using retrieval-augmented generation to verify citations in drafts…"></textarea>
+    <div class="btnrow">
+      <input id="idea-key" type="password" placeholder="OpenRouter key (optional — enables novelty / feasibility / impact scoring)" style="flex:1;min-width:220px">
+      <button id="idea-btn" class="btn primary">Evaluate this idea</button>
+    </div>
+    <div id="idea-progress" class="progress"></div>
+    <div id="idea-result" style="margin-top:14px"></div>
+    <p class="hint">Heat counts come from OpenAlex (live). A thin count can mean a blue ocean <i>or</i> a dead end — the tool shows you the numbers; the field decides.</p>
+  </div>
+</section>
+
 <section id="ground">
   <div class="sec-head"><span class="sec-no">§1</span><h2>Ground a draft</h2></div>
   <p class="sec-lede">Paste a markdown draft. Each cited claim is checked and labeled. Everything runs in your browser — nothing is uploaded.</p>
@@ -181,7 +200,7 @@ footer .colophon a{color:var(--navy)}
   <div class="sec-head"><span class="sec-no">§4</span><h2>From idea to acceptance</h2></div>
   <p class="sec-lede">veripaper is a workbench, not a writing tool. Each phase hands a typed contract to the next.</p>
   <ol class="tight">
-    <li><b>Proposal decision.</b> Compare candidate directions: heat index from top venues, citation forecast, frontier-extrapolation for data-scarce bets.</li>
+    <li><b>Proposal decision.</b> Compare candidate directions: heat index from top venues, citation forecast, frontier-extrapolation for data-scarce bets. <i>§0 above is live in v0.1.</i></li>
     <li><b>Idea distillation.</b> From rough notes to a concept note: novelty check, contribution statement, research questions.</li>
     <li><b>Evidence grounding.</b> Every claim gets an honest label — §1 and §2 above. <i>Live in v0.1.</i></li>
     <li><b>Top-venue benchmarking.</b> Measured against real accepted papers from top venues — not imagined standards.</li>
@@ -219,6 +238,7 @@ footer .colophon a{color:var(--navy)}
 </div></footer>
 
 <script src="ground.js"></script>
+<script src="idea.js"></script>
 <script>
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});}
 
