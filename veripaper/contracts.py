@@ -30,6 +30,9 @@ class ResearchContract:
     acceptance_criteria: list[str] = field(default_factory=list)
     target_venues: list[str] = field(default_factory=list)
     status: str = "draft"  # draft | validated | submitted | accepted
+    # v2.0 collaboration layer
+    authors: list[Author] = field(default_factory=list)
+    contributions: list[Contribution] = field(default_factory=list)
 
     def validate(self) -> list[str]:
         """Return a list of problems; empty means the contract is well-formed."""
@@ -51,3 +54,33 @@ class Revision:
     rationale: str
     evidence: str = ""
     approved: bool = False
+
+
+# CRediT taxonomy — the academic standard for contributor roles (14 roles).
+CREDIT_ROLES = [
+    "Conceptualization", "Data curation", "Formal analysis",
+    "Funding acquisition", "Investigation", "Methodology",
+    "Project administration", "Resources", "Software",
+    "Supervision", "Validation", "Visualization",
+    "Writing – original draft", "Writing – review & editing",
+]
+
+
+@dataclass
+class Author:
+    """A collaborator on the research contract (v2.0 collaboration layer)."""
+    name: str
+    email: str | None = None
+    affiliation: str | None = None
+    is_corresponding: bool = False
+    roles: list[str] = field(default_factory=list)  # CRediT roles
+
+
+@dataclass
+class Contribution:
+    """One ledger entry: who did what, on which target, when."""
+    author: str
+    action: str  # idea | experiment | writing | revision | rebuttal | review | ...
+    target: str  # paper section or contract field
+    timestamp: str = ""
+    note: str = ""
