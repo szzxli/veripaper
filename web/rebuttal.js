@@ -58,6 +58,11 @@ function rbParse(raw) {
 }
 
 function rbKey() { return (window.VP ? VP.rbKey() : 'veripaper.rebuttal.v1.none'); }
+/* Persisted doc shape: {state, raw, points}. Old flat-state keys are normalized. */
+function normRb(o) {
+  if (o && typeof o === 'object' && 'state' in o && 'points' in o) return o;
+  return { state: (o && typeof o === 'object') ? o : {}, raw: '', points: [] };
+}
 function rbLoad() {
   try {
     const k = rbKey();
@@ -65,12 +70,12 @@ function rbLoad() {
     if (!raw) {
       // one-time migration from the pre-project global key
       const legacy = localStorage.getItem('veripaper.rebuttal.v1');
-      if (legacy && k !== 'veripaper.rebuttal.v1') { localStorage.setItem(k, legacy); return JSON.parse(legacy); }
+      if (legacy && k !== 'veripaper.rebuttal.v1') { localStorage.setItem(k, legacy); return normRb(JSON.parse(legacy)); }
     }
-    return JSON.parse(raw || '{}');
-  } catch { return {}; }
+    return normRb(JSON.parse(raw || '{}'));
+  } catch { return { state: {}, raw: '', points: [] }; }
 }
-function rbSave(s) { try { localStorage.setItem(rbKey(), JSON.stringify(s)); } catch {} }
+function rbSave(doc) { try { localStorage.setItem(rbKey(), JSON.stringify(doc)); } catch {} }
 
 const RB_TEMPLATE = pt =>
 `We thank the reviewer for raising this point regarding ${pt.cat}.
@@ -90,8 +95,12 @@ function initRebuttal() {
   const out = document.getElementById('rb-result');
   const prog = document.getElementById('rb-progress');
   if (!ta) return;
-  let points = [];
-  let state = rbLoad();
+  let doc = rbLoad();
+  let state = doc.state || {};
+  // auto-restore: refresh or code update lands back on the previous session
+  let points = Array.isArray(doc.points) ? doc.points : [];
+  if (points.length && doc.raw) ta.value = doc.raw;
+  const persist = () => rbSave({ state, raw: doc.raw, points });
 
   const statusLabel = { pending: 'l-stale', addressed: 'l-verified', declined: 'l-unverified' };
 
@@ -123,12 +132,12 @@ function initRebuttal() {
       const pid = card.dataset.pid;
       card.querySelector('[data-r="resp"]').addEventListener('input', e => {
         state[pid] = state[pid] || { status: 'pending', resp: '' };
-        state[pid].resp = e.target.value; rbSave(state);
+        state[pid].resp = e.target.value; persist();
       });
       card.querySelectorAll('button[data-r]').forEach(b => b.addEventListener('click', () => {
         const v = b.dataset.r;
         state[pid] = state[pid] || { status: 'pending', resp: RB_TEMPLATE(points.find(x => x.id === pid)) };
-        state[pid].status = v; rbSave(state); render();
+        state[pid].status = v; persist(); render();
       }));
     });
     const exp = document.getElementById('rb-export');
@@ -149,7 +158,7 @@ function initRebuttal() {
     points = rbParse(raw);
     if (!points.length) { out.innerHTML = '<p class="hint">Could not split into points. Try numbering them (1. 2. 3.) or prefixing reviewers (Reviewer 1: …).</p>'; return; }
     points.forEach(p => { if (!state[p.id]) state[p.id] = { status: 'pending', resp: RB_TEMPLATE(p) }; });
-    rbSave(state);
+    doc.raw = raw; doc.points = points; persist();
     render();
   });
   clear.addEventListener('click', async () => {
@@ -157,10 +166,10 @@ function initRebuttal() {
       ? await window.vpConfirm('Clear rebuttal state', 'Clear all rebuttal points and drafted responses for the current project? This cannot be undone.', 'Clear', true)
       : confirm('Clear all rebuttal state?');
     if (!yes) return;
-    state = {}; rbSave(state); points = []; ta.value = ''; render();
+    state = {}; doc = { state, raw: '', points: [] }; persist(); points = []; ta.value = ''; render();
   });
   // re-render when the active project switches (project.js calls this)
-  window.RB_refresh = () => { state = rbLoad(); render(); };
+  window.RB_refresh = () => { doc = rbLoad(); state = doc.state || {}; points = Array.isArray(doc.points) ? doc.points : []; ta.value = doc.raw || ''; render(); };
 }
 const escRb = s => String(s || '').replace(/[&<>"]/g,
   m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[m]));
