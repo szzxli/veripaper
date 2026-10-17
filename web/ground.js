@@ -44,6 +44,92 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 const gesc = s => String(s || '').replace(/[&<>"]/g,
   m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[m]));
 
+/* ---------------- request queue: per-host spacing + 429 backoff ---------------- */
+/* A 50-claim draft used to fire 6 databases × N claims with no pacing and hit
+ * HTTP 429 walls. Every outbound fetch now goes through vpFetch: it spaces
+ * requests per host and retries 429s with exponential backoff (honoring
+ * Retry-After). After 3 retries it gives up and the callers' existing
+ * `limited` handling takes over honestly — a limit is never laundered into
+ * a verdict. */
+const VP_HOST_GAP = {
+  'api.crossref.org': 1000,        // polite pool asks >= 1 req/s
+  'api.semanticscholar.org': 1000,  // S2 rate-limits aggressively
+  'dblp.org': 1000,
+  'www.ebi.ac.uk': 500,
+  'api.datacite.org': 500,
+  'api.openalex.org': 500,
+  'openrouter.ai': 300,
+};
+const _vpHostNext = {};
+function vpFetch(url, init, attempt) {
+  attempt = attempt || 0;
+  let host = '';
+  try { host = new URL(url).hostname; } catch (e) { /* relative URL */ }
+  const gap = VP_HOST_GAP[host] || 250;
+  const wait = Math.max(0, (_vpHostNext[host] || 0) - Date.now());
+  const run = () => {
+    _vpHostNext[host] = Date.now() + gap;
+    return fetch(url, init).then(r => {
+      if (r && r.status === 429 && attempt < 3) {
+        let raMs = 0;
+        try { raMs = parseInt((r.headers && r.headers.get('Retry-After')) || '0', 10) * 1000; } catch (e) {}
+        const backoff = (raMs > 0 ? raMs : 1000 * Math.pow(2, attempt)) + Math.random() * 500;
+        _vpHostNext[host] = Date.now() + backoff;
+        return sleep(backoff).then(() => vpFetch(url, init, attempt + 1));
+      }
+      return r;
+    });
+  };
+  return wait > 0 ? sleep(wait).then(run) : run();
+}
+
+/* ---------------- persistent result cache (localStorage) ---------------- */
+/* Paper metadata barely changes, abstracts don't, and claim judgments are
+ * deterministic-ish. Caching them across runs kills repeat cost and most
+ * rate-limit pressure. Entries: {v, t} with per-kind TTL. Rate-limited
+ * misses are NEVER cached — a limit must not poison future runs.
+ * Degrades to a no-op without localStorage (private mode, test sandbox). */
+const VP_CACHE_KEY = 'veripaper-cache-v1';
+const VP_CACHE_TTL = { meta: 7 * 864e5, abstract: 30 * 864e5, judge: 30 * 864e5 };
+const VP_CACHE_MAX = 200;
+let _vpCache = null, _vpCacheHits = 0;
+function vpHasStorage() { try { return typeof localStorage !== 'undefined' && !!localStorage; } catch (e) { return false; } }
+function vpCacheLoad() {
+  if (_vpCache) return _vpCache;
+  _vpCache = {};
+  if (!vpHasStorage()) return _vpCache;
+  try { _vpCache = JSON.parse(localStorage.getItem(VP_CACHE_KEY) || '{}') || {}; } catch (e) {}
+  return _vpCache;
+}
+function vpCacheSave() {
+  if (!vpHasStorage()) return;
+  try {
+    const keys = Object.keys(_vpCache);
+    if (keys.length > VP_CACHE_MAX)
+      keys.map(k => [k, (_vpCache[k] || {}).t || 0]).sort((a, b) => a[1] - b[1])
+        .slice(0, keys.length - VP_CACHE_MAX).forEach(([k]) => { delete _vpCache[k]; });
+    localStorage.setItem(VP_CACHE_KEY, JSON.stringify(_vpCache));
+  } catch (e) {}
+}
+function vpCacheGet(kind, key) {
+  if (!vpHasStorage()) return null;
+  const e = vpCacheLoad()[kind + '|' + key];
+  if (!e || !e.t || (Date.now() - e.t) > (VP_CACHE_TTL[kind] || 864e5)) return null;
+  _vpCacheHits++;
+  return e.v;
+}
+function vpCacheSet(kind, key, value) {
+  if (!vpHasStorage()) return;
+  vpCacheLoad()[kind + '|' + key] = { v: value, t: Date.now() };
+  vpCacheSave();
+}
+function vpHashStr(s) {
+  let h = 5381;
+  const str = String(s || '');
+  for (let i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0;
+  return (h >>> 0).toString(36);
+}
+
 /* ---------------- extraction ---------------- */
 
 function cutReferences(md) {
@@ -189,7 +275,7 @@ async function crossrefLookup(entryRaw, entryYear) {
   const url = 'https://api.crossref.org/works?query.bibliographic=' + encodeURIComponent(q) +
     '&rows=3&select=DOI,title,published,author';
   let r;
-  try { r = await fetch(url, { headers: { Accept: 'application/json' } }); }
+  try { r = await vpFetch(url, { headers: { Accept: 'application/json' } }); }
   catch { return none; }
   if (!r.ok) return r.status === 429 ? { doi: null, arxiv_id: null, limited: true } : none;
   let items;
@@ -215,7 +301,7 @@ async function s2Lookup(entryRaw, entryYear) {
   if (q.length < 15) return none;
   let r;
   try {
-    r = await fetch('https://api.semanticscholar.org/graph/v1/paper/search?' + new URLSearchParams({
+    r = await vpFetch('https://api.semanticscholar.org/graph/v1/paper/search?' + new URLSearchParams({
       query: q, fields: 'title,abstract,externalIds,year', limit: '3' }));
   } catch { return none; }
   if (!r.ok) return r.status === 429 ? { doi: null, arxiv_id: null, limited: true } : none;
@@ -305,7 +391,7 @@ function detectChimeric(entryRaw, authors) {
 }
 
 async function pgCheckCrossRef(doi) {
-  const r = await fetch('https://api.crossref.org/works/' + encodeURIComponent(doi),
+  const r = await vpFetch('https://api.crossref.org/works/' + encodeURIComponent(doi),
     { headers: { Accept: 'application/json' } });
   if (!r.ok) return r.status === 429 ? { limited: true } : null;
   const m = (await r.json()).message;
@@ -321,7 +407,7 @@ async function pgCheckCrossRef(doi) {
   };
 }
 async function pgCheckDataCite(doi) {
-  const r = await fetch('https://api.datacite.org/dois/' + encodeURIComponent(doi),
+  const r = await vpFetch('https://api.datacite.org/dois/' + encodeURIComponent(doi),
     { headers: { Accept: 'application/vnd.api+json' } });
   if (!r.ok) return r.status === 429 ? { limited: true } : null;
   const a = (await r.json()).data.attributes;
@@ -337,7 +423,7 @@ async function pgCheckDataCite(doi) {
 }
 /* Europe PMC: biomedical/life-science coverage incl. abstracts; CORS-enabled. */
 async function pgCheckEuropePMC(doi) {
-  const r = await fetch('https://www.ebi.ac.uk/europepmc/webservices/rest/search?' + new URLSearchParams({
+  const r = await vpFetch('https://www.ebi.ac.uk/europepmc/webservices/rest/search?' + new URLSearchParams({
     query: 'DOI:"' + doi + '"', format: 'json', resultType: 'core', pageSize: '1' }));
   if (!r.ok) return r.status === 429 ? { limited: true } : null;
   const res = (((await r.json()).resultList || {}).result || []);
@@ -361,7 +447,7 @@ async function dblpLookup(entryRaw, entryYear) {
   if (q.length < 15) return none;
   let r;
   try {
-    r = await fetch('https://dblp.org/search/publ/api/?' + new URLSearchParams({ q, format: 'json', h: '3' }));
+    r = await vpFetch('https://dblp.org/search/publ/api/?' + new URLSearchParams({ q, format: 'json', h: '3' }));
   } catch { return none; }
   if (!r.ok) return r.status === 429 ? { doi: null, arxiv_id: null, limited: true } : none;
   let hits;
@@ -377,7 +463,7 @@ async function dblpLookup(entryRaw, entryYear) {
   }
   return none;
 }
-async function verifyDoi(doi) {
+async function _verifyDoiLive(doi) {
   const miss = { exists: false, title: null, authors: [], venue: '', year: '', retracted: false, limited: false };
   let limited = false;
   for (const fn of [pgCheckCrossRef, pgCheckDataCite, pgCheckEuropePMC]) {
@@ -392,7 +478,20 @@ async function verifyDoi(doi) {
   }
   return limited ? Object.assign({}, miss, { limited: true }) : miss;
 }
-async function verifyArxiv(id) {
+/* Meta cache: paper existence/title/authors barely change (7-day TTL).
+ * Rate-limited results are NEVER cached — a limit must not poison future runs. */
+async function verifyDoiCached(doi, verifyFn, cachePrefix) {
+  const ckey = cachePrefix + String(doi).toLowerCase();
+  const cached = vpCacheGet('meta', ckey);
+  if (cached) return cached;
+  const out = await verifyFn(doi);
+  if (!out.limited) vpCacheSet('meta', ckey, out);
+  return out;
+}
+async function verifyDoi(doi) {
+  return verifyDoiCached(doi, _verifyDoiLive, 'doi:');
+}
+async function _verifyArxivLive(id) {
   const base = id.replace(/v\d+$/i, '');
   let hit = null;
   try { hit = await pgCheckDataCite('10.48550/arXiv.' + base); } catch { hit = null; }
@@ -401,6 +500,9 @@ async function verifyArxiv(id) {
   return hit
     ? { exists: true, title: hit.title, authors: hit.authors || [], venue: 'arXiv preprint', year: hit.year || '', retracted: !!hit.retracted, limited: false }
     : { exists: false, title: null, authors: [], venue: '', year: '', retracted: false, limited: false };
+}
+async function verifyArxiv(id) {
+  return verifyDoiCached(id, _verifyArxivLive, 'arxiv:');
 }
 
 async function resolveCitation(pair, refmap, cache) {
@@ -458,35 +560,46 @@ async function resolveCitation(pair, refmap, cache) {
 
 /* ---------------- abstract ---------------- */
 
-async function fetchAbstract(res) {
+/* Per-run dedup: the same paper cited 5 times costs 1 abstract fetch, not 5.
+ * Persistent cache (localStorage, 30-day TTL) covers repeat drafts. */
+async function fetchAbstract(res, runCache) {
+  const id = String(res.doi || res.arxiv_id || '').toLowerCase();
+  if (!id) return null;
+  if (runCache && runCache.has(id)) return runCache.get(id);
+  const cached = vpCacheGet('abstract', id);
+  if (cached) { if (runCache) runCache.set(id, cached); return cached; }
+  let ab = null;
   if (res.arxiv_id) {
-    const d = await pgCheckDataCite('10.48550/arXiv.' + res.arxiv_id.replace(/v\d+$/i, '')).catch(() => null);
     // DataCite descriptions need the full record; fetch it
     try {
-      const r = await fetch('https://api.datacite.org/dois/' + encodeURIComponent('10.48550/arXiv.' + res.arxiv_id.replace(/v\d+$/i, '')),
+      const r = await vpFetch('https://api.datacite.org/dois/' + encodeURIComponent('10.48550/arXiv.' + res.arxiv_id.replace(/v\d+$/i, '')),
         { headers: { Accept: 'application/vnd.api+json' } });
       if (r.ok) {
         const descs = ((await r.json()).data.attributes.descriptions || [])
           .filter(d => (d.descriptionType || '').toLowerCase() === 'abstract');
-        if (descs.length) return descs[0].description.trim();
+        if (descs.length) ab = descs[0].description.trim();
       }
     } catch { /* fall through */ }
   }
-  if (res.doi) {
+  if (!ab && res.doi) {
     try {
-      const r = await fetch('https://api.semanticscholar.org/graph/v1/paper/DOI:' +
+      const r = await vpFetch('https://api.semanticscholar.org/graph/v1/paper/DOI:' +
         encodeURIComponent(res.doi) + '?fields=title,abstract');
       if (r.ok) {
-        const ab = (await r.json()).abstract;
-        if (ab && ab.trim()) return ab.trim();
+        const a2 = (await r.json()).abstract;
+        if (a2 && a2.trim()) ab = a2.trim();
       }
     } catch { /* fall through */ }
-    try {
-      const epmc = await pgCheckEuropePMC(res.doi);
-      if (epmc && epmc.abstract) return epmc.abstract;
-    } catch { /* fall through */ }
+    if (!ab) {
+      try {
+        const epmc = await pgCheckEuropePMC(res.doi);
+        if (epmc && epmc.abstract) ab = epmc.abstract;
+      } catch { /* fall through */ }
+    }
   }
-  return null;
+  // cache only positive hits — a transient miss must not poison future runs
+  if (ab) { vpCacheSet('abstract', id, ab); if (runCache) runCache.set(id, ab); }
+  return ab;
 }
 
 /* ---------------- LLM judgment (BYOK) ---------------- */
@@ -498,10 +611,16 @@ REASON: one sentence, no more than 25 words.
 Rules: SUPPORTED only if the abstract directly states or clearly entails the claim's key assertion. PARTIAL if topically related but the key assertion is not in the abstract. UNSUPPORTED if the abstract contradicts it or is about something else. NO_ABSTRACT if no abstract was provided. Never invent content beyond the abstract.`;
 
 async function judgeSupport(claim, abstract, title, apiKey, model) {
+  // Claim judgments are deterministic-ish: same claim + same paper = same call.
+  // Cache clean verdicts (30-day TTL); never cache errors.
+  const jkey = vpHashStr((model || 'openai/gpt-4o-mini') + '|' + (title || '') + '|' + vpHashStr(abstract) + '|' + claim.slice(0, 500));
+  const cached = vpCacheGet('judge', jkey);
+  if (cached) return cached;
   const ctrl = new AbortController();
   const to = setTimeout(() => ctrl.abort(), 60000);
+  let out;
   try {
-    const r = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    const r = await vpFetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST', signal: ctrl.signal,
       headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + apiKey },
       body: JSON.stringify({
@@ -512,16 +631,20 @@ async function judgeSupport(claim, abstract, title, apiKey, model) {
         ],
       }),
     });
-    if (!r.ok) return { verdict: 'error', reason: `LLM request failed (HTTP ${r.status}) — downgraded honestly` };
-    const text = ((await r.json()).choices[0].message.content || '').trim();
-    const vm = /VERDICT:\s*(SUPPORTED|PARTIAL|UNSUPPORTED|NO_ABSTRACT)/i.exec(text);
-    const rm = /REASON:\s*(.+)/is.exec(text);
-    const reason = rm ? rm[1].trim().split('\n')[0].slice(0, 200) : '';
-    if (!vm) return { verdict: 'error', reason: 'unparseable LLM output — downgraded honestly' };
-    return { verdict: vm[1].toUpperCase(), reason };
+    if (!r.ok) out = { verdict: 'error', reason: `LLM request failed (HTTP ${r.status}) — downgraded honestly` };
+    else {
+      const text = ((await r.json()).choices[0].message.content || '').trim();
+      const vm = /VERDICT:\s*(SUPPORTED|PARTIAL|UNSUPPORTED|NO_ABSTRACT)/i.exec(text);
+      const rm = /REASON:\s*(.+)/is.exec(text);
+      const reason = rm ? rm[1].trim().split('\n')[0].slice(0, 200) : '';
+      out = !vm ? { verdict: 'error', reason: 'unparseable LLM output — downgraded honestly' }
+                : { verdict: vm[1].toUpperCase(), reason };
+    }
   } catch (e) {
-    return { verdict: 'error', reason: 'LLM request failed — downgraded honestly' };
+    out = { verdict: 'error', reason: 'LLM request failed — downgraded honestly' };
   } finally { clearTimeout(to); }
+  if (out.verdict !== 'error') vpCacheSet('judge', jkey, out);
+  return out;
 }
 
 /* ---------------- freshness ---------------- */
@@ -671,6 +794,8 @@ async function groundDraft(text, opts, onStep) {
   const pairs = extractPairs(text);
   const refmap = parseReferences(text);
   const cache = new Map();
+  const absCache = new Map();  // per-run abstract dedup: same paper cited 5× = 1 fetch
+  _vpCacheHits = 0;
   const evidence = new Array(pairs.length);
   let next = 0, done = 0;
   async function checkOne(i) {
@@ -678,10 +803,13 @@ async function groundDraft(text, opts, onStep) {
     const res = await resolveCitation(p, refmap, cache);
     let base = 'UNVERIFIED', note = res.note;
     if (res.exists) {
-      const ab = await fetchAbstract(res);
+      const ab = await fetchAbstract(res, absCache);
       if (opts.apiKey && ab) {
         const j = await judgeSupport(p.claim, ab, res.title, opts.apiKey, opts.model);
-        if (j.verdict === 'SUPPORTED') { base = 'VERIFIED'; note = j.reason; }
+        /* Honest label: the judgment is abstract-level only. The evidence that
+         * matters may live in the paper body (methods, tables) — never claim
+         * more than "the abstract supports this". */
+        if (j.verdict === 'SUPPORTED') { base = 'ABSTRACT-SUPPORTED'; note = j.reason + ' (abstract-level — full text not checked)'; }
         else if (j.verdict === 'PARTIAL') { base = 'CITED'; note = 'partial support only — author decides (' + j.reason + ')'; }
         else { base = 'CITED'; note = j.reason || 'abstract does not support the claim — author decides'; }
       } else {
@@ -697,7 +825,7 @@ async function groundDraft(text, opts, onStep) {
         }
       }
       if (res.retracted) {
-        if (base === 'VERIFIED') base = 'CITED';  // a retracted paper verifies nothing
+        if (base === 'ABSTRACT-SUPPORTED') base = 'CITED';  // a retracted paper supports nothing
         note = 'RETRACTED paper — do not cite it as support. ' + note;
       }
       if (res.chimeric) {
@@ -794,12 +922,12 @@ LeCun, Y., Bengio, Y., Hinton, G. Deep learning. Nature 521:436-444, 2015.
 Verizon. 2023 Data Breach Investigations Report. 2023.`;
 
 function labelClass(base) {
-  return { VERIFIED: 'l-verified', CITED: 'l-cited', UNVERIFIED: 'l-unverified',
+  return { 'ABSTRACT-SUPPORTED': 'l-verified', CITED: 'l-cited', UNVERIFIED: 'l-unverified',
     RATE_LIMITED: 'l-stale', FABRICATED: 'l-unverified' }[base] || 'l-cited';
 }
 
 function renderReport(evidence) {
-  const counts = { VERIFIED: 0, CITED: 0, UNVERIFIED: 0, RATE_LIMITED: 0, FABRICATED: 0 };
+  const counts = { 'ABSTRACT-SUPPORTED': 0, CITED: 0, UNVERIFIED: 0, RATE_LIMITED: 0, FABRICATED: 0 };
   let staleN = 0, chimericN = 0, retractedN = 0;
   for (const e of evidence) {
     counts[e.base] = (counts[e.base] || 0) + 1;
@@ -809,7 +937,7 @@ function renderReport(evidence) {
   }
   let html = `<div style="margin-bottom:18px;font-size:14.5px">` +
     `<b>${evidence.length}</b> claims checked &nbsp;·&nbsp; ` +
-    `<span class="label l-verified">VERIFIED ${counts.VERIFIED}</span> ` +
+    `<span class="label l-verified">ABSTRACT-SUPPORTED ${counts['ABSTRACT-SUPPORTED']}</span> ` +
     `<span class="label l-cited">CITED ${counts.CITED}</span> ` +
     `<span class="label l-unverified">UNVERIFIED ${counts.UNVERIFIED}</span>` +
     (counts.RATE_LIMITED ? ` <span class="label l-stale">RATE_LIMITED ${counts.RATE_LIMITED}</span>` : '') +
@@ -817,6 +945,7 @@ function renderReport(evidence) {
     (staleN ? ` <span class="label l-stale">STALE ×${staleN}</span>` : '') +
     (chimericN ? ` <span class="label l-unverified">CHIMERIC ×${chimericN}</span>` : '') +
     (retractedN ? ` <span class="label l-unverified">RETRACTED ×${retractedN}</span>` : '') +
+    (_vpCacheHits ? ` <span style="font-size:12px;color:var(--ink-soft)">· ${_vpCacheHits} served from local cache</span>` : '') +
     `</div>`;
   evidence.forEach((e, i) => {
     const tags = e.label.split(' ').slice(1).map(t =>
@@ -832,7 +961,7 @@ function renderReport(evidence) {
       `</div></div>`;
   });
   html += `<p style="font-size:12.5px;color:var(--ink-soft);margin-top:14px">` +
-    `Labels: VERIFIED = abstract substantively supports the claim; CITED = source exists but support is uncertain/unchecked (author decides); ` +
+    `Labels: ABSTRACT-SUPPORTED = the abstract substantively supports the claim's key assertion (full text NOT checked — supporting evidence may live in the paper body); CITED = source exists but support is uncertain/unchecked (author decides); ` +
     `UNVERIFIED = no record found or marker not resolvable (absence of evidence, not evidence of fabrication); ` +
     `FABRICATED = identifier checked against its registry and found not to exist — fabricated or mistyped; ` +
     `RATE_LIMITED = sources were rate-limited while checking — not checked, NOT proven fake; ` +

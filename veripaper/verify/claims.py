@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import os
 import re
+import time
 import xml.etree.ElementTree as ET
 
 import requests
@@ -29,14 +30,23 @@ EPMC_API = "https://www.ebi.ac.uk/europepmc/webservices/rest/search"
 
 
 def _get(url: str, headers: dict | None = None, timeout: int = 20):
-    try:
-        h = dict(UA)
-        if headers:
-            h.update(headers)
-        r = requests.get(url, headers=h, timeout=timeout)
-        return r if r.status_code == 200 else None
-    except requests.RequestException:
-        return None
+    h = dict(UA)
+    if headers:
+        h.update(headers)
+    for attempt in range(4):
+        try:
+            r = requests.get(url, headers=h, timeout=timeout)
+        except requests.RequestException:
+            return None
+        if r.status_code != 429 or attempt == 3:
+            return r if r.status_code == 200 else None
+        ra = 0
+        try:
+            ra = int(r.headers.get("Retry-After", "0"))
+        except (TypeError, ValueError):
+            pass
+        time.sleep((ra if ra > 0 else 2 ** attempt) + 0.5)
+    return None  # unreachable
 
 
 def _arxiv_abstract(arxiv_id: str) -> str | None:

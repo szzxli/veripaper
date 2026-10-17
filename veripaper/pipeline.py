@@ -7,7 +7,7 @@ Pipeline:
 
 Honest-label rules (contracts.EvidenceRef):
   citation unresolvable/nonexistent → UNVERIFIED
-  exists, LLM says supported       → VERIFIED
+  exists, LLM says supported       → ABSTRACT-SUPPORTED
   exists, uncertain/no abstract/no key → CITED (+ note; author decides)
   numeric claim with old timestamp  → STALE:YYYY tag appended
 """
@@ -147,10 +147,10 @@ def run_ground(draft_path: str, out_path: str) -> str:
 
         abstract = claims.fetch_abstract(doi=res["doi"], arxiv_id=res["arxiv_id"])
         sup = claims.check_claim_support(p["claim"], abstract, res["title"] or "")
-        label = ("VERIFIED" if sup["verdict"] == "verified" else "CITED")
+        label = ("ABSTRACT-SUPPORTED" if sup["verdict"] == "verified" else "CITED")
         note = sup["reason"]
         if res.get("retracted"):
-            if label == "VERIFIED":
+            if label == "ABSTRACT-SUPPORTED":
                 label = "CITED"  # a retracted paper verifies nothing
             note = "RETRACTED paper — do not cite it as support. " + note
         if res.get("chimeric"):
@@ -180,7 +180,7 @@ def _write_report(out_path: str, draft_path: str, pairs: list[dict],
         "## Summary",
         "",
     ]
-    for label in ("VERIFIED", "CITED", "UNVERIFIED", "RATE_LIMITED", "FABRICATED"):
+    for label in ("ABSTRACT-SUPPORTED", "CITED", "UNVERIFIED", "RATE_LIMITED", "FABRICATED"):
         n = sum(v for k, v in counts.items() if k == label or k.startswith(label + ":"))
         # count STALE tags separately
         lines.append(f"- {label}: {n}")
@@ -209,7 +209,7 @@ def _write_report(out_path: str, draft_path: str, pairs: list[dict],
         ]
     lines += [
         "---",
-        "Labels: VERIFIED = abstract substantively supports the claim; "
+        "Labels: ABSTRACT-SUPPORTED = abstract substantively supports the claim (full text NOT checked); "
         "CITED = source exists but support is uncertain/unchecked (author decides); "
         "UNVERIFIED = no record found or marker not auto-resolvable "
         "(absence of evidence, not evidence of fabrication); "

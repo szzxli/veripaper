@@ -8,6 +8,7 @@ does not index).
 from __future__ import annotations
 
 import re
+import time
 
 import requests
 
@@ -26,10 +27,25 @@ def is_retracted_title(title: str | None) -> bool:
 
 
 def _get(url: str) -> requests.Response | None:
-    try:
-        return requests.get(url, timeout=15, headers=UA)
-    except requests.RequestException:
-        return None
+    """GET with 429 backoff (honor Retry-After, max 3 retries).
+
+    After retries the 429 response is returned as-is so callers can mark
+    the result rate-limited honestly — never laundered into a verdict.
+    """
+    for attempt in range(4):
+        try:
+            r = requests.get(url, timeout=15, headers=UA)
+        except requests.RequestException:
+            return None
+        if r.status_code != 429 or attempt == 3:
+            return r
+        ra = 0
+        try:
+            ra = int(r.headers.get("Retry-After", "0"))
+        except (TypeError, ValueError):
+            pass
+        time.sleep((ra if ra > 0 else 2 ** attempt) + 0.5)
+    return None  # unreachable
 
 
 def verify_doi(doi: str) -> dict:

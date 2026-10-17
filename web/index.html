@@ -196,8 +196,8 @@ footer .colophon a{color:var(--navy)}
   <div class="sec-head"><span class="sec-no">§3</span><h2>The honesty contract</h2></div>
   <p class="sec-lede">Five labels, three tags. No sixth option, no hedging.</p>
   <dl class="contract">
-    <dt><span class="label l-verified">VERIFIED</span></dt>
-    <dd>The source exists <i>and</i> its abstract substantively supports the claim's key assertion.</dd>
+    <dt><span class="label l-verified">ABSTRACT-SUPPORTED</span></dt>
+    <dd>The source exists <i>and</i> its abstract substantively supports the claim's key assertion. Full text is <i>not</i> checked — supporting evidence may live in the paper body.</dd>
     <dd class="example">Example: "LLMs fabricate 23.4% of citations in academic drafts" — matched against the cited paper's abstract.</dd>
     <dt><span class="label l-cited">CITED</span></dt>
     <dd>The source exists, but support is unchecked or only partial. The author decides.</dd>
@@ -210,7 +210,7 @@ footer .colophon a{color:var(--navy)}
     <dt><span class="label l-stale">RATE_LIMITED</span></dt>
     <dd>Sources were rate-limited while checking — not checked, <i>not</i> proven fake. A limit is never presented as a fabrication.</dd>
     <dt><span class="label l-stale">[STALE:YYYY]</span> <span class="label l-unverified">[CHIMERIC:author-mismatch]</span> <span class="label l-unverified">[RETRACTED]</span></dt>
-    <dd>Tags, not labels: stale data, a real title carrying the wrong authors, a retracted paper. A retracted paper can never be VERIFIED.</dd>
+    <dd>Tags, not labels: stale data, a real title carrying the wrong authors, a retracted paper. A retracted paper can never be ABSTRACT-SUPPORTED.</dd>
   </dl>
   <p class="footnote">The governing rule is <i>downgrade-only</i>: uncertainty always resolves toward the weaker label. A tool that cannot verify must say so.</p>
 </section>
