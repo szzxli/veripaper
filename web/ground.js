@@ -21,6 +21,22 @@ function cleanDoi(raw) {
 const ARXIV_RE = /(?:arXiv:)?(\d{4}\.\d{4,5}(?:v\d+)?|[a-z\-]+\/\d{7}(?:v\d+)?)/gi;
 const PANDOC_RE = /\[@([^\]]+)\]/g;
 const NUMERIC_RE = /\[(\d{1,3})\]/g;
+/* IEEE-style grouped citations: [1, 2, 5-7] -> 1, 2, 5, 6, 7.
+ * NUMERIC_RE alone misses these entirely (it needs ] right after digits). */
+const BRACKET_RE = /\[([^\[\]]{1,40})\]/g;
+function expandNumericGroup(inner) {
+  const ids = [];
+  for (const part of inner.split(/[,;]/)) {
+    const p = part.trim();
+    const rm = /^(\d{1,3})\s*[-–—]\s*(\d{1,3})$/.exec(p);
+    if (rm) {
+      const a = parseInt(rm[1], 10), b = parseInt(rm[2], 10);
+      if (a <= b && b - a <= 50) { for (let i = a; i <= b; i++) ids.push(String(i)); }
+      else ids.push(rm[1], rm[2]);
+    } else if (/^\d{1,3}$/.test(p)) ids.push(p);
+  }
+  return ids;
+}
 const AUTHOR_YEAR_RE = /\(\s*([A-Z][A-Za-z'’\-]+(?:\s+et al\.)?(?:\s*(?:&|and)\s+[A-Z][A-Za-z'’\-]+)?(?:\s*,\s*[A-Z][A-Za-z'’\-]+)*,?\s*\d{4}[a-z]?(?:\s*;\s*[^)]+)?)\s*\)/g;
 const URL_RE = /https?:\/\/[^\s\]\)\"'<>]+/gi;
 const YEAR_RE = /\b((?:19|20)\d{2})\b/g;
@@ -171,6 +187,13 @@ function markersInSentence(sent) {
     if (found.some(f => f.type === 'citekey' && f.raw.includes(m[0]))) continue;
     add(m[0], 'numeric', m[1]);
   }
+  BRACKET_RE.lastIndex = 0;
+  while ((m = BRACKET_RE.exec(sent))) {
+    const inner = m[1].trim();
+    if (!/^\d/.test(inner) || !/[,;–—-]/.test(inner)) continue;  // not a group
+    if (found.some(f => f.type === 'citekey' && f.raw.includes(m[0]))) continue;
+    for (const id of expandNumericGroup(inner)) add('[' + id + ']', 'numeric', id);
+  }
   AUTHOR_YEAR_RE.lastIndex = 0;
   while ((m = AUTHOR_YEAR_RE.exec(sent))) add(m[0], 'author-year', m[1]);
   URL_RE.lastIndex = 0;
@@ -319,14 +342,28 @@ async function s2Lookup(entryRaw, entryYear) {
   return none;
 }
 
+/* Bibliographic title search (for entries without embedded DOIs) is expensive
+ * and deterministic per entry text — cache it persistently (meta TTL).
+ * This completes v19's incremental story: re-grounding a draft only pays for
+ * genuinely new reference entries. Rate-limited stays uncached. */
 async function bibliographicLookup(entryRaw, entryYear) {
+  const bkey = 'bib:' + vpHashStr(entryRaw.slice(0, 300) + '|' + (entryYear || ''));
+  const cached = vpCacheGet('meta', bkey);
+  if (cached) return cached;
   const cr = await crossrefLookup(entryRaw, entryYear);
-  if (cr.doi) return { doi: cr.doi, arxiv_id: null, via: 'crossref', limited: false };
-  const s2 = await s2Lookup(entryRaw, entryYear);
-  if (s2.doi || s2.arxiv_id) return { doi: s2.doi, arxiv_id: s2.arxiv_id, via: 'semanticscholar', limited: false };
-  const db = await dblpLookup(entryRaw, entryYear);
-  if (db.doi) return { doi: db.doi, arxiv_id: null, via: 'dblp', limited: false };
-  return { doi: null, arxiv_id: null, via: 'none', limited: !!(cr.limited || s2.limited || db.limited) };
+  let out;
+  if (cr.doi) out = { doi: cr.doi, arxiv_id: null, via: 'crossref', limited: false };
+  else {
+    const s2 = await s2Lookup(entryRaw, entryYear);
+    if (s2.doi || s2.arxiv_id) out = { doi: s2.doi, arxiv_id: s2.arxiv_id, via: 'semanticscholar', limited: false };
+    else {
+      const db = await dblpLookup(entryRaw, entryYear);
+      if (db.doi) out = { doi: db.doi, arxiv_id: null, via: 'dblp', limited: false };
+      else out = { doi: null, arxiv_id: null, via: 'none', limited: !!(cr.limited || s2.limited || db.limited) };
+    }
+  }
+  if (!out.limited) vpCacheSet('meta', bkey, out);
+  return out;
 }
 
 async function resolveMarker(type, id, refmap) {

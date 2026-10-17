@@ -75,5 +75,16 @@ console.log('— regression: classic layout —');
 const pc = extractPairs(CLASSIC);
 ok('classic still yields 1 pair', pc.length === 1 && pc[0].cite_id === '1', JSON.stringify(pc.map(p => p.claim)));
 
+console.log('— v20: IEEE grouped citations —');
+const g1 = extractPairs('Prior work shows this [1, 2, 5-7].\n\n## References\n\n[1] A.\n[2] B.\n[5] C.\n[6] D.\n[7] E.');
+const g1ids = g1.map(p => p.cite_id).sort();
+ok('[1, 2, 5-7] expands to 1,2,5,6,7', JSON.stringify(g1ids) === JSON.stringify(['1','2','5','6','7']), JSON.stringify(g1ids));
+const g2 = extractPairs('As shown [3-5].\n\n## References\n\n[3] A.\n[4] B.\n[5] C.');
+ok('[3-5] expands to 3,4,5', g2.map(p => p.cite_id).sort().join(',') === '3,4,5');
+const g3 = extractPairs('Single [1] stays single.\n\n## References\n\n[1] A.');
+ok('plain [1] unaffected', g3.length === 1 && g3[0].cite_id === '1');
+const g4 = extractPairs('See [Fig. 1-2] for details.\n\n## References\n\n[1] A.');
+ok('[Fig. 1-2] not treated as citation group', g4.length === 0, JSON.stringify(g4.map(p => p.cite_id)));
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

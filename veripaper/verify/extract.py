@@ -36,6 +36,25 @@ def clean_doi(raw: str) -> str:
 ARXIV_RE = re.compile(r"(?:arXiv:)?(\d{4}\.\d{4,5}(?:v\d+)?|[a-z\-]+/\d{7}(?:v\d+)?)", re.I)
 PANDOC_RE = re.compile(r"\[@([^\]]+)\]")
 NUMERIC_RE = re.compile(r"\[(\d{1,3})\]")
+# IEEE-style grouped citations: [1, 2, 5-7] -> 1, 2, 5, 6, 7
+BRACKET_RE = re.compile(r"\[([^\[\]]{1,40})\]")
+_RANGE_RE = re.compile(r"^(\d{1,3})\s*[-–—]\s*(\d{1,3})$")
+
+
+def expand_numeric_group(inner: str) -> list[str]:
+    ids: list[str] = []
+    for part in re.split(r"[,;]", inner):
+        p = part.strip()
+        rm = _RANGE_RE.match(p)
+        if rm:
+            a, b = int(rm.group(1)), int(rm.group(2))
+            if a <= b and b - a <= 50:
+                ids.extend(str(i) for i in range(a, b + 1))
+            else:
+                ids.extend([rm.group(1), rm.group(2)])
+        elif re.fullmatch(r"\d{1,3}", p):
+            ids.append(p)
+    return ids
 AUTHOR_YEAR_RE = re.compile(
     r"\(\s*([A-Z][A-Za-z'’\-]+(?:\s+et al\.)?(?:\s*(?:&|and)\s+[A-Z][A-Za-z'’\-]+)?"
     r"(?:\s*,\s*[A-Z][A-Za-z'’\-]+)*,?\s*\d{4}[a-z]?(?:\s*;\s*[^)]+)?)\s*\)")
@@ -122,6 +141,15 @@ def _markers(sentence: str) -> list[dict]:
         if any(f["type"] == "citekey" and m.group(0) in f["raw"] for f in found):
             continue
         add(m.group(0), "numeric", m.group(1))
+    # grouped brackets: [1, 2, 5-7] -> individual numeric markers
+    for m in BRACKET_RE.finditer(sentence):
+        inner = m.group(1).strip()
+        if not re.match(r"\d", inner) or not re.search(r"[,;–—-]", inner):
+            continue
+        if any(f["type"] == "citekey" and m.group(0) in f["raw"] for f in found):
+            continue
+        for nid in expand_numeric_group(inner):
+            add("[" + nid + "]", "numeric", nid)
     for m in AUTHOR_YEAR_RE.finditer(sentence):
         add(m.group(0), "author-year", m.group(1))
     for m in URL_RE.finditer(sentence):

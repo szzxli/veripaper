@@ -159,6 +159,28 @@ const okResp = (status, retryAfter) => ({
     ok('report counts ABSTRACT-SUPPORTED', /ABSTRACT-SUPPORTED 1/.test(html));
   }
 
+  console.log('— bibliographicLookup persistent cache —');
+  {
+    let netCalls = 0;
+    const sb = makeSandbox(async (url) => {
+      netCalls++;
+      if (url.includes('crossref.org')) {
+        return { status: 200, ok: true, headers: { get: () => null },
+          json: async () => ({ message: { items: [
+            { DOI: '10.1000/found', title: ['Some Real Paper Title Here'],
+              published: { 'date-parts': [[2023]] } }] } }) };
+      }
+      return { status: 404, ok: false, headers: { get: () => null }, json: async () => ({}) };
+    });
+    const entry = '[9] Smith, J. Some Real Paper Title Here. Journal 2023.';
+    const r1 = await sb.bibliographicLookup(entry, 2023);
+    const n1 = netCalls;
+    const r2 = await sb.bibliographicLookup(entry, 2023);
+    ok('second lookup served from cache (no new network)',
+      r2.doi === '10.1000/found' && netCalls === n1, 'netCalls=' + netCalls);
+    ok('first lookup found the DOI', r1.doi === '10.1000/found', r1.doi);
+  }
+
   console.log(`\n${pass} passed, ${fail} failed`);
   process.exit(fail ? 1 : 0);
 })().catch(e => { console.error('FATAL', e); process.exit(1); });
