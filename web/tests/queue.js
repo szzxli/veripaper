@@ -29,7 +29,7 @@ function makeSandbox(fetchImpl, storage) {
     },
     window: {}, navigator: {}, location: { href: '' },
     fetch: fetchImpl || (async () => { throw new Error('no network'); }),
-    URL: URL, Blob: function () {},
+    URL: URL, URLSearchParams: URLSearchParams, Blob: function () {},
     AbortController: AbortController,
   };
   if (storage !== false) {

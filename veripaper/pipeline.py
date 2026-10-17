@@ -146,8 +146,9 @@ def run_ground(draft_path: str, out_path: str) -> str:
             continue
 
         abstract = claims.fetch_abstract(doi=res["doi"], arxiv_id=res["arxiv_id"])
-        sup = claims.check_claim_support(p["claim"], abstract, res["title"] or "")
-        label = ("ABSTRACT-SUPPORTED" if sup["verdict"] == "verified" else "CITED")
+        sup = claims.check_claim_support(p["claim"], abstract, res["title"] or "", doi=res["doi"])
+        label = (("ABSTRACT-SUPPORTED" if sup["verdict"] == "verified" else "CITED")
+                 + tag_str + sup.get("tag", ""))
         note = sup["reason"]
         if res.get("retracted"):
             if label == "ABSTRACT-SUPPORTED":
@@ -216,8 +217,12 @@ def _write_report(out_path: str, draft_path: str, pairs: list[dict],
         "FABRICATED = identifier checked against its registry and found not "
         "to exist — fabricated or mistyped; "
         "RATE_LIMITED = sources were rate-limited while checking — not checked, NOT proven fake; "
-        "[STALE:YYYY] = numeric claim older than the freshness window; "
+                "[STALE:YYYY] = numeric claim older than the freshness window; "
         "[CHIMERIC:author-mismatch] = title matches a real paper but the listed authors do not; "
+        "[SPECIFIC-NOT-IN-ABSTRACT] = claim leans on hard specifics (numbers, quoted phrases) "
+        "absent from the abstract — check the full text; "
+        "[POSSIBLE-MISATTRIBUTION] = a missing specific appears in a paper this work cites — "
+        "the finding may originate there; "
         "[RETRACTED] = the paper has been retracted — do not cite it as support.",
     ]
     open(out_path, "w", encoding="utf-8").write("\n".join(lines))
