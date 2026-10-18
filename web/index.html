@@ -339,8 +339,30 @@ footer .colophon a{color:var(--navy)}
 </div>
 
 <footer><div class="wrap">
-  <div class="colophon">VERIPAPER · v0.1 · SET IN GEORGIA · MIT LICENSE · <a href="https://github.com/szzxli/veripaper">GITHUB</a> · <a href="https://github.com/szzxli/veripaper/issues">FEEDBACK</a></div>
+  <div class="colophon">VERIPAPER · v0.1 · SET IN GEORGIA · MIT LICENSE · <a href="https://github.com/szzxli/veripaper">GITHUB</a> · <a href="https://github.com/szzxli/veripaper/issues">FEEDBACK</a> · <a href="#" id="buglink">REPORT BUG</a></div>
 </div></footer>
+
+<script>
+/* One-click bug report: prefills environment into a GitHub issue */
+document.getElementById("buglink").addEventListener("click", function (e) {
+  e.preventDefault();
+  var ua = navigator.userAgent || "?";
+  var ls = "?";
+  try {
+    var b = 0;
+    for (var i = 0; i < localStorage.length; i++) {
+      var k = localStorage.key(i);
+      b += (k.length + (localStorage.getItem(k) || "").length) * 2;
+    }
+    ls = "~" + (b / 1024).toFixed(1) + " KB";
+  } catch (err) {}
+  var body = "## Environment\n- App version: v22 (web)\n- User agent: " + ua
+    + "\n- localStorage used: " + ls
+    + "\n\n## What happened\n\n\n## Steps to reproduce\n\n\n## Expected\n";
+  location.href = "https://github.com/szzxli/veripaper/issues/new?title="
+    + encodeURIComponent("[bug] ") + "&body=" + encodeURIComponent(body);
+});
+</script>
 
 <script src="project.js"></script>
 <script src="ground.js"></script>
