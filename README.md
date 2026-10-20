@@ -54,6 +54,13 @@ python -m veripaper ground draft.md --out report.md
 
 Input: paper markdown. Output: claim-by-claim verification report.
 
+## Benchmark
+
+A public citation-checking benchmark (34 samples, ground truth verified
+live against the registries): [benchmark/](benchmark/) — construction
+and scoring rules in `benchmark/METHOD.md`, latest scored runs
+(veripaper + RefExists, misses included) in `benchmark/RESULTS.md`.
+
 ## Roadmap
 
 - v0.1: Evidence grounding (current state of this repo)
