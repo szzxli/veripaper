@@ -1,0 +1,337 @@
+{
+  "tool": "RefExists (DSL4-Digital/RefExists)",
+  "commit": "5fa3ffbaf3bc2f40877a5d3e2e446615455a5a62",
+  "run_at": "2026-10-20",
+  "results": [
+    {
+      "id": "real-01",
+      "category": "real",
+      "subtype": "doi-in-text",
+      "status": "verified",
+      "retracted": false,
+      "confidence": 0.85,
+      "outcome": "pass"
+    },
+    {
+      "id": "real-02",
+      "category": "real",
+      "subtype": "arxiv-in-text",
+      "status": "verified",
+      "retracted": false,
+      "confidence": 1,
+      "outcome": "pass"
+    },
+    {
+      "id": "real-03",
+      "category": "real",
+      "subtype": "arxiv-in-text",
+      "status": "verified",
+      "retracted": false,
+      "confidence": 0.9249999999999999,
+      "outcome": "pass"
+    },
+    {
+      "id": "real-04",
+      "category": "real",
+      "subtype": "reference-entry-with-doi",
+      "status": "verified",
+      "retracted": false,
+      "confidence": 0.85,
+      "outcome": "pass"
+    },
+    {
+      "id": "real-05",
+      "category": "real",
+      "subtype": "reference-entry-no-id",
+      "status": "likely",
+      "retracted": false,
+      "confidence": 0.85,
+      "outcome": "pass"
+    },
+    {
+      "id": "real-06",
+      "category": "real",
+      "subtype": "doi-in-text",
+      "status": "verified",
+      "retracted": false,
+      "confidence": 1,
+      "outcome": "pass"
+    },
+    {
+      "id": "real-07",
+      "category": "real",
+      "subtype": "arxiv-in-text",
+      "status": "verified",
+      "retracted": false,
+      "confidence": 0.7749999999999999,
+      "outcome": "pass"
+    },
+    {
+      "id": "real-08",
+      "category": "real",
+      "subtype": "reference-entry-with-arxiv",
+      "status": "verified",
+      "retracted": false,
+      "confidence": 0.85,
+      "outcome": "pass"
+    },
+    {
+      "id": "fab-01",
+      "category": "fabricated",
+      "subtype": "fabricated-doi",
+      "status": "not_found",
+      "retracted": false,
+      "confidence": null,
+      "outcome": "pass"
+    },
+    {
+      "id": "fab-02",
+      "category": "fabricated",
+      "subtype": "fabricated-doi",
+      "status": "not_found",
+      "retracted": false,
+      "confidence": null,
+      "outcome": "pass"
+    },
+    {
+      "id": "fab-03",
+      "category": "fabricated",
+      "subtype": "fabricated-arxiv",
+      "status": "not_found",
+      "retracted": false,
+      "confidence": null,
+      "outcome": "pass"
+    },
+    {
+      "id": "fab-04",
+      "category": "fabricated",
+      "subtype": "fabricated-doi",
+      "status": "partial",
+      "retracted": false,
+      "confidence": 0.85,
+      "outcome": "miss"
+    },
+    {
+      "id": "fab-05",
+      "category": "fabricated",
+      "subtype": "fabricated-arxiv",
+      "status": "not_found",
+      "retracted": false,
+      "confidence": null,
+      "outcome": "pass"
+    },
+    {
+      "id": "fab-06",
+      "category": "fabricated",
+      "subtype": "fabricated-entry-no-id",
+      "status": "partial",
+      "retracted": false,
+      "confidence": 0.57,
+      "outcome": "miss"
+    },
+    {
+      "id": "fab-07",
+      "category": "fabricated",
+      "subtype": "fabricated-entry-no-id",
+      "status": "error",
+      "retracted": false,
+      "confidence": 0.42999999999999994,
+      "outcome": "inconclusive-error",
+      "attempts": [
+        {
+          "status": "error",
+          "outcome": "inconclusive-error"
+        },
+        {
+          "status": "error",
+          "retracted": false,
+          "outcome": "inconclusive-error"
+        }
+      ],
+      "first_status": "error"
+    },
+    {
+      "id": "fab-08",
+      "category": "fabricated",
+      "subtype": "fabricated-entry-no-id",
+      "status": "partial",
+      "retracted": false,
+      "confidence": 0.4638888888888889,
+      "outcome": "miss"
+    },
+    {
+      "id": "chim-01",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "status": "partial",
+      "retracted": false,
+      "confidence": 0.7,
+      "outcome": "pass"
+    },
+    {
+      "id": "chim-02",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "status": "partial",
+      "retracted": false,
+      "confidence": 0.85,
+      "outcome": "pass"
+    },
+    {
+      "id": "chim-03",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "status": "verified",
+      "retracted": false,
+      "confidence": 0.7749999999999999,
+      "outcome": "miss"
+    },
+    {
+      "id": "chim-04",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "status": "verified",
+      "retracted": false,
+      "confidence": 0.85,
+      "outcome": "miss"
+    },
+    {
+      "id": "chim-05",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "status": "partial",
+      "retracted": false,
+      "confidence": 0.7,
+      "outcome": "pass"
+    },
+    {
+      "id": "chim-06",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "status": "error",
+      "retracted": false,
+      "confidence": 0.3055555555555555,
+      "outcome": "inconclusive-error",
+      "attempts": [
+        {
+          "status": "error",
+          "outcome": "inconclusive-error"
+        },
+        {
+          "status": "error",
+          "retracted": false,
+          "outcome": "inconclusive-error"
+        }
+      ],
+      "first_status": "error"
+    },
+    {
+      "id": "retr-01",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "status": "verified",
+      "retracted": true,
+      "confidence": 0.9416666666666667,
+      "outcome": "pass"
+    },
+    {
+      "id": "retr-02",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "status": "verified",
+      "retracted": true,
+      "confidence": 0.93,
+      "outcome": "pass"
+    },
+    {
+      "id": "retr-03",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "status": "verified",
+      "retracted": true,
+      "confidence": 0.9,
+      "outcome": "pass"
+    },
+    {
+      "id": "retr-04",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "status": "verified",
+      "retracted": true,
+      "confidence": 0.8444444444444444,
+      "outcome": "pass"
+    },
+    {
+      "id": "retr-05",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "status": "verified",
+      "retracted": true,
+      "confidence": 0.8444444444444444,
+      "outcome": "pass"
+    },
+    {
+      "id": "retr-06",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "status": "verified",
+      "retracted": true,
+      "confidence": 0.825,
+      "outcome": "pass"
+    },
+    {
+      "id": "spec-01",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "status": "verified",
+      "retracted": false,
+      "confidence": 0.9249999999999999,
+      "outcome": "out-of-scope-claim-support"
+    },
+    {
+      "id": "spec-02",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "status": "verified",
+      "retracted": false,
+      "confidence": 0.85,
+      "outcome": "out-of-scope-claim-support"
+    },
+    {
+      "id": "spec-03",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "status": "verified",
+      "retracted": false,
+      "confidence": 1,
+      "outcome": "out-of-scope-claim-support"
+    },
+    {
+      "id": "spec-04",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "status": "verified",
+      "retracted": false,
+      "confidence": 0.85,
+      "outcome": "out-of-scope-claim-support"
+    },
+    {
+      "id": "spec-05",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "status": "verified",
+      "retracted": false,
+      "confidence": 0.7749999999999999,
+      "outcome": "out-of-scope-claim-support"
+    },
+    {
+      "id": "spec-06",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "status": "verified",
+      "retracted": false,
+      "confidence": 0.7666666666666666,
+      "outcome": "out-of-scope-claim-support"
+    }
+  ]
+}

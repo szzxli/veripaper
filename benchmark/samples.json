@@ -1,0 +1,442 @@
+{
+  "name": "veripaper public citation-checking benchmark",
+  "version": "1.0",
+  "built_at": "2026-10-20",
+  "note": "Ground truth verified live at build time; see METHOD.md. Registry contents change over time — re-run build_samples.py to re-verify before quoting results.",
+  "samples": [
+    {
+      "id": "real-01",
+      "category": "real",
+      "subtype": "doi-in-text",
+      "draft": "Deep residual learning eases the training of substantially deeper networks and mitigates the degradation problem (10.1109/CVPR.2016.90).",
+      "refexists_ref": "He, K., Zhang, X., Ren, S., & Sun, J. (2016). Deep residual learning for image recognition. Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition, 770-778. https://doi.org/10.1109/CVPR.2016.90",
+      "ground_truth": {
+        "registry_title": "Deep Residual Learning for Image Recognition",
+        "basis": "identifier resolves in its registry at build time"
+      }
+    },
+    {
+      "id": "real-02",
+      "category": "real",
+      "subtype": "arxiv-in-text",
+      "draft": "The Transformer dispenses with recurrence and convolutions and relies entirely on attention (arXiv:1706.03762).",
+      "refexists_ref": "Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N., Kaiser, L., & Polosukhin, I. (2017). Attention is all you need. Advances in Neural Information Processing Systems, 30. arXiv:1706.03762",
+      "ground_truth": {
+        "registry_title": "Attention Is All You Need",
+        "basis": "identifier resolves in its registry at build time"
+      }
+    },
+    {
+      "id": "real-03",
+      "category": "real",
+      "subtype": "arxiv-in-text",
+      "draft": "BERT pre-trains deep bidirectional representations from unlabeled text by jointly conditioning on both left and right context (arXiv:1810.04805).",
+      "refexists_ref": "Devlin, J., Chang, M.-W., Lee, K., & Toutanova, K. (2019). BERT: Pre-training of deep bidirectional transformers for language understanding. Proceedings of NAACL-HLT 2019. arXiv:1810.04805",
+      "ground_truth": {
+        "registry_title": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding",
+        "basis": "identifier resolves in its registry at build time"
+      }
+    },
+    {
+      "id": "real-04",
+      "category": "real",
+      "subtype": "reference-entry-with-doi",
+      "draft": "Residual learning has become a standard building block for image recognition [1].\n\n## References\n[1] He, K., Zhang, X., Ren, S., & Sun, J. (2016). Deep residual learning for image recognition. CVPR. doi:10.1109/CVPR.2016.90",
+      "refexists_ref": "[1] He, K., Zhang, X., Ren, S., & Sun, J. (2016). Deep residual learning for image recognition. CVPR. doi:10.1109/CVPR.2016.90",
+      "ground_truth": {
+        "registry_title": "Deep Residual Learning for Image Recognition",
+        "basis": "identifier resolves in its registry at build time"
+      }
+    },
+    {
+      "id": "real-05",
+      "category": "real",
+      "subtype": "reference-entry-no-id",
+      "draft": "Self-attention underpins most modern language models [1].\n\n## References\n[1] Vaswani, A., et al. Attention is all you need. NeurIPS 2017.",
+      "refexists_ref": "[1] Vaswani, A., et al. Attention is all you need. NeurIPS 2017.",
+      "ground_truth": {
+        "registry_title": "Attention Is All You Need",
+        "basis": "identifier resolves in its registry at build time"
+      }
+    },
+    {
+      "id": "real-06",
+      "category": "real",
+      "subtype": "doi-in-text",
+      "draft": "The double-helix structure of DNA was described in a short Nature report (10.1038/171737a0).",
+      "refexists_ref": "Watson, J. D., & Crick, F. H. C. (1953). Molecular structure of nucleic acids: A structure for deoxyribose nucleic acid. Nature, 171(4356), 737-738. https://doi.org/10.1038/171737a0",
+      "ground_truth": {
+        "registry_title": "Molecular Structure of Nucleic Acids: A Structure for Deoxyribose Nucleic Acid",
+        "basis": "identifier resolves in its registry at build time"
+      }
+    },
+    {
+      "id": "real-07",
+      "category": "real",
+      "subtype": "arxiv-in-text",
+      "draft": "LoRA freezes the pre-trained model weights and injects trainable low-rank decomposition matrices into each layer (arXiv:2106.09685).",
+      "refexists_ref": "Hu, E. J., et al. (2022). LoRA: Low-rank adaptation of large language models. International Conference on Learning Representations. arXiv:2106.09685",
+      "ground_truth": {
+        "registry_title": "LoRA: Low-Rank Adaptation of Large Language Models",
+        "basis": "identifier resolves in its registry at build time"
+      }
+    },
+    {
+      "id": "real-08",
+      "category": "real",
+      "subtype": "reference-entry-with-arxiv",
+      "draft": "Diffusion models have beaten GANs on image synthesis benchmarks [1].\n\n## References\n[1] Ho, J., Jain, A., & Abbeel, P. (2020). Denoising diffusion probabilistic models. NeurIPS. arXiv:2006.11239",
+      "refexists_ref": "[1] Ho, J., Jain, A., & Abbeel, P. (2020). Denoising diffusion probabilistic models. NeurIPS. arXiv:2006.11239",
+      "ground_truth": {
+        "registry_title": "Denoising Diffusion Probabilistic Models",
+        "basis": "identifier resolves in its registry at build time"
+      }
+    },
+    {
+      "id": "fab-01",
+      "category": "fabricated",
+      "subtype": "fabricated-doi",
+      "draft": "Strain engineering has pushed perovskite solar-cell efficiency to a new record (10.1038/s41586-024-99999-9).",
+      "refexists_ref": "Delacroix, M., et al. (2024). Record perovskite solar-cell efficiency via lattice strain engineering. Nature. https://doi.org/10.1038/s41586-024-99999-9",
+      "ground_truth": {
+        "basis": "identifier invented by the benchmark authors; registry lookup at build time definitively returned not-found (crossref http 404, datacite http 404)"
+      }
+    },
+    {
+      "id": "fab-02",
+      "category": "fabricated",
+      "subtype": "fabricated-doi",
+      "draft": "New constraints on dark-matter candidates were presented in a recent report (10.1126/science.adq9999).",
+      "refexists_ref": "Herrera, L., et al. (2025). New constraints on dark-matter candidates from underground detectors. Science. https://doi.org/10.1126/science.adq9999",
+      "ground_truth": {
+        "basis": "identifier invented by the benchmark authors; registry lookup at build time definitively returned not-found (crossref http 404, datacite http 404)"
+      }
+    },
+    {
+      "id": "fab-03",
+      "category": "fabricated",
+      "subtype": "fabricated-arxiv",
+      "draft": "Sparse mixture-of-experts routing cuts inference cost substantially at scale (arXiv:2406.99999).",
+      "refexists_ref": "Novak, P., et al. (2024). Sparse mixture-of-experts routing for low-cost inference at scale. arXiv:2406.99999",
+      "ground_truth": {
+        "basis": "identifier invented by the benchmark authors; registry lookup at build time definitively returned not-found (arxiv no entry)"
+      }
+    },
+    {
+      "id": "fab-04",
+      "category": "fabricated",
+      "subtype": "fabricated-doi",
+      "draft": "The proposed detector tops the public benchmark leaderboard (10.1109/CVPR.2024.99999).",
+      "refexists_ref": "Tanaka, Y., et al. (2024). A unified detector topping public vision benchmarks. Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. https://doi.org/10.1109/CVPR.2024.99999",
+      "ground_truth": {
+        "basis": "identifier invented by the benchmark authors; registry lookup at build time definitively returned not-found (crossref http 404, datacite http 404)"
+      }
+    },
+    {
+      "id": "fab-05",
+      "category": "fabricated",
+      "subtype": "fabricated-arxiv",
+      "draft": "Retrieval-augmented agents outperform fine-tuned baselines on long-horizon tasks (arXiv:2302.99998).",
+      "refexists_ref": "Osei, D., et al. (2023). Retrieval-augmented agents for long-horizon task completion. arXiv:2302.99998",
+      "ground_truth": {
+        "basis": "identifier invented by the benchmark authors; registry lookup at build time definitively returned not-found (arxiv no entry)"
+      }
+    },
+    {
+      "id": "fab-06",
+      "category": "fabricated",
+      "subtype": "fabricated-entry-no-id",
+      "draft": "Entanglement routing is a promising direction for metropolitan quantum networks [1].\n\n## References\n[1] Pemberton, R., et al. Quantum entanglement routing in metropolitan fiber networks. Nature Photonics 2023.",
+      "refexists_ref": "[1] Pemberton, R., et al. Quantum entanglement routing in metropolitan fiber networks. Nature Photonics 2023.",
+      "ground_truth": {
+        "basis": "reference entry (authors, title, venue, year) invented by the benchmark authors; carries no identifier, so no checker can prove fabrication — the honest positive outcome is 'unverifiable / not indexed'"
+      }
+    },
+    {
+      "id": "fab-07",
+      "category": "fabricated",
+      "subtype": "fabricated-entry-no-id",
+      "draft": "Microvascular networks can restore mechanical function after damage [1].\n\n## References\n[1] Okafor, C., & Lindqvist, M. Self-healing polymer composites via microvascular networks. Science 2022.",
+      "refexists_ref": "[1] Okafor, C., & Lindqvist, M. Self-healing polymer composites via microvascular networks. Science 2022.",
+      "ground_truth": {
+        "basis": "reference entry (authors, title, venue, year) invented by the benchmark authors; carries no identifier, so no checker can prove fabrication — the honest positive outcome is 'unverifiable / not indexed'"
+      }
+    },
+    {
+      "id": "fab-08",
+      "category": "fabricated",
+      "subtype": "fabricated-entry-no-id",
+      "draft": "Geometry-aware video generation remains an open problem [1].\n\n## References\n[1] Zhang, W., et al. Hyperbolic diffusion transformers for few-shot video generation. NeurIPS 2024.",
+      "refexists_ref": "[1] Zhang, W., et al. Hyperbolic diffusion transformers for few-shot video generation. NeurIPS 2024.",
+      "ground_truth": {
+        "basis": "reference entry (authors, title, venue, year) invented by the benchmark authors; carries no identifier, so no checker can prove fabrication — the honest positive outcome is 'unverifiable / not indexed'"
+      }
+    },
+    {
+      "id": "chim-01",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "draft": "Self-attention underpins most modern language models [1].\n\n## References\n[1] Smith, J., et al. Attention is all you need. NeurIPS 2017.",
+      "refexists_ref": "[1] Smith, J., et al. Attention is all you need. NeurIPS 2017.",
+      "ground_truth": {
+        "registry_title": "Attention Is All You Need",
+        "registry_authors": [
+          "Vaswani, Ashish",
+          "Shazeer, Noam",
+          "Parmar, Niki",
+          "Uszkoreit, Jakob",
+          "Jones, Llion",
+          "Gomez, Aidan N.",
+          "Kaiser, Lukasz",
+          "Polosukhin, Illia"
+        ],
+        "basis": "entry pairs the registry title verbatim with authors disjoint from the registry author list (construction-checked with veripaper's detect_chimeric against the live author list)"
+      }
+    },
+    {
+      "id": "chim-02",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "draft": "Residual learning has become a standard building block for image recognition [1].\n\n## References\n[1] Garcia, M., et al. Deep residual learning for image recognition. CVPR 2016.",
+      "refexists_ref": "[1] Garcia, M., et al. Deep residual learning for image recognition. CVPR 2016.",
+      "ground_truth": {
+        "registry_title": "Deep Residual Learning for Image Recognition",
+        "registry_authors": [
+          "Kaiming He",
+          "Xiangyu Zhang",
+          "Shaoqing Ren",
+          "Jian Sun"
+        ],
+        "basis": "entry pairs the registry title verbatim with authors disjoint from the registry author list (construction-checked with veripaper's detect_chimeric against the live author list)"
+      }
+    },
+    {
+      "id": "chim-03",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "draft": "Bidirectional pre-training changed how language models are built [1].\n\n## References\n[1] Johnson, R., & Patel, S. BERT: Pre-training of deep bidirectional transformers for language understanding. NAACL 2019. arXiv:1810.04805",
+      "refexists_ref": "[1] Johnson, R., & Patel, S. BERT: Pre-training of deep bidirectional transformers for language understanding. NAACL 2019. arXiv:1810.04805",
+      "ground_truth": {
+        "registry_title": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding",
+        "registry_authors": [
+          "Devlin, Jacob",
+          "Chang, Ming-Wei",
+          "Lee, Kenton",
+          "Toutanova, Kristina"
+        ],
+        "basis": "entry pairs the registry title verbatim with authors disjoint from the registry author list (construction-checked with veripaper's detect_chimeric against the live author list)"
+      }
+    },
+    {
+      "id": "chim-04",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "draft": "Diffusion models have beaten GANs on image synthesis benchmarks [1].\n\n## References\n[1] Williams, T., et al. Denoising diffusion probabilistic models. NeurIPS 2020. doi:10.48550/arXiv.2006.11239",
+      "refexists_ref": "[1] Williams, T., et al. Denoising diffusion probabilistic models. NeurIPS 2020. doi:10.48550/arXiv.2006.11239",
+      "ground_truth": {
+        "registry_title": "Denoising Diffusion Probabilistic Models",
+        "registry_authors": [
+          "Ho, Jonathan",
+          "Jain, Ajay",
+          "Abbeel, Pieter"
+        ],
+        "basis": "entry pairs the registry title verbatim with authors disjoint from the registry author list (construction-checked with veripaper's detect_chimeric against the live author list)"
+      }
+    },
+    {
+      "id": "chim-05",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "draft": "Large language models are strikingly effective few-shot learners [1].\n\n## References\n[1] Nguyen, T., et al. Language models are few-shot learners. NeurIPS 2020.",
+      "refexists_ref": "[1] Nguyen, T., et al. Language models are few-shot learners. NeurIPS 2020.",
+      "ground_truth": {
+        "registry_title": "Language Models are Few-Shot Learners",
+        "registry_authors": [
+          "Brown, Tom B.",
+          "Mann, Benjamin",
+          "Ryder, Nick",
+          "Subbiah, Melanie",
+          "Kaplan, Jared",
+          "Dhariwal, Prafulla",
+          "Neelakantan, Arvind",
+          "Shyam, Pranav"
+        ],
+        "basis": "entry pairs the registry title verbatim with authors disjoint from the registry author list (construction-checked with veripaper's detect_chimeric against the live author list)"
+      }
+    },
+    {
+      "id": "chim-06",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "draft": "Adaptive moment estimation remains a default optimizer choice [1].\n\n## References\n[1] Kim, S., et al. Adam: A method for stochastic optimization. ICLR 2015.",
+      "refexists_ref": "[1] Kim, S., et al. Adam: A method for stochastic optimization. ICLR 2015.",
+      "ground_truth": {
+        "registry_title": "Adam: A Method for Stochastic Optimization",
+        "registry_authors": [
+          "Kingma, Diederik P.",
+          "Ba, Jimmy"
+        ],
+        "basis": "entry pairs the registry title verbatim with authors disjoint from the registry author list (construction-checked with veripaper's detect_chimeric against the live author list)"
+      }
+    },
+    {
+      "id": "retr-01",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "draft": "An early report linked ileal-lymphoid-nodular hyperplasia with a developmental disorder in children (10.1016/S0140-6736(97)11096-0).",
+      "refexists_ref": "Wakefield, A. J., et al. (1998). Ileal-lymphoid-nodular hyperplasia, non-specific colitis, and pervasive developmental disorder in children. The Lancet, 351(9103), 637-641. https://doi.org/10.1016/S0140-6736(97)11096-0",
+      "ground_truth": {
+        "registry_title": "RETRACTED: Ileal-lymphoid-nodular hyperplasia, non-specific colitis, and pervasive developmental disorder in children",
+        "openalex_is_retracted": true,
+        "crossref_title_prefix_signal": true,
+        "basis": "OpenAlex marks the work retracted (is_retracted=true) at build time; crossref_title_prefix_signal records whether Crossref also prefixes the title with 'RETRACTED:' — the only retraction signal veripaper's Crossref lookup reads"
+      }
+    },
+    {
+      "id": "retr-02",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "draft": "A registry-based analysis reported on hydroxychloroquine treatment outcomes (10.1016/S0140-6736(20)31180-6).",
+      "refexists_ref": "Mehra, M. R., et al. (2020). Hydroxychloroquine or chloroquine with or without a macrolide for treatment of COVID-19: a multinational registry analysis. The Lancet. https://doi.org/10.1016/S0140-6736(20)31180-6",
+      "ground_truth": {
+        "registry_title": "RETRACTED: Hydroxychloroquine or chloroquine with or without a macrolide for treatment of COVID-19: a multinational registry analysis",
+        "openalex_is_retracted": true,
+        "crossref_title_prefix_signal": true,
+        "basis": "OpenAlex marks the work retracted (is_retracted=true) at build time; crossref_title_prefix_signal records whether Crossref also prefixes the title with 'RETRACTED:' — the only retraction signal veripaper's Crossref lookup reads"
+      }
+    },
+    {
+      "id": "retr-03",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "draft": "A multinational registry analysis examined cardiovascular disease and drug therapy in hospitalised patients (10.1056/NEJMoa2007621).",
+      "refexists_ref": "Mehra, M. R., et al. (2020). Cardiovascular disease, drug therapy, and mortality in Covid-19. New England Journal of Medicine. https://doi.org/10.1056/NEJMoa2007621",
+      "ground_truth": {
+        "registry_title": "RETRACTED: Cardiovascular Disease, Drug Therapy, and Mortality in Covid-19",
+        "openalex_is_retracted": true,
+        "crossref_title_prefix_signal": true,
+        "basis": "OpenAlex marks the work retracted (is_retracted=true) at build time; crossref_title_prefix_signal records whether Crossref also prefixes the title with 'RETRACTED:' — the only retraction signal veripaper's Crossref lookup reads"
+      }
+    },
+    {
+      "id": "retr-04",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "draft": "Stimulus-triggered acquisition of pluripotency was reported in a widely discussed study (10.1038/nature12968).",
+      "refexists_ref": "Obokata, H., et al. (2014). Stimulus-triggered fate conversion of somatic cells into pluripotency. Nature, 505, 641-647. https://doi.org/10.1038/nature12968",
+      "ground_truth": {
+        "registry_title": "RETRACTED ARTICLE: Stimulus-triggered fate conversion of somatic cells into pluripotency",
+        "openalex_is_retracted": true,
+        "crossref_title_prefix_signal": false,
+        "basis": "OpenAlex marks the work retracted (is_retracted=true) at build time; crossref_title_prefix_signal records whether Crossref also prefixes the title with 'RETRACTED:' — the only retraction signal veripaper's Crossref lookup reads"
+      }
+    },
+    {
+      "id": "retr-05",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "draft": "A companion letter reported bidirectional developmental potential in reprogrammed cells (10.1038/nature12969).",
+      "refexists_ref": "Obokata, H., et al. (2014). Bidirectional developmental potential in reprogrammed cells with acquired pluripotency. Nature, 505, 676-680. https://doi.org/10.1038/nature12969",
+      "ground_truth": {
+        "registry_title": "RETRACTED ARTICLE: Bidirectional developmental potential in reprogrammed cells with acquired pluripotency",
+        "openalex_is_retracted": true,
+        "crossref_title_prefix_signal": false,
+        "basis": "OpenAlex marks the work retracted (is_retracted=true) at build time; crossref_title_prefix_signal records whether Crossref also prefixes the title with 'RETRACTED:' — the only retraction signal veripaper's Crossref lookup reads"
+      }
+    },
+    {
+      "id": "retr-06",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "draft": "Room-temperature superconductivity was reported in a carbonaceous sulfur hydride system (10.1038/s41586-020-2801-z).",
+      "refexists_ref": "Snider, E., et al. (2020). Room-temperature superconductivity in a carbonaceous sulfur hydride. Nature, 586, 373-377. https://doi.org/10.1038/s41586-020-2801-z",
+      "ground_truth": {
+        "registry_title": "RETRACTED ARTICLE: Room-temperature superconductivity in a carbonaceous sulfur hydride",
+        "openalex_is_retracted": true,
+        "crossref_title_prefix_signal": false,
+        "basis": "OpenAlex marks the work retracted (is_retracted=true) at build time; crossref_title_prefix_signal records whether Crossref also prefixes the title with 'RETRACTED:' — the only retraction signal veripaper's Crossref lookup reads"
+      }
+    },
+    {
+      "id": "spec-01",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "draft": "Fine-tuned BERT reaches 98.7% accuracy on the CoLA benchmark (arXiv:1810.04805).",
+      "refexists_ref": "Devlin, J., Chang, M.-W., Lee, K., & Toutanova, K. (2019). BERT: Pre-training of deep bidirectional transformers for language understanding. Proceedings of NAACL-HLT 2019. arXiv:1810.04805",
+      "ground_truth": {
+        "missing_specifics": [
+          "98.7%"
+        ],
+        "basis": "the claim's hard specifics are absent from the cited work's abstract, verified at build time with veripaper's own specifics_missing_from_abstract against the abstract fetched from the same public sources the checker queries"
+      }
+    },
+    {
+      "id": "spec-02",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "draft": "A single ResNet-50 reaches 94.8% top-5 accuracy on ImageNet (10.1109/CVPR.2016.90).",
+      "refexists_ref": "He, K., Zhang, X., Ren, S., & Sun, J. (2016). Deep residual learning for image recognition. Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition, 770-778. https://doi.org/10.1109/CVPR.2016.90",
+      "ground_truth": {
+        "missing_specifics": [
+          "94.8%"
+        ],
+        "basis": "the claim's hard specifics are absent from the cited work's abstract, verified at build time with veripaper's own specifics_missing_from_abstract against the abstract fetched from the same public sources the checker queries"
+      }
+    },
+    {
+      "id": "spec-03",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "draft": "The Transformer-big configuration reaches 99.1% accuracy on English constituency parsing (arXiv:1706.03762).",
+      "refexists_ref": "Vaswani, A., et al. (2017). Attention is all you need. Advances in Neural Information Processing Systems, 30. arXiv:1706.03762",
+      "ground_truth": {
+        "missing_specifics": [
+          "99.1%"
+        ],
+        "basis": "the claim's hard specifics are absent from the cited work's abstract, verified at build time with veripaper's own specifics_missing_from_abstract against the abstract fetched from the same public sources the checker queries"
+      }
+    },
+    {
+      "id": "spec-04",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "draft": "Reducing DDPM sampling to 50 steps still yields an FID of 4.67 on CIFAR-10 (arXiv:2006.11239).",
+      "refexists_ref": "Ho, J., Jain, A., & Abbeel, P. (2020). Denoising diffusion probabilistic models. Advances in Neural Information Processing Systems, 33. arXiv:2006.11239",
+      "ground_truth": {
+        "missing_specifics": [
+          "4.67",
+          "DDPM"
+        ],
+        "basis": "the claim's hard specifics are absent from the cited work's abstract, verified at build time with veripaper's own specifics_missing_from_abstract against the abstract fetched from the same public sources the checker queries"
+      }
+    },
+    {
+      "id": "spec-05",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "draft": "LoRA fine-tuning raises RoBERTa-base accuracy on MNLI to 91.7% (arXiv:2106.09685).",
+      "refexists_ref": "Hu, E. J., et al. (2022). LoRA: Low-rank adaptation of large language models. International Conference on Learning Representations. arXiv:2106.09685",
+      "ground_truth": {
+        "missing_specifics": [
+          "91.7%",
+          "MNLI"
+        ],
+        "basis": "the claim's hard specifics are absent from the cited work's abstract, verified at build time with veripaper's own specifics_missing_from_abstract against the abstract fetched from the same public sources the checker queries"
+      }
+    },
+    {
+      "id": "spec-06",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "draft": "The original GAN framework achieves 89.4% accuracy on MNIST classification (arXiv:1406.2661).",
+      "refexists_ref": "Goodfellow, I., et al. (2014). Generative adversarial nets. Advances in Neural Information Processing Systems, 27. arXiv:1406.2661",
+      "ground_truth": {
+        "missing_specifics": [
+          "89.4%",
+          "MNIST"
+        ],
+        "basis": "the claim's hard specifics are absent from the cited work's abstract, verified at build time with veripaper's own specifics_missing_from_abstract against the abstract fetched from the same public sources the checker queries"
+      }
+    }
+  ]
+}

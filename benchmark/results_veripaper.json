@@ -1,0 +1,409 @@
+{
+  "tool": "veripaper (python pipeline, no-key default)",
+  "run_at": "2026-10-20",
+  "results": [
+    {
+      "id": "real-01",
+      "category": "real",
+      "subtype": "doi-in-text",
+      "base_label": "CITED",
+      "label": "CITED [STALE:2016] [STALE:2016]",
+      "note": "no LLM key configured (VERIPAPER_API_KEY) — downgraded honestly",
+      "outcome": "pass"
+    },
+    {
+      "id": "real-02",
+      "category": "real",
+      "subtype": "arxiv-in-text",
+      "base_label": "CITED",
+      "label": "CITED",
+      "note": "no LLM key configured (VERIPAPER_API_KEY) — downgraded honestly",
+      "outcome": "pass"
+    },
+    {
+      "id": "real-03",
+      "category": "real",
+      "subtype": "arxiv-in-text",
+      "base_label": "CITED",
+      "label": "CITED",
+      "note": "no LLM key configured (VERIPAPER_API_KEY) — downgraded honestly",
+      "outcome": "pass"
+    },
+    {
+      "id": "real-04",
+      "category": "real",
+      "subtype": "reference-entry-with-doi",
+      "base_label": "CITED",
+      "label": "CITED",
+      "note": "no LLM key configured (VERIPAPER_API_KEY) — downgraded honestly",
+      "outcome": "pass"
+    },
+    {
+      "id": "real-05",
+      "category": "real",
+      "subtype": "reference-entry-no-id",
+      "base_label": "UNVERIFIED",
+      "label": "UNVERIFIED",
+      "note": "reference-list: reference entry has no DOI/arXiv ID and no confident bibliographic match",
+      "outcome": "false-alarm",
+      "attempts": [
+        {
+          "label": "RATE_LIMITED",
+          "outcome": "inconclusive-rate-limited"
+        },
+        {
+          "label": "UNVERIFIED",
+          "outcome": "false-alarm"
+        }
+      ],
+      "first_label": "RATE_LIMITED"
+    },
+    {
+      "id": "real-06",
+      "category": "real",
+      "subtype": "doi-in-text",
+      "base_label": "CITED",
+      "label": "CITED",
+      "note": "no abstract fetched; no abstract available — downgraded honestly",
+      "outcome": "pass"
+    },
+    {
+      "id": "real-07",
+      "category": "real",
+      "subtype": "arxiv-in-text",
+      "base_label": "CITED",
+      "label": "CITED",
+      "note": "no LLM key configured (VERIPAPER_API_KEY) — downgraded honestly",
+      "outcome": "pass"
+    },
+    {
+      "id": "real-08",
+      "category": "real",
+      "subtype": "reference-entry-with-arxiv",
+      "base_label": "CITED",
+      "label": "CITED",
+      "note": "no LLM key configured (VERIPAPER_API_KEY) — downgraded honestly",
+      "outcome": "pass"
+    },
+    {
+      "id": "fab-01",
+      "category": "fabricated",
+      "subtype": "fabricated-doi",
+      "base_label": "FABRICATED",
+      "label": "FABRICATED",
+      "note": "identifier checked against its registry and does not exist — fabricated or mistyped; do not cite. raw DOI in text; crossref http 404, datacite http 404",
+      "outcome": "pass"
+    },
+    {
+      "id": "fab-02",
+      "category": "fabricated",
+      "subtype": "fabricated-doi",
+      "base_label": "FABRICATED",
+      "label": "FABRICATED",
+      "note": "identifier checked against its registry and does not exist — fabricated or mistyped; do not cite. raw DOI in text; crossref http 404, datacite http 404",
+      "outcome": "pass"
+    },
+    {
+      "id": "fab-03",
+      "category": "fabricated",
+      "subtype": "fabricated-arxiv",
+      "base_label": "FABRICATED",
+      "label": "FABRICATED",
+      "note": "identifier checked against its registry and does not exist — fabricated or mistyped; do not cite. raw arXiv ID in text; arxiv no entry",
+      "outcome": "pass"
+    },
+    {
+      "id": "fab-04",
+      "category": "fabricated",
+      "subtype": "fabricated-doi",
+      "base_label": "FABRICATED",
+      "label": "FABRICATED",
+      "note": "identifier checked against its registry and does not exist — fabricated or mistyped; do not cite. raw DOI in text; crossref http 404, datacite http 404",
+      "outcome": "pass"
+    },
+    {
+      "id": "fab-05",
+      "category": "fabricated",
+      "subtype": "fabricated-arxiv",
+      "base_label": "FABRICATED",
+      "label": "FABRICATED",
+      "note": "identifier checked against its registry and does not exist — fabricated or mistyped; do not cite. raw arXiv ID in text; arxiv no entry",
+      "outcome": "pass"
+    },
+    {
+      "id": "fab-06",
+      "category": "fabricated",
+      "subtype": "fabricated-entry-no-id",
+      "base_label": "RATE_LIMITED",
+      "label": "RATE_LIMITED",
+      "note": "source(s) rate-limited (HTTP 429) while checking — not checked, NOT proven fake. Try again later.",
+      "outcome": "inconclusive-rate-limited",
+      "attempts": [
+        {
+          "label": "RATE_LIMITED",
+          "outcome": "inconclusive-rate-limited"
+        },
+        {
+          "label": "RATE_LIMITED",
+          "outcome": "inconclusive-rate-limited"
+        },
+        {
+          "label": "RATE_LIMITED",
+          "outcome": "inconclusive-rate-limited"
+        }
+      ],
+      "first_label": "RATE_LIMITED"
+    },
+    {
+      "id": "fab-07",
+      "category": "fabricated",
+      "subtype": "fabricated-entry-no-id",
+      "base_label": "UNVERIFIED",
+      "label": "UNVERIFIED",
+      "note": "reference-list: reference entry has no DOI/arXiv ID and no confident bibliographic match",
+      "outcome": "pass",
+      "attempts": [
+        {
+          "label": "RATE_LIMITED",
+          "outcome": "inconclusive-rate-limited"
+        },
+        {
+          "label": "UNVERIFIED",
+          "outcome": "pass"
+        }
+      ],
+      "first_label": "RATE_LIMITED"
+    },
+    {
+      "id": "fab-08",
+      "category": "fabricated",
+      "subtype": "fabricated-entry-no-id",
+      "base_label": "RATE_LIMITED",
+      "label": "RATE_LIMITED",
+      "note": "source(s) rate-limited (HTTP 429) while checking — not checked, NOT proven fake. Try again later.",
+      "outcome": "inconclusive-rate-limited",
+      "attempts": [
+        {
+          "label": "RATE_LIMITED",
+          "outcome": "inconclusive-rate-limited"
+        },
+        {
+          "label": "RATE_LIMITED",
+          "outcome": "inconclusive-rate-limited"
+        },
+        {
+          "label": "RATE_LIMITED",
+          "outcome": "inconclusive-rate-limited"
+        }
+      ],
+      "first_label": "RATE_LIMITED"
+    },
+    {
+      "id": "chim-01",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "base_label": "RATE_LIMITED",
+      "label": "RATE_LIMITED",
+      "note": "source(s) rate-limited (HTTP 429) while checking — not checked, NOT proven fake. Try again later.",
+      "outcome": "inconclusive-rate-limited",
+      "attempts": [
+        {
+          "label": "RATE_LIMITED",
+          "outcome": "inconclusive-rate-limited"
+        },
+        {
+          "label": "RATE_LIMITED",
+          "outcome": "inconclusive-rate-limited"
+        },
+        {
+          "label": "RATE_LIMITED",
+          "outcome": "inconclusive-rate-limited"
+        }
+      ],
+      "first_label": "RATE_LIMITED"
+    },
+    {
+      "id": "chim-02",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "base_label": "CITED",
+      "label": "CITED [CHIMERIC:author-mismatch] [CHIMERIC:author-mismatch]",
+      "note": "CHIMERIC citation: the title matches a real paper but the listed authors do not — no LLM key configured (VERIPAPER_API_KEY) — downgraded honestly",
+      "outcome": "pass"
+    },
+    {
+      "id": "chim-03",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "base_label": "CITED",
+      "label": "CITED [CHIMERIC:author-mismatch] [CHIMERIC:author-mismatch]",
+      "note": "CHIMERIC citation: the title matches a real paper but the listed authors do not — no LLM key configured (VERIPAPER_API_KEY) — downgraded honestly",
+      "outcome": "pass"
+    },
+    {
+      "id": "chim-04",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "base_label": "CITED",
+      "label": "CITED [CHIMERIC:author-mismatch] [CHIMERIC:author-mismatch]",
+      "note": "CHIMERIC citation: the title matches a real paper but the listed authors do not — no LLM key configured (VERIPAPER_API_KEY) — downgraded honestly",
+      "outcome": "pass"
+    },
+    {
+      "id": "chim-05",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "base_label": "RATE_LIMITED",
+      "label": "RATE_LIMITED",
+      "note": "source(s) rate-limited (HTTP 429) while checking — not checked, NOT proven fake. Try again later.",
+      "outcome": "inconclusive-rate-limited",
+      "attempts": [
+        {
+          "label": "RATE_LIMITED",
+          "outcome": "inconclusive-rate-limited"
+        },
+        {
+          "label": "RATE_LIMITED",
+          "outcome": "inconclusive-rate-limited"
+        },
+        {
+          "label": "RATE_LIMITED",
+          "outcome": "inconclusive-rate-limited"
+        }
+      ],
+      "first_label": "RATE_LIMITED"
+    },
+    {
+      "id": "chim-06",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "base_label": "RATE_LIMITED",
+      "label": "RATE_LIMITED",
+      "note": "source(s) rate-limited (HTTP 429) while checking — not checked, NOT proven fake. Try again later.",
+      "outcome": "inconclusive-rate-limited",
+      "attempts": [
+        {
+          "label": "RATE_LIMITED",
+          "outcome": "inconclusive-rate-limited"
+        },
+        {
+          "label": "RATE_LIMITED",
+          "outcome": "inconclusive-rate-limited"
+        },
+        {
+          "label": "RATE_LIMITED",
+          "outcome": "inconclusive-rate-limited"
+        }
+      ],
+      "first_label": "RATE_LIMITED"
+    },
+    {
+      "id": "retr-01",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "base_label": "CITED",
+      "label": "CITED [RETRACTED] [RETRACTED]",
+      "note": "RETRACTED paper — do not cite it as support. no LLM key configured (VERIPAPER_API_KEY) — downgraded honestly",
+      "outcome": "pass"
+    },
+    {
+      "id": "retr-02",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "base_label": "CITED",
+      "label": "CITED [RETRACTED] [RETRACTED]",
+      "note": "RETRACTED paper — do not cite it as support. no LLM key configured (VERIPAPER_API_KEY) — downgraded honestly",
+      "outcome": "pass"
+    },
+    {
+      "id": "retr-03",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "base_label": "CITED",
+      "label": "CITED [RETRACTED] [RETRACTED]",
+      "note": "RETRACTED paper — do not cite it as support. no LLM key configured (VERIPAPER_API_KEY) — downgraded honestly",
+      "outcome": "pass"
+    },
+    {
+      "id": "retr-04",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "base_label": "CITED",
+      "label": "CITED",
+      "note": "no LLM key configured (VERIPAPER_API_KEY) — downgraded honestly",
+      "outcome": "miss"
+    },
+    {
+      "id": "retr-05",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "base_label": "CITED",
+      "label": "CITED",
+      "note": "no LLM key configured (VERIPAPER_API_KEY) — downgraded honestly",
+      "outcome": "miss"
+    },
+    {
+      "id": "retr-06",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "base_label": "CITED",
+      "label": "CITED",
+      "note": "no LLM key configured (VERIPAPER_API_KEY) — downgraded honestly",
+      "outcome": "miss"
+    },
+    {
+      "id": "spec-01",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "base_label": "CITED",
+      "label": "CITED",
+      "note": "no LLM key configured (VERIPAPER_API_KEY) — downgraded honestly",
+      "outcome": "miss"
+    },
+    {
+      "id": "spec-02",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "base_label": "CITED",
+      "label": "CITED [STALE:2016] [STALE:2016]",
+      "note": "no LLM key configured (VERIPAPER_API_KEY) — downgraded honestly",
+      "outcome": "miss"
+    },
+    {
+      "id": "spec-03",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "base_label": "CITED",
+      "label": "CITED",
+      "note": "no LLM key configured (VERIPAPER_API_KEY) — downgraded honestly",
+      "outcome": "miss"
+    },
+    {
+      "id": "spec-04",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "base_label": "CITED",
+      "label": "CITED [STALE:2006] [STALE:2006]",
+      "note": "no LLM key configured (VERIPAPER_API_KEY) — downgraded honestly",
+      "outcome": "miss"
+    },
+    {
+      "id": "spec-05",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "base_label": "CITED",
+      "label": "CITED",
+      "note": "no LLM key configured (VERIPAPER_API_KEY) — downgraded honestly",
+      "outcome": "miss"
+    },
+    {
+      "id": "spec-06",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "base_label": "CITED",
+      "label": "CITED",
+      "note": "no LLM key configured (VERIPAPER_API_KEY) — downgraded honestly",
+      "outcome": "miss"
+    }
+  ]
+}
