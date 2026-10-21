@@ -2,6 +2,8 @@
 
 Open-source academic paper tool: **the paper is just the final presentation.**
 
+**Live workbench (runs in your browser, no install):** https://szzxli.github.io/veripaper/web/
+
 Researchers should only do three things: **creative ideas, logical reasoning, empirical proof**.
 Everything else — writing, benchmarking, venue targeting, rebuttals — is handled by the tool.
 
