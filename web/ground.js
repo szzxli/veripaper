@@ -892,8 +892,21 @@ function initFileUpload(ta, prog) {
     if (!f) return;
     if (f.size > 15 * 1024 * 1024) { prog.textContent = 'File too large (max 15 MB).'; return; }
     const name = f.name.toLowerCase();
+    if (name.endsWith('.bib') || name.endsWith('.bibtex')) {
+      // BibTeX: read as text in the browser; Ground detects it and checks every entry
+      try {
+        const text = (await f.text()).trim();
+        const n = (typeof parseBibTeX === 'function') ? parseBibTeX(text).entries.length : 0;
+        if (!n) { prog.textContent = 'No BibTeX entries found in this file.'; return; }
+        ta.value = text;
+        prog.textContent = `Loaded ${n} BibTeX entr${n === 1 ? 'y' : 'ies'} locally — Ground checks each one.`;
+      } catch (err) {
+        prog.textContent = 'Could not read this file: ' + (err.message || err);
+      }
+      return;
+    }
     if (!name.endsWith('.docx') && !name.endsWith('.pdf')) {
-      prog.textContent = 'Only .docx and .pdf are supported.';
+      prog.textContent = 'Only .docx, .pdf and .bib are supported.';
       return;
     }
     prog.textContent = 'Extracting text locally…';
@@ -934,8 +947,12 @@ async function groundDraft(text, opts, onStep) {
     let base = 'UNVERIFIED', note = res.note;
     const extraTags = [];
     if (res.exists) {
-      const ab = await fetchAbstract(res, absCache);
-      if (opts.apiKey && ab) {
+      // bib mode: a .bib entry carries no claim — existence-level only, no abstract fetch
+      const ab = opts.bibMode ? null : await fetchAbstract(res, absCache);
+      if (opts.bibMode) {
+        base = 'CITED';
+        note = 'BibTeX entry: the record exists (' + res.note + '). A .bib has no claims, so support is not judged.';
+      } else if (opts.apiKey && ab) {
         const j = await judgeSupport(p.claim, ab, res.title, opts.apiKey, opts.model);
         /* Honest label: the judgment is abstract-level only. The evidence that
          * matters may live in the paper body (methods, tables) — never claim
@@ -995,7 +1012,7 @@ async function groundDraft(text, opts, onStep) {
         : 'identifier ' + id;
       note = `${what} checked against its registry and does not exist — fabricated or mistyped; do not cite.`;
     }
-    const fr = checkFreshness(p.claim, opts.windowYears);
+    const fr = opts.bibMode ? { stale: false } : checkFreshness(p.claim, opts.windowYears);
     const tags = [
       fr.stale ? fr.tag : '',
       res.chimeric ? '[CHIMERIC:author-mismatch]' : '',
@@ -1079,7 +1096,8 @@ function labelClass(base) {
     RATE_LIMITED: 'l-stale', FABRICATED: 'l-unverified' }[base] || 'l-cited';
 }
 
-function renderReport(evidence) {
+function renderReport(evidence, ropts) {
+  const unit = (ropts && ropts.unit) || 'claims';
   const counts = { 'ABSTRACT-SUPPORTED': 0, CITED: 0, UNVERIFIED: 0, RATE_LIMITED: 0, FABRICATED: 0 };
   let staleN = 0, chimericN = 0, retractedN = 0;
   for (const e of evidence) {
@@ -1089,7 +1107,7 @@ function renderReport(evidence) {
     if (/\[RETRACTED\]/.test(e.label)) retractedN++;
   }
   let html = `<div style="margin-bottom:18px;font-size:14.5px">` +
-    `<b>${evidence.length}</b> claims checked &nbsp;·&nbsp; ` +
+    `<b>${evidence.length}</b> ${unit} checked &nbsp;·&nbsp; ` +
     `<span class="label l-verified">ABSTRACT-SUPPORTED ${counts['ABSTRACT-SUPPORTED']}</span> ` +
     `<span class="label l-cited">CITED ${counts.CITED}</span> ` +
     `<span class="label l-unverified">UNVERIFIED ${counts.UNVERIFIED}</span>` +
@@ -1152,9 +1170,23 @@ function initGround() {
     out.innerHTML = '';
     prog.textContent = 'Extracting claims…';
     try {
-      const evidence = await groundDraft(text,
-        { apiKey: key.value.trim() || null },
-        s => { prog.textContent = s; });
+      let evidence, unit = 'claims';
+      if (typeof looksLikeBibTeX === 'function' && looksLikeBibTeX(text)) {
+        // .bib pasted or uploaded: every entry becomes a reference-list line and goes
+        // through the same lookups/labels; existence-level only (no claims to judge)
+        const bib = bibToDraft(text);
+        if (!bib.entries.length) throw new Error('no usable BibTeX entries' +
+          (bib.errors.length ? ' (' + bib.errors[0] + ')' : ''));
+        prog.textContent = `Checking ${bib.entries.length} BibTeX entries…` +
+          (bib.skipped.length ? ` (${bib.skipped.length} skipped: ${bib.skipped.map(x => x.key + ' — ' + x.reason).join('; ')})` : '');
+        evidence = bibLabelEvidence(await groundDraft(bib.draft, { bibMode: true },
+          s => { prog.textContent = s.replace('claim', 'entry'); }), bib.entries);
+        unit = 'BibTeX entries';
+      } else {
+        evidence = await groundDraft(text,
+          { apiKey: key.value.trim() || null },
+          s => { prog.textContent = s; });
+      }
       prog.textContent = '';
       // export toolbar FIRST: BibTeX download (Zotero/Mendeley/LaTeX-ready) + DOI list
       const bar = document.createElement('div');
@@ -1166,7 +1198,7 @@ function initGround() {
       out.innerHTML = '';
       out.appendChild(bar);
       const rep = document.createElement('div');
-      rep.innerHTML = renderReport(evidence);
+      rep.innerHTML = renderReport(evidence, { unit });
       out.appendChild(rep);
       if (window.VP) { try { VP.recordGround(evidence); } catch {} }
       try {
