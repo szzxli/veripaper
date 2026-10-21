@@ -16,14 +16,30 @@ CROSSREF = "https://api.crossref.org/works/"
 DATACITE = "https://api.datacite.org/dois/"
 UA = {"User-Agent": "veripaper/0.1 (mailto:dev@veripaper.local)"}
 
-# Retraction signal: CrossRef prefixes retracted titles with "RETRACTED:"
-# (verified against known-retracted DOIs). Only CrossRef carries it —
-# no signal means "unknown", never "not retracted".
-RETRACTED_RE = re.compile(r"^\s*(retracted|withdrawn)\s*:", re.I)
+# Retraction signals, both read from the CrossRef record already fetched
+# (no extra request):
+#  1. title prefix — publishers mark retracted titles "RETRACTED: …" or
+#     (Springer Nature) "RETRACTED ARTICLE: …"; "WITHDRAWN: …" likewise;
+#  2. the record's `updated-by` list — CrossRef attaches retraction /
+#     withdrawal / removal notices here, including those from the Retraction
+#     Watch database that CrossRef now hosts (source "retraction-watch").
+# No signal means "unknown", never "not retracted".
+RETRACTED_RE = re.compile(r"^\s*(retracted|withdrawn)(\s+article)?\s*:", re.I)
+RETRACTION_UPDATE_TYPES = {"retraction", "withdrawal", "removal"}
 
 
 def is_retracted_title(title: str | None) -> bool:
     return bool(RETRACTED_RE.match(title or ""))
+
+
+def retraction_updates(msg: dict) -> list[str]:
+    """Retraction-type notices in a CrossRef work's `updated-by` list."""
+    out = []
+    for u in (msg or {}).get("updated-by") or []:
+        t = str((u or {}).get("type") or "").lower()
+        if t in RETRACTION_UPDATE_TYPES:
+            out.append(t)
+    return out
 
 
 def _get(url: str) -> requests.Response | None:
@@ -67,9 +83,11 @@ def verify_doi(doi: str) -> dict:
                        for a in (msg.get("author") or [])][:8]
             authors = [a for a in authors if a]
         except (ValueError, KeyError):
-            title, authors = None, []
+            msg, title, authors = {}, None, []
+        notices = retraction_updates(msg)
         return {"exists": True, "title": title, "reason": "crossref match",
-                "limited": False, "retracted": is_retracted_title(title),
+                "limited": False,
+                "retracted": is_retracted_title(title) or bool(notices),
                 "authors": authors}
     cr_limited = (r.status_code == 429)
     # Fallback: DataCite (arXiv DOIs live here, not in CrossRef)

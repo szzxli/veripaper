@@ -19,6 +19,10 @@ specific-not-in-abstract.
   retries for rate-limited / error samples)
 - `results_veripaper.json` / `results_refexists.json` — raw per-sample
   outputs, all attempts preserved
+- `COMPARISON.md` — **comparative run (2026-10-21)**: veripaper vs.
+  RefExists, citegate and refchecker on the same samples, plus what was not
+  tested and why; runners, raw results and generated tables in
+  `comparison/`, the BibTeX form of the samples in `samples.bib`
 
 First-party constructed and published with its misses visible — see the
 honesty statement in `METHOD.md`. Independent re-runs are the point;

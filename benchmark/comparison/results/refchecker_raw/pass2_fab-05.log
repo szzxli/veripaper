@@ -1,0 +1,130 @@
+2026-10-21 15:50:32,086 - INFO - Emitting progress: started - {'message': 'Starting reference check...', 'source': '/tmp/tmprfmb4rmr/fab-05.bib'}
+2026-10-21 15:50:32,086 - INFO - Emitting progress: extracting - {'message': 'Extracting text from file...'}
+2026-10-21 15:50:32,087 - INFO - Processing uploaded .bib file as BibTeX
+2026-10-21 15:50:32,087 - INFO - Detected BibTeX format from .bib file
+2026-10-21 15:50:32,088 - INFO - Detected BibTeX format, using deterministic BibTeX parser
+2026-10-21 15:50:32,093 - INFO - Extracted 1 references from .bib content
+2026-10-21 15:50:32,094 - INFO - Extracted 1 references from .bib file
+2026-10-21 15:50:32,094 - INFO - Emitting progress: extracting - {'message': 'Extracting references from paper...', 'paper_title': 'Unknown Paper', 'extraction_method': 'bib'}
+2026-10-21 15:50:32,094 - INFO - Using 1 references from ArXiv source files (method: bib)
+2026-10-21 15:50:32,097 - INFO - Citation contexts: 1/1 refs got an inline sentence (paper_text=241 chars, from_cache=False)
+2026-10-21 15:50:32,097 - INFO - Emitting progress: references_extracted - {'total_refs': 1, 'extraction_method': 'bib', 'references': [{'index': 1, 'title': 'Retrieval-augmented agents for long-horizon task completion', 'authors': ['Osei, D.', 'et al'], 'year': 2023, 'venue
+2026-10-21 15:50:32,097 - INFO - Emitting progress: progress - {'current': 0, 'total': 1, 'message': 'Checking 1 references...'}
+2026-10-21 15:50:32,097 - INFO - Emitting progress: checking_reference - {'index': 1, 'title': 'Retrieval-augmented agents for long-horizon task completion', 'total': 1}
+2026-10-21 15:50:32,489 - WARNING - Failed to fetch ArXiv BibTeX for 2302.99998
+2026-10-21 15:50:57,900 - WARNING - Failed to fetch ArXiv BibTeX for 2302.99998
+2026-10-21 15:52:02,199 - WARNING - Global cache upsert failed in emit_progress: no such table: verified_reference_identity
+2026-10-21 15:52:02,201 - INFO - Emitting progress: reference_result - {'index': 1, 'title': 'Retrieval-augmented agents for long-horizon task completion', 'authors': ['Osei, D.', 'et al'], 'year': 2023, 'venue': 'arXiv preprint arXiv:2302.99998', 'cited_url': 'https://a
+2026-10-21 15:52:02,201 - INFO - Emitting progress: progress - {'current': 1, 'total': 1}
+2026-10-21 15:52:02,202 - INFO - Emitting progress: summary_update - {'total_refs': 1, 'processed_refs': 1, 'errors_count': 0, 'warnings_count': 0, 'suggestions_count': 0, 'unverified_count': 0, 'hallucination_count': 0, 'regex_count': 1, 'llm_count': 0, 'hallucination
+2026-10-21 15:52:02,303 - INFO - Emitting progress: completed - {'total_refs': 1, 'processed_refs': 1, 'errors_count': 0, 'warnings_count': 0, 'suggestions_count': 0, 'unverified_count': 1, 'hallucination_count': 0, 'regex_count': 1, 'llm_count': 0, 'hallucination
+2026-10-21 15:52:07,061 - WARNING - Failed to fetch ArXiv BibTeX for 2302.99998
+2026-10-21 15:52:07,061 - INFO - _format_verification_result: raw errors=[{'error_type': 'unverified', 'error_details': 'Paper not found by any checker; no match in official proceedings, institutional reports, datacite; checker failures: ArXiv: Could not fetch ArXiv BibTeX for 2302.99998; Semantic Scholar API failed: rate_limited_or_timeout', 'sources_checked': 5, 'sources_negative': 3}, {'error_type': 'url', 'error_details': 'Non-existent web page: https://arxiv.org/abs/2302.99998'}]
+2026-10-21 15:52:07,063 - INFO - _format_verification_result output: suggestions=[], status=error
+{
+  "paper_title": "Unknown Paper",
+  "paper_source": "/tmp/tmprfmb4rmr/fab-05.bib",
+  "source_type": "file",
+  "extraction_method": "bib",
+  "summary": {
+    "total_refs": 1,
+    "processed_refs": 1,
+    "errors_count": 0,
+    "warnings_count": 0,
+    "suggestions_count": 0,
+    "unverified_count": 1,
+    "hallucination_count": 0,
+    "regex_count": 1,
+    "llm_count": 0,
+    "hallucination_llm_count": 0,
+    "verified_count": 0,
+    "refs_with_errors": 0,
+    "refs_with_warnings_only": 0,
+    "refs_with_suggestions_only": 0,
+    "refs_verified": 0,
+    "progress_percent": 100.0,
+    "extraction_method": "bib"
+  },
+  "references": [
+    {
+      "index": 1,
+      "title": "Retrieval-augmented agents for long-horizon task completion",
+      "authors": [
+        "Osei, D.",
+        "et al"
+      ],
+      "year": 2023,
+      "venue": "arXiv preprint arXiv:2302.99998",
+      "cited_url": "https://arxiv.org/abs/2302.99998",
+      "status": "unverified",
+      "errors": [
+        {
+          "error_type": "unverified",
+          "error_details": "Verification timed out"
+        }
+      ],
+      "warnings": [],
+      "suggestions": [],
+      "authoritative_urls": [],
+      "corrected_reference": null,
+      "citation_contexts": [
+        {
+          "sentence": "@article{fab-05,\n  author = {Osei, D. and others},\n  title = {Retrieval-augmented agents for long-horizon task completion},\n  journal = {arXiv preprint arXiv:2302.99998},\n  year = {2023},\n  eprint = {2302.99998},\n  archivePrefix = {arXiv}\n}",
+          "marker": "(title mention)",
+          "before": "",
+          "after": ""
+        }
+      ],
+      "citation_context": "@article{fab-05,\n  author = {Osei, D. and others},\n  title = {Retrieval-augmented agents for long-horizon task completion},\n  journal = {arXiv preprint arXiv:2302.99998},\n  year = {2023},\n  eprint = {2302.99998},\n  archivePrefix = {arXiv}\n}",
+      "citation_count": 1,
+      "original_reference": {
+        "title": "Retrieval-augmented agents for long-horizon task completion",
+        "authors": [
+          "Osei, D.",
+          "et al"
+        ],
+        "year": 2023,
+        "journal": "arXiv preprint arXiv:2302.99998",
+        "doi": "",
+        "url": "https://arxiv.org/abs/2302.99998",
+        "type": "arxiv",
+        "bibtex_key": "fab-05",
+        "bibtex_type": "article",
+        "raw_text": "@article{fab-05, ...}",
+        "volume": "",
+        "number": "",
+        "pages": "",
+        "venue": "arXiv preprint arXiv:2302.99998",
+        "arxiv_id": "2302.99998",
+        "index": 1,
+        "is_inline_cited": true,
+        "citation_contexts": [
+          {
+            "sentence": "@article{fab-05,\n  author = {Osei, D. and others},\n  title = {Retrieval-augmented agents for long-horizon task completion},\n  journal = {arXiv preprint arXiv:2302.99998},\n  year = {2023},\n  eprint = {2302.99998},\n  archivePrefix = {arXiv}\n}",
+            "marker": "(title mention)",
+            "before": "",
+            "after": ""
+          }
+        ],
+        "citation_count": 1,
+        "citation_context": "@article{fab-05,\n  author = {Osei, D. and others},\n  title = {Retrieval-augmented agents for long-horizon task completion},\n  journal = {arXiv preprint arXiv:2302.99998},\n  year = {2023},\n  eprint = {2302.99998},\n  archivePrefix = {arXiv}\n}"
+      }
+    }
+  ],
+  "retractions": {
+    "checked": 1,
+    "with_doi": 0,
+    "retracted": 0,
+    "results": [
+      {
+        "index": 1,
+        "title": "Retrieval-augmented agents for long-horizon task completion",
+        "doi": null,
+        "status": "no_doi"
+      }
+    ],
+    "source": "openalex"
+  }
+}
+
+--- stderr ---

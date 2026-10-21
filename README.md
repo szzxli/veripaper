@@ -76,6 +76,10 @@ A public citation-checking benchmark (34 samples, ground truth verified
 live against the registries): [benchmark/](benchmark/) — construction
 and scoring rules in `benchmark/METHOD.md`, latest scored runs
 (veripaper + RefExists, misses included) in `benchmark/RESULTS.md`.
+**Comparison with other open-source checkers** (RefExists, citegate,
+refchecker — same samples, per-category detection, false alarms, veripaper's
+own misses, and the tools we could not test and why):
+[benchmark/COMPARISON.md](benchmark/COMPARISON.md).
 
 ## Roadmap
 

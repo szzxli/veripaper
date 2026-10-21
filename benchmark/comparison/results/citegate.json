@@ -1,0 +1,503 @@
+{
+  "tool": "citegate",
+  "version": "citegate 0.3.0",
+  "commit": "94cc0a02a63a11154664c88b25923cbd0dc7c028",
+  "input": "samples.bib (one entry per run)",
+  "config": "defaults; --workers 1; no --mailto",
+  "run_finished_at": "2026-10-21T22:29:10+00:00",
+  "results": [
+    {
+      "id": "real-01",
+      "category": "real",
+      "subtype": "doi-in-text",
+      "verdict": "verified",
+      "problems": [],
+      "matched_title": "Deep Residual Learning for Image Recognition",
+      "matched_doi": "10.1109/cvpr.2016.90",
+      "similarity": 1.0,
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:26:53+00:00"
+    },
+    {
+      "id": "real-02",
+      "category": "real",
+      "subtype": "arxiv-in-text",
+      "verdict": "mismatch",
+      "problems": [
+        "year mismatch: entry says 2017, index says 2025"
+      ],
+      "matched_title": "Attention Is All You Need",
+      "matched_doi": "10.65215/ysbyhc05",
+      "similarity": 1.0,
+      "outcome": "metadata-flag",
+      "checked_at": "2026-10-21T22:26:55+00:00"
+    },
+    {
+      "id": "real-03",
+      "category": "real",
+      "subtype": "arxiv-in-text",
+      "verdict": "verified",
+      "problems": [
+        "OpenAlex search unavailable"
+      ],
+      "matched_title": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding",
+      "matched_doi": "10.18653/v1/n19-1423",
+      "similarity": 1.0,
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:27:02+00:00"
+    },
+    {
+      "id": "real-04",
+      "category": "real",
+      "subtype": "reference-entry-with-doi",
+      "verdict": "verified",
+      "problems": [],
+      "matched_title": "Deep Residual Learning for Image Recognition",
+      "matched_doi": "10.1109/cvpr.2016.90",
+      "similarity": 1.0,
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:27:03+00:00"
+    },
+    {
+      "id": "real-05",
+      "category": "real",
+      "subtype": "reference-entry-no-id",
+      "verdict": "mismatch",
+      "problems": [
+        "year mismatch: entry says 2017, index says 2025"
+      ],
+      "matched_title": "Attention Is All You Need",
+      "matched_doi": "10.65215/ysbyhc05",
+      "similarity": 1.0,
+      "outcome": "metadata-flag",
+      "checked_at": "2026-10-21T22:27:05+00:00"
+    },
+    {
+      "id": "real-06",
+      "category": "real",
+      "subtype": "doi-in-text",
+      "verdict": "verified",
+      "problems": [],
+      "matched_title": "Molecular Structure of Nucleic Acids: A Structure for Deoxyribose Nucleic Acid",
+      "matched_doi": "10.1038/171737a0",
+      "similarity": 1.0,
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:27:07+00:00"
+    },
+    {
+      "id": "real-07",
+      "category": "real",
+      "subtype": "arxiv-in-text",
+      "verdict": "mismatch",
+      "problems": [
+        "best match is only similarity 0.82: \"QA-LoRA: Quantization-Aware Low-Rank Adaptation of Large Language Models\" — check the title",
+        "no author overlap with the matched record (Xu, Xie, Gu, Chen)",
+        "DBLP search unavailable"
+      ],
+      "matched_title": "QA-LoRA: Quantization-Aware Low-Rank Adaptation of Large Language Models",
+      "matched_doi": "10.48550/arxiv.2309.14717",
+      "similarity": 0.817,
+      "outcome": "metadata-flag",
+      "checked_at": "2026-10-21T22:27:15+00:00"
+    },
+    {
+      "id": "real-08",
+      "category": "real",
+      "subtype": "reference-entry-with-arxiv",
+      "verdict": "verified",
+      "problems": [],
+      "matched_title": "Denoising Diffusion Probabilistic Models",
+      "matched_doi": "10.48550/arxiv.2006.11239",
+      "similarity": 1.0,
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:27:18+00:00"
+    },
+    {
+      "id": "fab-01",
+      "category": "fabricated",
+      "subtype": "fabricated-doi",
+      "verdict": "not-found",
+      "problems": [
+        "DOI 10.1038/s41586-024-99999-9 resolves in neither Crossref nor OpenAlex"
+      ],
+      "matched_title": null,
+      "matched_doi": null,
+      "similarity": null,
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:27:19+00:00"
+    },
+    {
+      "id": "fab-02",
+      "category": "fabricated",
+      "subtype": "fabricated-doi",
+      "verdict": "not-found",
+      "problems": [
+        "DOI 10.1126/science.adq9999 resolves in neither Crossref nor OpenAlex"
+      ],
+      "matched_title": null,
+      "matched_doi": null,
+      "similarity": null,
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:27:20+00:00"
+    },
+    {
+      "id": "fab-03",
+      "category": "fabricated",
+      "subtype": "fabricated-arxiv",
+      "verdict": "not-found",
+      "problems": [
+        "OpenAlex search unavailable",
+        "DBLP search unavailable",
+        "no record with a similar title in Crossref, OpenAlex, or DBLP — possibly a fabricated reference",
+        "closest match (similarity 0.37): \"SOLARBALL: Extremly light, efficient and low-cost solar cooker\""
+      ],
+      "matched_title": "SOLARBALL: Extremly light, efficient and low-cost solar cooker",
+      "matched_doi": "10.1016/0960-1481(96)88390-x",
+      "similarity": 0.368,
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:27:32+00:00"
+    },
+    {
+      "id": "fab-04",
+      "category": "fabricated",
+      "subtype": "fabricated-doi",
+      "verdict": "not-found",
+      "problems": [
+        "DOI 10.1109/cvpr.2024.99999 resolves in neither Crossref nor OpenAlex"
+      ],
+      "matched_title": null,
+      "matched_doi": null,
+      "similarity": null,
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:27:33+00:00"
+    },
+    {
+      "id": "fab-05",
+      "category": "fabricated",
+      "subtype": "fabricated-arxiv",
+      "verdict": "not-found",
+      "problems": [
+        "DBLP search unavailable",
+        "no record with a similar title in Crossref, OpenAlex, or DBLP — possibly a fabricated reference",
+        "closest match (similarity 0.60): \"RAT: Retrieval Augmented Thoughts Elicit Context-Aware Reasoning in Long-Horizon Generation\""
+      ],
+      "matched_title": "RAT: Retrieval Augmented Thoughts Elicit Context-Aware Reasoning in Long-Horizon Generation",
+      "matched_doi": "10.48550/arxiv.2403.05313",
+      "similarity": 0.604,
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:27:41+00:00"
+    },
+    {
+      "id": "fab-06",
+      "category": "fabricated",
+      "subtype": "fabricated-entry-no-id",
+      "verdict": "not-found",
+      "problems": [
+        "DBLP search unavailable",
+        "no record with a similar title in Crossref, OpenAlex, or DBLP — possibly a fabricated reference",
+        "closest match (similarity 0.69): \"Quantum Entanglement Distribution for Secret Key Establishment in Metropolitan Optical Networks\""
+      ],
+      "matched_title": "Quantum Entanglement Distribution for Secret Key Establishment in Metropolitan Optical Networks",
+      "matched_doi": "10.1109/nas.2016.7549416",
+      "similarity": 0.688,
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:27:49+00:00"
+    },
+    {
+      "id": "fab-07",
+      "category": "fabricated",
+      "subtype": "fabricated-entry-no-id",
+      "verdict": "mismatch",
+      "problems": [
+        "best match is only similarity 0.78: \"Self-healing in fiber-reinforced polymer composites via bioinspired microvascular networks\" — check the title",
+        "year mismatch: entry says 2022, index says 2012",
+        "no author overlap with the matched record (Patrick, Hart, White, Moore)",
+        "DBLP search unavailable"
+      ],
+      "matched_title": "Self-healing in fiber-reinforced polymer composites via bioinspired microvascular networks",
+      "matched_doi": null,
+      "similarity": 0.784,
+      "outcome": "miss",
+      "checked_at": "2026-10-21T22:27:57+00:00"
+    },
+    {
+      "id": "fab-08",
+      "category": "fabricated",
+      "subtype": "fabricated-entry-no-id",
+      "verdict": "not-found",
+      "problems": [
+        "DBLP search unavailable",
+        "no record with a similar title in Crossref, OpenAlex, or DBLP — possibly a fabricated reference",
+        "closest match (similarity 0.58): \"Star-Snr: Spatial-Temporal Adaptive Regulation and Snr Optimization for Few-Shot Video Generation\""
+      ],
+      "matched_title": "Star-Snr: Spatial-Temporal Adaptive Regulation and Snr Optimization for Few-Shot Video Generation",
+      "matched_doi": "10.2139/ssrn.5085621",
+      "similarity": 0.579,
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:28:05+00:00"
+    },
+    {
+      "id": "chim-01",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "verdict": "mismatch",
+      "problems": [
+        "year mismatch: entry says 2017, index says 2025",
+        "no author overlap with the matched record (Vaswani, Shazeer, Parmar, Uszkoreit)"
+      ],
+      "matched_title": "Attention Is All You Need",
+      "matched_doi": "10.65215/2q58a426",
+      "similarity": 1.0,
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:28:08+00:00"
+    },
+    {
+      "id": "chim-02",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "verdict": "mismatch",
+      "problems": [
+        "no author overlap with the matched record (He, Zhang, Ren, Sun)"
+      ],
+      "matched_title": "Deep Residual Learning for Image Recognition",
+      "matched_doi": "10.1109/cvpr.2016.90",
+      "similarity": 1.0,
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:28:10+00:00"
+    },
+    {
+      "id": "chim-03",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "verdict": "not-found",
+      "problems": [
+        "OpenAlex search unavailable",
+        "DBLP search unavailable",
+        "no record with a similar title in Crossref, OpenAlex, or DBLP — possibly a fabricated reference",
+        "closest match (similarity 0.49): \"Deidentification of free-text medical records using pre-trained bidirectional transformers\""
+      ],
+      "matched_title": "Deidentification of free-text medical records using pre-trained bidirectional transformers",
+      "matched_doi": "10.1145/3368555.3384455",
+      "similarity": 0.485,
+      "outcome": "miss",
+      "checked_at": "2026-10-21T22:28:22+00:00"
+    },
+    {
+      "id": "chim-04",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "verdict": "mismatch",
+      "problems": [
+        "no author overlap with the DOI record (index authors: Ho, Ajay, Abbeel)"
+      ],
+      "matched_title": "Denoising Diffusion Probabilistic Models",
+      "matched_doi": "10.48550/arxiv.2006.11239",
+      "similarity": 1.0,
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:28:24+00:00"
+    },
+    {
+      "id": "chim-05",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "verdict": "mismatch",
+      "problems": [
+        "no author overlap with the matched record (B., Mann, Ryder, Subbiah)"
+      ],
+      "matched_title": "Language Models are Few-Shot Learners",
+      "matched_doi": "10.48550/arxiv.2005.14165",
+      "similarity": 1.0,
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:28:26+00:00"
+    },
+    {
+      "id": "chim-06",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "verdict": "not-found",
+      "problems": [
+        "OpenAlex search unavailable",
+        "DBLP search unavailable",
+        "no record with a similar title in Crossref, OpenAlex, or DBLP — possibly a fabricated reference",
+        "closest match (similarity 0.63): \"The sample average approximation method for multi-objective stochastic optimization\""
+      ],
+      "matched_title": "The sample average approximation method for multi-objective stochastic optimization",
+      "matched_doi": "10.1109/wsc.2011.6148092",
+      "similarity": 0.629,
+      "outcome": "miss",
+      "checked_at": "2026-10-21T22:28:39+00:00"
+    },
+    {
+      "id": "retr-01",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "verdict": "retracted",
+      "problems": [
+        "OpenAlex marks this work as retracted",
+        "Crossref/Retraction Watch records: retraction"
+      ],
+      "matched_title": "RETRACTED: Ileal-lymphoid-nodular hyperplasia, non-specific colitis, and pervasive developmental disorder in children",
+      "matched_doi": "10.1016/s0140-6736(97)11096-0",
+      "similarity": 0.9541284403669725,
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:28:40+00:00"
+    },
+    {
+      "id": "retr-02",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "verdict": "retracted",
+      "problems": [
+        "OpenAlex marks this work as retracted",
+        "Crossref/Retraction Watch records: retraction"
+      ],
+      "matched_title": "RETRACTED: Hydroxychloroquine or chloroquine with or without a macrolide for treatment of COVID-19: a multinational registry analysis",
+      "matched_doi": "10.1016/s0140-6736(20)31180-6",
+      "similarity": 0.9603174603174603,
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:28:42+00:00"
+    },
+    {
+      "id": "retr-03",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "verdict": "retracted",
+      "problems": [
+        "OpenAlex marks this work as retracted",
+        "Crossref/Retraction Watch records: retraction"
+      ],
+      "matched_title": "RETRACTED: Cardiovascular Disease, Drug Therapy, and Mortality in Covid-19",
+      "matched_doi": "10.1056/nejmoa2007621",
+      "similarity": 0.9242424242424242,
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:28:44+00:00"
+    },
+    {
+      "id": "retr-04",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "verdict": "retracted",
+      "problems": [
+        "OpenAlex marks this work as retracted",
+        "Crossref/Retraction Watch records: retraction"
+      ],
+      "matched_title": "RETRACTED ARTICLE: Stimulus-triggered fate conversion of somatic cells into pluripotency",
+      "matched_doi": "10.1038/nature12968",
+      "similarity": 0.8846153846153846,
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:28:45+00:00"
+    },
+    {
+      "id": "retr-05",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "verdict": "retracted",
+      "problems": [
+        "OpenAlex marks this work as retracted",
+        "Crossref/Retraction Watch records: retraction"
+      ],
+      "matched_title": "RETRACTED ARTICLE: Bidirectional developmental potential in reprogrammed cells with acquired pluripotency",
+      "matched_doi": "10.1038/nature12969",
+      "similarity": 0.9052631578947369,
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:28:46+00:00"
+    },
+    {
+      "id": "retr-06",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "verdict": "retracted",
+      "problems": [
+        "OpenAlex marks this work as retracted",
+        "Crossref/Retraction Watch records: retraction"
+      ],
+      "matched_title": "RETRACTED ARTICLE: Room-temperature superconductivity in a carbonaceous sulfur hydride",
+      "matched_doi": "10.1038/s41586-020-2801-z",
+      "similarity": 0.881578947368421,
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:28:48+00:00"
+    },
+    {
+      "id": "spec-01",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "verdict": "verified",
+      "problems": [],
+      "matched_title": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding",
+      "matched_doi": "10.18653/v1/n19-1423",
+      "similarity": 1.0,
+      "outcome": "out-of-scope",
+      "checked_at": "2026-10-21T22:28:50+00:00"
+    },
+    {
+      "id": "spec-02",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "verdict": "verified",
+      "problems": [],
+      "matched_title": "Deep Residual Learning for Image Recognition",
+      "matched_doi": "10.1109/cvpr.2016.90",
+      "similarity": 1.0,
+      "outcome": "out-of-scope",
+      "checked_at": "2026-10-21T22:28:52+00:00"
+    },
+    {
+      "id": "spec-03",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "verdict": "mismatch",
+      "problems": [
+        "year mismatch: entry says 2017, index says 2025"
+      ],
+      "matched_title": "Attention Is All You Need",
+      "matched_doi": "10.65215/ysbyhc05",
+      "similarity": 1.0,
+      "outcome": "out-of-scope",
+      "checked_at": "2026-10-21T22:28:54+00:00"
+    },
+    {
+      "id": "spec-04",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "verdict": "verified",
+      "problems": [],
+      "matched_title": "Denoising Diffusion Probabilistic Models",
+      "matched_doi": "10.48550/arxiv.2006.11239",
+      "similarity": 1.0,
+      "outcome": "out-of-scope",
+      "checked_at": "2026-10-21T22:28:56+00:00"
+    },
+    {
+      "id": "spec-05",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "verdict": "not-found",
+      "problems": [
+        "OpenAlex search unavailable",
+        "DBLP search unavailable",
+        "no record with a similar title in Crossref, OpenAlex, or DBLP — possibly a fabricated reference",
+        "closest match (similarity 0.63): \"ST‐LoRA: SVD‐Guided Sparse Low‐Rank Adaptation With Trainable Masks for Large Language and Vision Models\""
+      ],
+      "matched_title": "ST‐LoRA: SVD‐Guided Sparse Low‐Rank Adaptation With Trainable Masks for Large Language and Vision Models",
+      "matched_doi": "10.1049/cvi2.70072",
+      "similarity": 0.632,
+      "outcome": "out-of-scope",
+      "checked_at": "2026-10-21T22:29:08+00:00"
+    },
+    {
+      "id": "spec-06",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "verdict": "mismatch",
+      "problems": [
+        "year mismatch: entry says 2014, index says 2023",
+        "no author overlap with the matched record (Labaca-Castro)"
+      ],
+      "matched_title": "Generative Adversarial Nets",
+      "matched_doi": "10.1007/978-3-658-40442-0_9",
+      "similarity": 1.0,
+      "outcome": "out-of-scope",
+      "checked_at": "2026-10-21T22:29:10+00:00"
+    }
+  ]
+}
