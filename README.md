@@ -76,3 +76,7 @@ and scoring rules in `benchmark/METHOD.md`, latest scored runs
   productization direction → evidence grounding → template generation →
   venue auto-optimization → reviewer simulation → venue targeting →
   rebuttal management → acceptance-rate review loop (learning)
+
+## Privacy
+
+Privacy: we count anonymous page views with [GoatCounter](https://www.goatcounter.com) — no cookies, no personal data, no consent banner needed. Your content never goes to the counter: anything you type, paste or upload stays in your browser (except requests you start yourself, such as an AI-grading or lookup call to a provider you choose). Exactly what is sent is documented at the top of the site's `analytics.js`.

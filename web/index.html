@@ -381,6 +381,7 @@ footer .colophon a{color:var(--navy)}
 
 <footer><div class="wrap">
   <div class="colophon">VERIPAPER · v0.1 · SET IN GEORGIA · MIT LICENSE · <a href="https://github.com/szzxli/veripaper">GITHUB</a> · <a href="https://github.com/szzxli/veripaper/issues">FEEDBACK</a> · <a href="#" id="buglink">REPORT BUG</a></div>
+  <p class="colophon" style="margin-top:8px;text-transform:none;letter-spacing:0">Privacy: we count anonymous page views with <a href="https://www.goatcounter.com" rel="noopener">GoatCounter</a> — no cookies, no personal data. Your drafts and keys are never sent to it; your content stays in your browser except for the lookups you start (CrossRef / DataCite / arXiv, and OpenRouter only if you add your own key).</p>
 </div></footer>
 
 <script>
@@ -411,6 +412,7 @@ document.getElementById("buglink").addEventListener("click", function (e) {
 <script src="datasets.js"></script>
 <script src="venues.js"></script>
 <script src="rebuttal.js"></script>
+<script src="analytics.js" defer></script>
 <script>
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});}
 
