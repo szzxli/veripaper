@@ -39,21 +39,32 @@ const ok = (name, cond, extra) => {
 
 (async () => {
   console.log('— mammoth extracts real .docx —');
-  const mammoth = require('/tmp/vp_vendor/mammoth.min.js');
-  const buf = fs.readFileSync('/tmp/vp_test/test.docx');
-  const ab = buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
-  const out = await mammoth.extractRawText({ arrayBuffer: ab });
-  const text = (out.value || '').replace(/\r\n?/g, '\n');
-  ok('docx text non-empty', text.length > 100, text.length);
-  ok('docx keeps References heading on own line', /^References$/m.test(text));
+  // mammoth is not vendored in the repo (the site loads it from cdnjs, see
+  // VENDOR_CDN in ground.js). Point MAMMOTH_JS at a local copy, e.g.
+  //   curl -sSfLo /tmp/vp_vendor/mammoth.min.js \
+  //     https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.9.1/mammoth.browser.min.js
+  const mammothPath = process.env.MAMMOTH_JS || '/tmp/vp_vendor/mammoth.min.js';
+  const docxPath = path.join(__dirname, 'fixtures', 'test.docx');
+  if (!fs.existsSync(mammothPath)) {
+    console.log('  SKIP docx sections: mammoth not found at ' + mammothPath +
+      ' (set MAMMOTH_JS; see comment in tests/upload.js)');
+  } else {
+    const mammoth = require(mammothPath);
+    const buf = fs.readFileSync(docxPath);
+    const ab = buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
+    const out = await mammoth.extractRawText({ arrayBuffer: ab });
+    const text = (out.value || '').replace(/\r\n?/g, '\n');
+    ok('docx text non-empty', text.length > 100, text.length);
+    ok('docx keeps References heading on own line', /^References$/m.test(text));
 
-  console.log('— extracted docx flows through the pipeline —');
-  const pairs = extractPairs(text);
-  ok('2 claims extracted', pairs.length === 2, JSON.stringify(pairs.map(p => p.claim)));
-  const refmap = parseReferences(text);
-  ok('[1] entry found', !!refmap.numeric['1']);
-  ok('[1] arxiv extracted', refmap.numeric['1'] && refmap.numeric['1'].arxiv_id === '1706.03762');
-  ok('[2] entry found', !!refmap.numeric['2']);
+    console.log('— extracted docx flows through the pipeline —');
+    const pairs = extractPairs(text);
+    ok('2 claims extracted', pairs.length === 2, JSON.stringify(pairs.map(p => p.claim)));
+    const refmap = parseReferences(text);
+    ok('[1] entry found', !!refmap.numeric['1']);
+    ok('[1] arxiv extracted', refmap.numeric['1'] && refmap.numeric['1'].arxiv_id === '1706.03762');
+    ok('[2] entry found', !!refmap.numeric['2']);
+  }
 
   console.log('— groupPdfLines: reading order —');
   // synthetic pdf.js items: two lines, y grows upward, second line's items shuffled
