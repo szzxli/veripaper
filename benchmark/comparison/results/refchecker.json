@@ -1,0 +1,663 @@
+{
+  "tool": "refchecker (academic-refchecker)",
+  "version": "3.1.7",
+  "commit": "66d0cb59945474a1c9bd59df6e5b40c9d0c197d3",
+  "input": "samples.bib",
+  "config": "refchecker-webui check --no-llm --check-retractions --json --paper <bib>  (no LLM, no S2 key)",
+  "run_finished_at": "2026-10-21T22:52:07+00:00",
+  "results": [
+    {
+      "id": "real-01",
+      "category": "real",
+      "subtype": "doi-in-text",
+      "verdict": "verified (retraction: clean)",
+      "status": "verified",
+      "retraction": "clean",
+      "details": [],
+      "matched_database": "CrossRef",
+      "checked_at": "2026-10-21T22:34:37+00:00",
+      "outcome": "pass"
+    },
+    {
+      "id": "real-02",
+      "category": "real",
+      "subtype": "arxiv-in-text",
+      "verdict": "verified (retraction: no_doi)",
+      "status": "verified",
+      "retraction": "no_doi",
+      "details": [],
+      "matched_database": "ArXiv",
+      "checked_at": "2026-10-21T22:34:37+00:00",
+      "outcome": "pass"
+    },
+    {
+      "id": "real-03",
+      "category": "real",
+      "subtype": "arxiv-in-text",
+      "verdict": "verified (retraction: no_doi)",
+      "status": "verified",
+      "retraction": "no_doi",
+      "details": [],
+      "matched_database": "ArXiv",
+      "checked_at": "2026-10-21T22:34:37+00:00",
+      "outcome": "pass"
+    },
+    {
+      "id": "real-04",
+      "category": "real",
+      "subtype": "reference-entry-with-doi",
+      "verdict": "verified (retraction: clean)",
+      "status": "verified",
+      "retraction": "clean",
+      "details": [],
+      "matched_database": "CrossRef",
+      "checked_at": "2026-10-21T22:34:37+00:00",
+      "outcome": "pass"
+    },
+    {
+      "id": "real-05",
+      "category": "real",
+      "subtype": "reference-entry-no-id",
+      "verdict": "suggestion (retraction: no_doi)",
+      "status": "suggestion",
+      "retraction": "no_doi",
+      "details": [],
+      "matched_database": "Semantic Scholar",
+      "checked_at": "2026-10-21T22:34:37+00:00",
+      "outcome": "pass"
+    },
+    {
+      "id": "real-06",
+      "category": "real",
+      "subtype": "doi-in-text",
+      "verdict": "verified (retraction: clean)",
+      "status": "verified",
+      "retraction": "clean",
+      "details": [],
+      "matched_database": "CrossRef",
+      "checked_at": "2026-10-21T22:34:37+00:00",
+      "outcome": "pass"
+    },
+    {
+      "id": "real-07",
+      "category": "real",
+      "subtype": "arxiv-in-text",
+      "verdict": "warning (retraction: no_doi)",
+      "status": "warning",
+      "retraction": "no_doi",
+      "details": [
+        "warning year: Year mismatch:\n       cited:  2022\n       actual: 2021"
+      ],
+      "matched_database": "ArXiv",
+      "checked_at": "2026-10-21T22:34:37+00:00",
+      "outcome": "metadata-flag"
+    },
+    {
+      "id": "real-08",
+      "category": "real",
+      "subtype": "reference-entry-with-arxiv",
+      "verdict": "verified (retraction: no_doi)",
+      "status": "verified",
+      "retraction": "no_doi",
+      "details": [],
+      "matched_database": "ArXiv",
+      "checked_at": "2026-10-21T22:34:37+00:00",
+      "outcome": "pass"
+    },
+    {
+      "id": "fab-01",
+      "category": "fabricated",
+      "subtype": "fabricated-doi",
+      "verdict": "unverified (retraction: unknown)",
+      "status": "unverified",
+      "retraction": "unknown",
+      "details": [
+        "unverified: Paper not found by any checker; no match in CrossRef, OpenAlex, ACL Anthology, official proceedings, institutional reports, datacite; checker failures: Semantic Scholar API failed: rate_limited_or_timeout; DBLP API request failed"
+      ],
+      "matched_database": null,
+      "checked_at": "2026-10-21T22:34:37+00:00",
+      "outcome": "pass"
+    },
+    {
+      "id": "fab-02",
+      "category": "fabricated",
+      "subtype": "fabricated-doi",
+      "verdict": "unverified (retraction: unknown)",
+      "status": "unverified",
+      "retraction": "unknown",
+      "details": [
+        "unverified: Paper not found by any checker; no match in CrossRef, OpenAlex, ACL Anthology, official proceedings, institutional reports, datacite; checker failures: Semantic Scholar API failed: rate_limited_or_timeout; DBLP API request failed"
+      ],
+      "matched_database": null,
+      "checked_at": "2026-10-21T22:34:37+00:00",
+      "outcome": "pass"
+    },
+    {
+      "id": "fab-03",
+      "category": "fabricated",
+      "subtype": "fabricated-arxiv",
+      "verdict": "unverified (retraction: no_doi)",
+      "status": "unverified",
+      "retraction": "no_doi",
+      "details": [
+        "unverified: Verification timed out"
+      ],
+      "matched_database": null,
+      "checked_at": "2026-10-21T22:50:31+00:00",
+      "outcome": "inconclusive",
+      "attempts": [
+        {
+          "id": "fab-03",
+          "category": "fabricated",
+          "subtype": "fabricated-arxiv",
+          "verdict": "unverified (retraction: no_doi)",
+          "status": "unverified",
+          "retraction": "no_doi",
+          "details": [
+            "unverified: Verification timed out"
+          ],
+          "matched_database": null,
+          "checked_at": "2026-10-21T22:34:37+00:00",
+          "outcome": "inconclusive"
+        },
+        {
+          "id": "fab-03",
+          "category": "fabricated",
+          "subtype": "fabricated-arxiv",
+          "verdict": "unverified (retraction: no_doi)",
+          "status": "unverified",
+          "retraction": "no_doi",
+          "details": [
+            "unverified: Verification timed out"
+          ],
+          "matched_database": null,
+          "checked_at": "2026-10-21T22:37:47+00:00",
+          "outcome": "inconclusive"
+        },
+        {
+          "id": "fab-03",
+          "category": "fabricated",
+          "subtype": "fabricated-arxiv",
+          "verdict": "unverified (retraction: no_doi)",
+          "status": "unverified",
+          "retraction": "no_doi",
+          "details": [
+            "unverified: Verification timed out"
+          ],
+          "matched_database": null,
+          "checked_at": "2026-10-21T22:50:31+00:00",
+          "outcome": "inconclusive"
+        }
+      ]
+    },
+    {
+      "id": "fab-04",
+      "category": "fabricated",
+      "subtype": "fabricated-doi",
+      "verdict": "unverified (retraction: unknown)",
+      "status": "unverified",
+      "retraction": "unknown",
+      "details": [
+        "unverified: Paper not found by any checker; no match in CrossRef, OpenAlex, ACL Anthology, official proceedings, institutional reports, datacite; checker failures: Semantic Scholar API failed: rate_limited_or_timeout; DBLP API request failed"
+      ],
+      "matched_database": null,
+      "checked_at": "2026-10-21T22:39:05+00:00",
+      "outcome": "pass",
+      "attempts": [
+        {
+          "id": "fab-04",
+          "category": "fabricated",
+          "subtype": "fabricated-doi",
+          "verdict": "unverified (retraction: no_doi)",
+          "status": "unverified",
+          "retraction": "no_doi",
+          "details": [
+            "unverified: Verification timed out"
+          ],
+          "matched_database": null,
+          "checked_at": "2026-10-21T22:34:37+00:00",
+          "outcome": "inconclusive"
+        },
+        {
+          "id": "fab-04",
+          "category": "fabricated",
+          "subtype": "fabricated-doi",
+          "verdict": "unverified (retraction: unknown)",
+          "status": "unverified",
+          "retraction": "unknown",
+          "details": [
+            "unverified: Paper not found by any checker; no match in CrossRef, OpenAlex, ACL Anthology, official proceedings, institutional reports, datacite; checker failures: Semantic Scholar API failed: rate_limited_or_timeout; DBLP API request failed"
+          ],
+          "matched_database": null,
+          "checked_at": "2026-10-21T22:39:05+00:00",
+          "outcome": "pass"
+        }
+      ]
+    },
+    {
+      "id": "fab-05",
+      "category": "fabricated",
+      "subtype": "fabricated-arxiv",
+      "verdict": "unverified (retraction: no_doi)",
+      "status": "unverified",
+      "retraction": "no_doi",
+      "details": [
+        "unverified: Verification timed out"
+      ],
+      "matched_database": null,
+      "checked_at": "2026-10-21T22:52:07+00:00",
+      "outcome": "inconclusive",
+      "attempts": [
+        {
+          "id": "fab-05",
+          "category": "fabricated",
+          "subtype": "fabricated-arxiv",
+          "verdict": "unverified (retraction: no_doi)",
+          "status": "unverified",
+          "retraction": "no_doi",
+          "details": [
+            "unverified: Verification timed out"
+          ],
+          "matched_database": null,
+          "checked_at": "2026-10-21T22:34:37+00:00",
+          "outcome": "inconclusive"
+        },
+        {
+          "id": "fab-05",
+          "category": "fabricated",
+          "subtype": "fabricated-arxiv",
+          "verdict": "unverified (retraction: no_doi)",
+          "status": "unverified",
+          "retraction": "no_doi",
+          "details": [
+            "unverified: Verification timed out"
+          ],
+          "matched_database": null,
+          "checked_at": "2026-10-21T22:40:44+00:00",
+          "outcome": "inconclusive"
+        },
+        {
+          "id": "fab-05",
+          "category": "fabricated",
+          "subtype": "fabricated-arxiv",
+          "verdict": "unverified (retraction: no_doi)",
+          "status": "unverified",
+          "retraction": "no_doi",
+          "details": [
+            "unverified: Verification timed out"
+          ],
+          "matched_database": null,
+          "checked_at": "2026-10-21T22:52:07+00:00",
+          "outcome": "inconclusive"
+        }
+      ]
+    },
+    {
+      "id": "fab-06",
+      "category": "fabricated",
+      "subtype": "fabricated-entry-no-id",
+      "verdict": "unverified (retraction: no_doi)",
+      "status": "unverified",
+      "retraction": "no_doi",
+      "details": [
+        "unverified: Paper not found by any checker; no match in CrossRef, OpenAlex, ACL Anthology, official proceedings, institutional reports, datacite; checker failures: Semantic Scholar API failed: rate_limited_or_timeout; DBLP API request failed"
+      ],
+      "matched_database": null,
+      "checked_at": "2026-10-21T22:42:03+00:00",
+      "outcome": "pass",
+      "attempts": [
+        {
+          "id": "fab-06",
+          "category": "fabricated",
+          "subtype": "fabricated-entry-no-id",
+          "verdict": "unverified (retraction: no_doi)",
+          "status": "unverified",
+          "retraction": "no_doi",
+          "details": [
+            "unverified: Verification timed out"
+          ],
+          "matched_database": null,
+          "checked_at": "2026-10-21T22:34:37+00:00",
+          "outcome": "inconclusive"
+        },
+        {
+          "id": "fab-06",
+          "category": "fabricated",
+          "subtype": "fabricated-entry-no-id",
+          "verdict": "unverified (retraction: no_doi)",
+          "status": "unverified",
+          "retraction": "no_doi",
+          "details": [
+            "unverified: Paper not found by any checker; no match in CrossRef, OpenAlex, ACL Anthology, official proceedings, institutional reports, datacite; checker failures: Semantic Scholar API failed: rate_limited_or_timeout; DBLP API request failed"
+          ],
+          "matched_database": null,
+          "checked_at": "2026-10-21T22:42:03+00:00",
+          "outcome": "pass"
+        }
+      ]
+    },
+    {
+      "id": "fab-07",
+      "category": "fabricated",
+      "subtype": "fabricated-entry-no-id",
+      "verdict": "unverified (retraction: no_doi)",
+      "status": "unverified",
+      "retraction": "no_doi",
+      "details": [
+        "unverified: Paper not found by any checker; no match in CrossRef, OpenAlex, ACL Anthology, official proceedings, institutional reports, datacite; checker failures: Semantic Scholar API failed: rate_limited_or_timeout; DBLP API request failed"
+      ],
+      "matched_database": null,
+      "checked_at": "2026-10-21T22:43:33+00:00",
+      "outcome": "pass",
+      "attempts": [
+        {
+          "id": "fab-07",
+          "category": "fabricated",
+          "subtype": "fabricated-entry-no-id",
+          "verdict": "unverified (retraction: no_doi)",
+          "status": "unverified",
+          "retraction": "no_doi",
+          "details": [
+            "unverified: Verification timed out"
+          ],
+          "matched_database": null,
+          "checked_at": "2026-10-21T22:34:37+00:00",
+          "outcome": "inconclusive"
+        },
+        {
+          "id": "fab-07",
+          "category": "fabricated",
+          "subtype": "fabricated-entry-no-id",
+          "verdict": "unverified (retraction: no_doi)",
+          "status": "unverified",
+          "retraction": "no_doi",
+          "details": [
+            "unverified: Paper not found by any checker; no match in CrossRef, OpenAlex, ACL Anthology, official proceedings, institutional reports, datacite; checker failures: Semantic Scholar API failed: rate_limited_or_timeout; DBLP API request failed"
+          ],
+          "matched_database": null,
+          "checked_at": "2026-10-21T22:43:33+00:00",
+          "outcome": "pass"
+        }
+      ]
+    },
+    {
+      "id": "fab-08",
+      "category": "fabricated",
+      "subtype": "fabricated-entry-no-id",
+      "verdict": "unverified (retraction: no_doi)",
+      "status": "unverified",
+      "retraction": "no_doi",
+      "details": [
+        "unverified: Paper not found by any checker; no match in CrossRef, OpenAlex, ACL Anthology, OpenReview, official proceedings, institutional reports, datacite; checker failures: Semantic Scholar API failed: rate_limited_or_timeout; DBLP API request failed"
+      ],
+      "matched_database": null,
+      "checked_at": "2026-10-21T22:44:50+00:00",
+      "outcome": "pass",
+      "attempts": [
+        {
+          "id": "fab-08",
+          "category": "fabricated",
+          "subtype": "fabricated-entry-no-id",
+          "verdict": "unverified (retraction: no_doi)",
+          "status": "unverified",
+          "retraction": "no_doi",
+          "details": [
+            "unverified: Verification timed out"
+          ],
+          "matched_database": null,
+          "checked_at": "2026-10-21T22:34:37+00:00",
+          "outcome": "inconclusive"
+        },
+        {
+          "id": "fab-08",
+          "category": "fabricated",
+          "subtype": "fabricated-entry-no-id",
+          "verdict": "unverified (retraction: no_doi)",
+          "status": "unverified",
+          "retraction": "no_doi",
+          "details": [
+            "unverified: Paper not found by any checker; no match in CrossRef, OpenAlex, ACL Anthology, OpenReview, official proceedings, institutional reports, datacite; checker failures: Semantic Scholar API failed: rate_limited_or_timeout; DBLP API request failed"
+          ],
+          "matched_database": null,
+          "checked_at": "2026-10-21T22:44:50+00:00",
+          "outcome": "pass"
+        }
+      ]
+    },
+    {
+      "id": "chim-01",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "verdict": "error (retraction: no_doi)",
+      "status": "error",
+      "retraction": "no_doi",
+      "details": [
+        "author: Author 1 mismatch:\n       cited:  J. Smith (not found in author list - et al case)\n       actual: Ashish Vaswani, Noam Shazeer, N. Parmar, J. Uszkoreit, Llion Jones, Aidan N. Gomez, Lukasz Kaiser, I. Polosukhin"
+      ],
+      "matched_database": "Semantic Scholar",
+      "checked_at": "2026-10-21T22:34:37+00:00",
+      "outcome": "pass"
+    },
+    {
+      "id": "chim-02",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "verdict": "error (retraction: clean)",
+      "status": "error",
+      "retraction": "clean",
+      "details": [
+        "author: Author 1 mismatch:\n       cited:  M. Garcia (not found in author list - et al case)\n       actual: Kaiming He, X. Zhang, Shaoqing Ren, Jian Sun",
+        "warning year: Year mismatch:\n       cited:  2016\n       actual: 2015"
+      ],
+      "matched_database": "Semantic Scholar",
+      "checked_at": "2026-10-21T22:34:37+00:00",
+      "outcome": "pass"
+    },
+    {
+      "id": "chim-03",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "verdict": "error (retraction: no_doi)",
+      "status": "error",
+      "retraction": "no_doi",
+      "details": [
+        "author: no matching authors:\n       cited:  R. Johnson, S. Patel\n       actual: Jacob Devlin, Ming-Wei Chang, Kenton Lee, Kristina Toutanova"
+      ],
+      "matched_database": "ArXiv",
+      "checked_at": "2026-10-21T22:34:37+00:00",
+      "outcome": "pass"
+    },
+    {
+      "id": "chim-04",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "verdict": "error (retraction: clean)",
+      "status": "error",
+      "retraction": "clean",
+      "details": [
+        "author: Author 1 mismatch:\n       cited:  T. Williams (not found in author list - et al case)\n       actual: Jonathan Ho, Ajay Jain, Pieter Abbeel"
+      ],
+      "matched_database": "ArXiv",
+      "checked_at": "2026-10-21T22:34:37+00:00",
+      "outcome": "pass"
+    },
+    {
+      "id": "chim-05",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "verdict": "error (retraction: no_doi)",
+      "status": "error",
+      "retraction": "no_doi",
+      "details": [
+        "author: Author 1 mismatch:\n       cited:  T. Nguyen (not found in author list - et al case)\n       actual: Tom B. Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, J. Kaplan, Prafulla Dhariwal, Arvind Neelakantan, Pranav Shyam, G. Sastry, Amanda Askell, S. Agarwal, A. Herbert-Voss, G. Krueger, T. Henighan, R. Child, A. Ramesh, Daniel M. Ziegler, Jeff Wu, Clemens Winter, Christopher Hesse, Mark Chen, Eric Sigler, Mateusz Litwin, Scott Gray, Benjamin Chess, Jack Clark, Christopher Berner, Sam McCandlish, A. Radford, I. Sutskever, D. Amodei"
+      ],
+      "matched_database": "Semantic Scholar",
+      "checked_at": "2026-10-21T22:34:37+00:00",
+      "outcome": "pass"
+    },
+    {
+      "id": "chim-06",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "verdict": "error (retraction: no_doi)",
+      "status": "error",
+      "retraction": "no_doi",
+      "details": [
+        "author: Author 1 mismatch:\n       cited:  S. Kim (not found in author list - et al case)\n       actual: Diederik P. Kingma, Jimmy Ba",
+        "warning year: Year mismatch:\n       cited:  2015\n       actual: 2014"
+      ],
+      "matched_database": "Semantic Scholar",
+      "checked_at": "2026-10-21T22:34:37+00:00",
+      "outcome": "pass"
+    },
+    {
+      "id": "retr-01",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "verdict": "verified (retraction: retracted)",
+      "status": "verified",
+      "retraction": "retracted",
+      "details": [],
+      "matched_database": "CrossRef",
+      "checked_at": "2026-10-21T22:34:37+00:00",
+      "outcome": "pass"
+    },
+    {
+      "id": "retr-02",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "verdict": "verified (retraction: retracted)",
+      "status": "verified",
+      "retraction": "retracted",
+      "details": [],
+      "matched_database": "CrossRef",
+      "checked_at": "2026-10-21T22:34:37+00:00",
+      "outcome": "pass"
+    },
+    {
+      "id": "retr-03",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "verdict": "verified (retraction: retracted)",
+      "status": "verified",
+      "retraction": "retracted",
+      "details": [],
+      "matched_database": "CrossRef",
+      "checked_at": "2026-10-21T22:34:37+00:00",
+      "outcome": "pass"
+    },
+    {
+      "id": "retr-04",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "verdict": "verified (retraction: retracted)",
+      "status": "verified",
+      "retraction": "retracted",
+      "details": [],
+      "matched_database": "CrossRef",
+      "checked_at": "2026-10-21T22:34:37+00:00",
+      "outcome": "pass"
+    },
+    {
+      "id": "retr-05",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "verdict": "verified (retraction: retracted)",
+      "status": "verified",
+      "retraction": "retracted",
+      "details": [],
+      "matched_database": "CrossRef",
+      "checked_at": "2026-10-21T22:34:37+00:00",
+      "outcome": "pass"
+    },
+    {
+      "id": "retr-06",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "verdict": "verified (retraction: retracted)",
+      "status": "verified",
+      "retraction": "retracted",
+      "details": [],
+      "matched_database": "CrossRef",
+      "checked_at": "2026-10-21T22:34:37+00:00",
+      "outcome": "pass"
+    },
+    {
+      "id": "spec-01",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "verdict": "verified (retraction: no_doi)",
+      "status": "verified",
+      "retraction": "no_doi",
+      "details": [],
+      "matched_database": "ArXiv",
+      "checked_at": "2026-10-21T22:34:37+00:00",
+      "outcome": "out-of-scope"
+    },
+    {
+      "id": "spec-02",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "verdict": "verified (retraction: clean)",
+      "status": "verified",
+      "retraction": "clean",
+      "details": [],
+      "matched_database": "CrossRef",
+      "checked_at": "2026-10-21T22:34:37+00:00",
+      "outcome": "out-of-scope"
+    },
+    {
+      "id": "spec-03",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "verdict": "verified (retraction: no_doi)",
+      "status": "verified",
+      "retraction": "no_doi",
+      "details": [],
+      "matched_database": "ArXiv",
+      "checked_at": "2026-10-21T22:34:37+00:00",
+      "outcome": "out-of-scope"
+    },
+    {
+      "id": "spec-04",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "verdict": "verified (retraction: no_doi)",
+      "status": "verified",
+      "retraction": "no_doi",
+      "details": [],
+      "matched_database": "ArXiv",
+      "checked_at": "2026-10-21T22:34:37+00:00",
+      "outcome": "out-of-scope"
+    },
+    {
+      "id": "spec-05",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "verdict": "warning (retraction: no_doi)",
+      "status": "warning",
+      "retraction": "no_doi",
+      "details": [
+        "warning year: Year mismatch:\n       cited:  2022\n       actual: 2021"
+      ],
+      "matched_database": "ArXiv",
+      "checked_at": "2026-10-21T22:34:37+00:00",
+      "outcome": "out-of-scope"
+    },
+    {
+      "id": "spec-06",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "verdict": "error (retraction: no_doi)",
+      "status": "error",
+      "retraction": "no_doi",
+      "details": [
+        "title: Title mismatch:\n       cited:  Generative adversarial nets\n       actual: Generative Adversarial Networks",
+        "title: Inaccurate title: cited as 'Generative adversarial nets' but ArXiv paper is titled 'Generative Adversarial Networks'"
+      ],
+      "matched_database": "ArXiv",
+      "checked_at": "2026-10-21T22:34:37+00:00",
+      "outcome": "out-of-scope"
+    }
+  ]
+}

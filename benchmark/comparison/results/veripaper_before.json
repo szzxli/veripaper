@@ -1,0 +1,562 @@
+{
+  "tool": "veripaper (python pipeline, no-key default)",
+  "commit": "605b409dbdf50df9abcff2ca6254f339f1c436fd",
+  "input": "samples.json `draft`",
+  "run_finished_at": "2026-10-21T23:02:01+00:00",
+  "results": [
+    {
+      "id": "real-01",
+      "category": "real",
+      "subtype": "doi-in-text",
+      "verdict": "CITED [STALE:2016]",
+      "base_label": "CITED",
+      "raw_label": "CITED [STALE:2016] [STALE:2016]",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:54:20+00:00"
+    },
+    {
+      "id": "real-02",
+      "category": "real",
+      "subtype": "arxiv-in-text",
+      "verdict": "CITED",
+      "base_label": "CITED",
+      "raw_label": "CITED",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:54:22+00:00"
+    },
+    {
+      "id": "real-03",
+      "category": "real",
+      "subtype": "arxiv-in-text",
+      "verdict": "CITED",
+      "base_label": "CITED",
+      "raw_label": "CITED",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:54:25+00:00"
+    },
+    {
+      "id": "real-04",
+      "category": "real",
+      "subtype": "reference-entry-with-doi",
+      "verdict": "CITED",
+      "base_label": "CITED",
+      "raw_label": "CITED",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:54:28+00:00"
+    },
+    {
+      "id": "real-05",
+      "category": "real",
+      "subtype": "reference-entry-no-id",
+      "verdict": "RATE_LIMITED",
+      "base_label": "RATE_LIMITED",
+      "raw_label": "RATE_LIMITED",
+      "outcome": "inconclusive",
+      "checked_at": "2026-10-21T23:01:47+00:00",
+      "attempts": [
+        {
+          "id": "real-05",
+          "category": "real",
+          "subtype": "reference-entry-no-id",
+          "verdict": "RATE_LIMITED",
+          "base_label": "RATE_LIMITED",
+          "raw_label": "RATE_LIMITED",
+          "outcome": "inconclusive",
+          "checked_at": "2026-10-21T22:54:31+00:00"
+        },
+        {
+          "id": "real-05",
+          "category": "real",
+          "subtype": "reference-entry-no-id",
+          "verdict": "RATE_LIMITED",
+          "base_label": "RATE_LIMITED",
+          "raw_label": "RATE_LIMITED",
+          "outcome": "inconclusive",
+          "checked_at": "2026-10-21T22:57:26+00:00"
+        },
+        {
+          "id": "real-05",
+          "category": "real",
+          "subtype": "reference-entry-no-id",
+          "verdict": "RATE_LIMITED",
+          "base_label": "RATE_LIMITED",
+          "raw_label": "RATE_LIMITED",
+          "outcome": "inconclusive",
+          "checked_at": "2026-10-21T23:01:47+00:00"
+        }
+      ]
+    },
+    {
+      "id": "real-06",
+      "category": "real",
+      "subtype": "doi-in-text",
+      "verdict": "CITED",
+      "base_label": "CITED",
+      "raw_label": "CITED",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:54:35+00:00"
+    },
+    {
+      "id": "real-07",
+      "category": "real",
+      "subtype": "arxiv-in-text",
+      "verdict": "CITED",
+      "base_label": "CITED",
+      "raw_label": "CITED",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:54:37+00:00"
+    },
+    {
+      "id": "real-08",
+      "category": "real",
+      "subtype": "reference-entry-with-arxiv",
+      "verdict": "CITED",
+      "base_label": "CITED",
+      "raw_label": "CITED",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:54:40+00:00"
+    },
+    {
+      "id": "fab-01",
+      "category": "fabricated",
+      "subtype": "fabricated-doi",
+      "verdict": "FABRICATED",
+      "base_label": "FABRICATED",
+      "raw_label": "FABRICATED",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:54:42+00:00"
+    },
+    {
+      "id": "fab-02",
+      "category": "fabricated",
+      "subtype": "fabricated-doi",
+      "verdict": "FABRICATED",
+      "base_label": "FABRICATED",
+      "raw_label": "FABRICATED",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:54:44+00:00"
+    },
+    {
+      "id": "fab-03",
+      "category": "fabricated",
+      "subtype": "fabricated-arxiv",
+      "verdict": "FABRICATED",
+      "base_label": "FABRICATED",
+      "raw_label": "FABRICATED",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:54:46+00:00"
+    },
+    {
+      "id": "fab-04",
+      "category": "fabricated",
+      "subtype": "fabricated-doi",
+      "verdict": "FABRICATED",
+      "base_label": "FABRICATED",
+      "raw_label": "FABRICATED",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:54:48+00:00"
+    },
+    {
+      "id": "fab-05",
+      "category": "fabricated",
+      "subtype": "fabricated-arxiv",
+      "verdict": "FABRICATED",
+      "base_label": "FABRICATED",
+      "raw_label": "FABRICATED",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:54:51+00:00"
+    },
+    {
+      "id": "fab-06",
+      "category": "fabricated",
+      "subtype": "fabricated-entry-no-id",
+      "verdict": "RATE_LIMITED",
+      "base_label": "RATE_LIMITED",
+      "raw_label": "RATE_LIMITED",
+      "outcome": "inconclusive",
+      "checked_at": "2026-10-21T23:01:50+00:00",
+      "attempts": [
+        {
+          "id": "fab-06",
+          "category": "fabricated",
+          "subtype": "fabricated-entry-no-id",
+          "verdict": "RATE_LIMITED",
+          "base_label": "RATE_LIMITED",
+          "raw_label": "RATE_LIMITED",
+          "outcome": "inconclusive",
+          "checked_at": "2026-10-21T22:54:54+00:00"
+        },
+        {
+          "id": "fab-06",
+          "category": "fabricated",
+          "subtype": "fabricated-entry-no-id",
+          "verdict": "RATE_LIMITED",
+          "base_label": "RATE_LIMITED",
+          "raw_label": "RATE_LIMITED",
+          "outcome": "inconclusive",
+          "checked_at": "2026-10-21T22:57:29+00:00"
+        },
+        {
+          "id": "fab-06",
+          "category": "fabricated",
+          "subtype": "fabricated-entry-no-id",
+          "verdict": "RATE_LIMITED",
+          "base_label": "RATE_LIMITED",
+          "raw_label": "RATE_LIMITED",
+          "outcome": "inconclusive",
+          "checked_at": "2026-10-21T23:01:50+00:00"
+        }
+      ]
+    },
+    {
+      "id": "fab-07",
+      "category": "fabricated",
+      "subtype": "fabricated-entry-no-id",
+      "verdict": "RATE_LIMITED",
+      "base_label": "RATE_LIMITED",
+      "raw_label": "RATE_LIMITED",
+      "outcome": "inconclusive",
+      "checked_at": "2026-10-21T23:01:52+00:00",
+      "attempts": [
+        {
+          "id": "fab-07",
+          "category": "fabricated",
+          "subtype": "fabricated-entry-no-id",
+          "verdict": "RATE_LIMITED",
+          "base_label": "RATE_LIMITED",
+          "raw_label": "RATE_LIMITED",
+          "outcome": "inconclusive",
+          "checked_at": "2026-10-21T22:54:57+00:00"
+        },
+        {
+          "id": "fab-07",
+          "category": "fabricated",
+          "subtype": "fabricated-entry-no-id",
+          "verdict": "RATE_LIMITED",
+          "base_label": "RATE_LIMITED",
+          "raw_label": "RATE_LIMITED",
+          "outcome": "inconclusive",
+          "checked_at": "2026-10-21T22:57:32+00:00"
+        },
+        {
+          "id": "fab-07",
+          "category": "fabricated",
+          "subtype": "fabricated-entry-no-id",
+          "verdict": "RATE_LIMITED",
+          "base_label": "RATE_LIMITED",
+          "raw_label": "RATE_LIMITED",
+          "outcome": "inconclusive",
+          "checked_at": "2026-10-21T23:01:52+00:00"
+        }
+      ]
+    },
+    {
+      "id": "fab-08",
+      "category": "fabricated",
+      "subtype": "fabricated-entry-no-id",
+      "verdict": "RATE_LIMITED",
+      "base_label": "RATE_LIMITED",
+      "raw_label": "RATE_LIMITED",
+      "outcome": "inconclusive",
+      "checked_at": "2026-10-21T23:01:55+00:00",
+      "attempts": [
+        {
+          "id": "fab-08",
+          "category": "fabricated",
+          "subtype": "fabricated-entry-no-id",
+          "verdict": "RATE_LIMITED",
+          "base_label": "RATE_LIMITED",
+          "raw_label": "RATE_LIMITED",
+          "outcome": "inconclusive",
+          "checked_at": "2026-10-21T22:55:00+00:00"
+        },
+        {
+          "id": "fab-08",
+          "category": "fabricated",
+          "subtype": "fabricated-entry-no-id",
+          "verdict": "RATE_LIMITED",
+          "base_label": "RATE_LIMITED",
+          "raw_label": "RATE_LIMITED",
+          "outcome": "inconclusive",
+          "checked_at": "2026-10-21T22:57:35+00:00"
+        },
+        {
+          "id": "fab-08",
+          "category": "fabricated",
+          "subtype": "fabricated-entry-no-id",
+          "verdict": "RATE_LIMITED",
+          "base_label": "RATE_LIMITED",
+          "raw_label": "RATE_LIMITED",
+          "outcome": "inconclusive",
+          "checked_at": "2026-10-21T23:01:55+00:00"
+        }
+      ]
+    },
+    {
+      "id": "chim-01",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "verdict": "RATE_LIMITED",
+      "base_label": "RATE_LIMITED",
+      "raw_label": "RATE_LIMITED",
+      "outcome": "inconclusive",
+      "checked_at": "2026-10-21T23:01:58+00:00",
+      "attempts": [
+        {
+          "id": "chim-01",
+          "category": "chimeric",
+          "subtype": "reference-entry",
+          "verdict": "RATE_LIMITED",
+          "base_label": "RATE_LIMITED",
+          "raw_label": "RATE_LIMITED",
+          "outcome": "inconclusive",
+          "checked_at": "2026-10-21T22:55:03+00:00"
+        },
+        {
+          "id": "chim-01",
+          "category": "chimeric",
+          "subtype": "reference-entry",
+          "verdict": "RATE_LIMITED",
+          "base_label": "RATE_LIMITED",
+          "raw_label": "RATE_LIMITED",
+          "outcome": "inconclusive",
+          "checked_at": "2026-10-21T22:57:38+00:00"
+        },
+        {
+          "id": "chim-01",
+          "category": "chimeric",
+          "subtype": "reference-entry",
+          "verdict": "RATE_LIMITED",
+          "base_label": "RATE_LIMITED",
+          "raw_label": "RATE_LIMITED",
+          "outcome": "inconclusive",
+          "checked_at": "2026-10-21T23:01:58+00:00"
+        }
+      ]
+    },
+    {
+      "id": "chim-02",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "verdict": "CITED [CHIMERIC:author-mismatch]",
+      "base_label": "CITED",
+      "raw_label": "CITED [CHIMERIC:author-mismatch] [CHIMERIC:author-mismatch]",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:55:06+00:00"
+    },
+    {
+      "id": "chim-03",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "verdict": "CITED [CHIMERIC:author-mismatch]",
+      "base_label": "CITED",
+      "raw_label": "CITED [CHIMERIC:author-mismatch] [CHIMERIC:author-mismatch]",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:55:09+00:00"
+    },
+    {
+      "id": "chim-04",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "verdict": "CITED [CHIMERIC:author-mismatch]",
+      "base_label": "CITED",
+      "raw_label": "CITED [CHIMERIC:author-mismatch] [CHIMERIC:author-mismatch]",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:55:11+00:00"
+    },
+    {
+      "id": "chim-05",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "verdict": "UNVERIFIED",
+      "base_label": "UNVERIFIED",
+      "raw_label": "UNVERIFIED",
+      "outcome": "miss",
+      "checked_at": "2026-10-21T22:57:41+00:00",
+      "attempts": [
+        {
+          "id": "chim-05",
+          "category": "chimeric",
+          "subtype": "reference-entry",
+          "verdict": "RATE_LIMITED",
+          "base_label": "RATE_LIMITED",
+          "raw_label": "RATE_LIMITED",
+          "outcome": "inconclusive",
+          "checked_at": "2026-10-21T22:55:14+00:00"
+        },
+        {
+          "id": "chim-05",
+          "category": "chimeric",
+          "subtype": "reference-entry",
+          "verdict": "UNVERIFIED",
+          "base_label": "UNVERIFIED",
+          "raw_label": "UNVERIFIED",
+          "outcome": "miss",
+          "checked_at": "2026-10-21T22:57:41+00:00"
+        }
+      ]
+    },
+    {
+      "id": "chim-06",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "verdict": "RATE_LIMITED",
+      "base_label": "RATE_LIMITED",
+      "raw_label": "RATE_LIMITED",
+      "outcome": "inconclusive",
+      "checked_at": "2026-10-21T23:02:01+00:00",
+      "attempts": [
+        {
+          "id": "chim-06",
+          "category": "chimeric",
+          "subtype": "reference-entry",
+          "verdict": "RATE_LIMITED",
+          "base_label": "RATE_LIMITED",
+          "raw_label": "RATE_LIMITED",
+          "outcome": "inconclusive",
+          "checked_at": "2026-10-21T22:55:17+00:00"
+        },
+        {
+          "id": "chim-06",
+          "category": "chimeric",
+          "subtype": "reference-entry",
+          "verdict": "RATE_LIMITED",
+          "base_label": "RATE_LIMITED",
+          "raw_label": "RATE_LIMITED",
+          "outcome": "inconclusive",
+          "checked_at": "2026-10-21T22:57:44+00:00"
+        },
+        {
+          "id": "chim-06",
+          "category": "chimeric",
+          "subtype": "reference-entry",
+          "verdict": "RATE_LIMITED",
+          "base_label": "RATE_LIMITED",
+          "raw_label": "RATE_LIMITED",
+          "outcome": "inconclusive",
+          "checked_at": "2026-10-21T23:02:01+00:00"
+        }
+      ]
+    },
+    {
+      "id": "retr-01",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "verdict": "CITED [RETRACTED]",
+      "base_label": "CITED",
+      "raw_label": "CITED [RETRACTED] [RETRACTED]",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:55:21+00:00"
+    },
+    {
+      "id": "retr-02",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "verdict": "CITED [RETRACTED]",
+      "base_label": "CITED",
+      "raw_label": "CITED [RETRACTED] [RETRACTED]",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:55:24+00:00"
+    },
+    {
+      "id": "retr-03",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "verdict": "CITED [RETRACTED]",
+      "base_label": "CITED",
+      "raw_label": "CITED [RETRACTED] [RETRACTED]",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T22:55:27+00:00"
+    },
+    {
+      "id": "retr-04",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "verdict": "CITED",
+      "base_label": "CITED",
+      "raw_label": "CITED",
+      "outcome": "miss",
+      "checked_at": "2026-10-21T22:55:31+00:00"
+    },
+    {
+      "id": "retr-05",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "verdict": "CITED",
+      "base_label": "CITED",
+      "raw_label": "CITED",
+      "outcome": "miss",
+      "checked_at": "2026-10-21T22:55:35+00:00"
+    },
+    {
+      "id": "retr-06",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "verdict": "CITED",
+      "base_label": "CITED",
+      "raw_label": "CITED",
+      "outcome": "miss",
+      "checked_at": "2026-10-21T22:55:38+00:00"
+    },
+    {
+      "id": "spec-01",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "verdict": "CITED",
+      "base_label": "CITED",
+      "raw_label": "CITED",
+      "outcome": "miss",
+      "checked_at": "2026-10-21T22:55:41+00:00"
+    },
+    {
+      "id": "spec-02",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "verdict": "CITED [STALE:2016]",
+      "base_label": "CITED",
+      "raw_label": "CITED [STALE:2016] [STALE:2016]",
+      "outcome": "miss",
+      "checked_at": "2026-10-21T22:55:44+00:00"
+    },
+    {
+      "id": "spec-03",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "verdict": "CITED",
+      "base_label": "CITED",
+      "raw_label": "CITED",
+      "outcome": "miss",
+      "checked_at": "2026-10-21T22:55:46+00:00"
+    },
+    {
+      "id": "spec-04",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "verdict": "CITED [STALE:2006]",
+      "base_label": "CITED",
+      "raw_label": "CITED [STALE:2006] [STALE:2006]",
+      "outcome": "miss",
+      "checked_at": "2026-10-21T22:55:49+00:00"
+    },
+    {
+      "id": "spec-05",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "verdict": "CITED",
+      "base_label": "CITED",
+      "raw_label": "CITED",
+      "outcome": "miss",
+      "checked_at": "2026-10-21T22:55:51+00:00"
+    },
+    {
+      "id": "spec-06",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "verdict": "CITED",
+      "base_label": "CITED",
+      "raw_label": "CITED",
+      "outcome": "miss",
+      "checked_at": "2026-10-21T22:55:53+00:00"
+    }
+  ]
+}

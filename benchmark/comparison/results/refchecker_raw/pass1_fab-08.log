@@ -1,0 +1,133 @@
+2026-10-21 15:43:33,989 - INFO - Emitting progress: started - {'message': 'Starting reference check...', 'source': '/tmp/tmpt0v0lqx8/fab-08.bib'}
+2026-10-21 15:43:33,989 - INFO - Emitting progress: extracting - {'message': 'Extracting text from file...'}
+2026-10-21 15:43:33,989 - INFO - Processing uploaded .bib file as BibTeX
+2026-10-21 15:43:33,990 - INFO - Detected BibTeX format from .bib file
+2026-10-21 15:43:33,990 - INFO - Detected BibTeX format, using deterministic BibTeX parser
+2026-10-21 15:43:34,000 - INFO - Extracted 1 references from .bib content
+2026-10-21 15:43:34,000 - INFO - Extracted 1 references from .bib file
+2026-10-21 15:43:34,000 - INFO - Emitting progress: extracting - {'message': 'Extracting references from paper...', 'paper_title': 'Unknown Paper', 'extraction_method': 'bib'}
+2026-10-21 15:43:34,000 - INFO - Using 1 references from ArXiv source files (method: bib)
+2026-10-21 15:43:34,003 - INFO - Citation contexts: 1/1 refs got an inline sentence (paper_text=183 chars, from_cache=False)
+2026-10-21 15:43:34,003 - INFO - Emitting progress: references_extracted - {'total_refs': 1, 'extraction_method': 'bib', 'references': [{'index': 1, 'title': 'Hyperbolic diffusion transformers for few-shot video generation', 'authors': ['Zhang, W.', 'et al'], 'year': 2024, '
+2026-10-21 15:43:34,003 - INFO - Emitting progress: progress - {'current': 0, 'total': 1, 'message': 'Checking 1 references...'}
+2026-10-21 15:43:34,003 - INFO - Emitting progress: checking_reference - {'index': 1, 'title': 'Hyperbolic diffusion transformers for few-shot video generation', 'total': 1}
+2026-10-21 15:44:50,395 - INFO - _format_verification_result: raw errors=[{'error_type': 'unverified', 'error_details': 'Paper not found by any checker; no match in CrossRef, OpenAlex, ACL Anthology, OpenReview, official proceedings, institutional reports, datacite; checker failures: Semantic Scholar API failed: rate_limited_or_timeout; DBLP API request failed', 'sources_checked': 9, 'sources_negative': 7}]
+2026-10-21 15:44:50,398 - INFO - _format_verification_result output: suggestions=[], status=unverified
+2026-10-21 15:44:50,404 - WARNING - Global cache upsert failed in emit_progress: no such table: verified_reference_identity
+2026-10-21 15:44:50,404 - INFO - Emitting progress: reference_result - {'index': 1, 'original_reference': {'title': 'Hyperbolic diffusion transformers for few-shot video generation', 'authors': ['Zhang, W.', 'et al'], 'year': 2024, 'journal': 'NeurIPS 2024', 'doi': '', '
+2026-10-21 15:44:50,404 - INFO - Emitting progress: progress - {'current': 1, 'total': 1}
+2026-10-21 15:44:50,404 - INFO - Emitting progress: summary_update - {'total_refs': 1, 'processed_refs': 1, 'errors_count': 0, 'warnings_count': 0, 'suggestions_count': 0, 'unverified_count': 0, 'hallucination_count': 0, 'regex_count': 1, 'llm_count': 0, 'hallucination
+2026-10-21 15:44:50,505 - INFO - Emitting progress: completed - {'total_refs': 1, 'processed_refs': 1, 'errors_count': 0, 'warnings_count': 0, 'suggestions_count': 0, 'unverified_count': 1, 'hallucination_count': 0, 'regex_count': 1, 'llm_count': 0, 'hallucination
+{
+  "paper_title": "Unknown Paper",
+  "paper_source": "/tmp/tmpt0v0lqx8/fab-08.bib",
+  "source_type": "file",
+  "extraction_method": "bib",
+  "summary": {
+    "total_refs": 1,
+    "processed_refs": 1,
+    "errors_count": 0,
+    "warnings_count": 0,
+    "suggestions_count": 0,
+    "unverified_count": 1,
+    "hallucination_count": 0,
+    "regex_count": 1,
+    "llm_count": 0,
+    "hallucination_llm_count": 0,
+    "verified_count": 0,
+    "refs_with_errors": 0,
+    "refs_with_warnings_only": 0,
+    "refs_with_suggestions_only": 0,
+    "refs_verified": 0,
+    "progress_percent": 100.0,
+    "extraction_method": "bib"
+  },
+  "references": [
+    {
+      "index": 1,
+      "original_reference": {
+        "title": "Hyperbolic diffusion transformers for few-shot video generation",
+        "authors": [
+          "Zhang, W.",
+          "et al"
+        ],
+        "year": 2024,
+        "journal": "NeurIPS 2024",
+        "doi": "",
+        "url": "",
+        "type": "other",
+        "bibtex_key": "fab-08",
+        "bibtex_type": "inproceedings",
+        "raw_text": "@inproceedings{fab-08, ...}",
+        "pages": "",
+        "organization": "",
+        "venue": "NeurIPS 2024",
+        "index": 1,
+        "is_inline_cited": true,
+        "citation_contexts": [
+          {
+            "sentence": "@inproceedings{fab-08,\n  author = {Zhang, W. and others},\n  title = {Hyperbolic diffusion transformers for few-shot video generation},\n  booktitle = {NeurIPS 2024},\n  year = {2024}\n}",
+            "marker": "(title mention)",
+            "before": "",
+            "after": ""
+          }
+        ],
+        "citation_count": 1,
+        "citation_context": "@inproceedings{fab-08,\n  author = {Zhang, W. and others},\n  title = {Hyperbolic diffusion transformers for few-shot video generation},\n  booktitle = {NeurIPS 2024},\n  year = {2024}\n}"
+      },
+      "title": "Hyperbolic diffusion transformers for few-shot video generation",
+      "authors": [
+        "Zhang, W.",
+        "et al"
+      ],
+      "year": 2024,
+      "venue": "NeurIPS 2024",
+      "cited_url": "",
+      "doi": null,
+      "arxiv_id": null,
+      "pmid": null,
+      "status": "unverified",
+      "errors": [
+        {
+          "error_type": "unverified",
+          "error_details": "Paper not found by any checker; no match in CrossRef, OpenAlex, ACL Anthology, OpenReview, official proceedings, institutional reports, datacite; checker failures: Semantic Scholar API failed: rate_limited_or_timeout; DBLP API request failed",
+          "cited_value": null,
+          "actual_value": null
+        }
+      ],
+      "warnings": [],
+      "suggestions": [],
+      "authoritative_urls": [],
+      "matched_database": null,
+      "enrichment": {},
+      "corrected_reference": null,
+      "hallucination_assessment": null,
+      "citation_contexts": [
+        {
+          "sentence": "@inproceedings{fab-08,\n  author = {Zhang, W. and others},\n  title = {Hyperbolic diffusion transformers for few-shot video generation},\n  booktitle = {NeurIPS 2024},\n  year = {2024}\n}",
+          "marker": "(title mention)",
+          "before": "",
+          "after": ""
+        }
+      ],
+      "citation_context": "@inproceedings{fab-08,\n  author = {Zhang, W. and others},\n  title = {Hyperbolic diffusion transformers for few-shot video generation},\n  booktitle = {NeurIPS 2024},\n  year = {2024}\n}",
+      "citation_count": 1
+    }
+  ],
+  "retractions": {
+    "checked": 1,
+    "with_doi": 0,
+    "retracted": 0,
+    "results": [
+      {
+        "index": 1,
+        "title": "Hyperbolic diffusion transformers for few-shot video generation",
+        "doi": null,
+        "status": "no_doi"
+      }
+    ],
+    "source": "openalex"
+  }
+}
+
+--- stderr ---
