@@ -62,7 +62,7 @@ python -m veripaper ground draft.md --out report.md
 
 Input: paper markdown. Output: claim-by-claim verification report.
 
-**BibTeX input.** Give it a `.bib` instead (`… ground refs.bib --out report.md`,
+**BibTeX input.** Give it a `.bib` instead (`python -m veripaper ground refs.bib --out report.md`,
 or paste/upload the `.bib` in the web app) and every entry is checked by DOI /
 arXiv ID / title lookup with the same labels (`CITED` / `UNVERIFIED` /
 `FABRICATED` / `RATE_LIMITED` + `[CHIMERIC]` / `[RETRACTED]`). Parsing happens

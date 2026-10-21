@@ -10,7 +10,7 @@ def main(argv: list[str] | None = None) -> int:
                                  description="veripaper command-line tools")
     sub = ap.add_subparsers(dest="cmd", required=True)
     g = sub.add_parser("ground", help="claim-by-claim citation verification report")
-    g.add_argument("draft", help="paper draft: .md / .txt, or .docx / .pdf")
+    g.add_argument("draft", help="paper draft: .md / .txt, .docx / .pdf, or a BibTeX .bib (every entry checked)")
     g.add_argument("--out", default="report.md", help="report path (default: report.md)")
     args = ap.parse_args(argv)
 
