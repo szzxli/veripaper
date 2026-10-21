@@ -82,56 +82,57 @@ as `METHOD.md`); all attempts are kept in the result files.
 ## Results
 
 <!-- GENERATED:BEGIN -->
-| Category (n) | veripaper (before fix) | RefExists | citegate | refchecker (no-LLM) |
-|---|---|---|---|---|
-| real (8) | 7/8 recognised · 1 inconclusive | 8/8 recognised | 5/8 recognised · 3 metadata flag | 7/8 recognised · 1 metadata flag |
-| fabricated (8) | 5/8 (3 inconclusive) | 5/8 (3 miss) | 7/8 (1 miss) | 6/8 (2 inconclusive) |
-| chimeric (6) | 3/6 (1 miss, 2 inconclusive) | 3/6 (3 miss) | 4/6 (2 miss) | 6/6 |
-| retracted (6) | 3/6 (3 miss) | 6/6 | 6/6 | 6/6 |
-| specific-not-in-abstract (6) | 0/6 (6 miss) | out of scope | out of scope | out of scope |
+| Category (n) | veripaper (before fix) | veripaper (+ retraction fix) | RefExists | citegate | refchecker (no-LLM) |
+|---|---|---|---|---|---|
+| real (8) | 7/8 recognised · 1 inconclusive | 7/8 recognised · 1 inconclusive | 8/8 recognised | 5/8 recognised · 3 metadata flag | 7/8 recognised · 1 metadata flag |
+| fabricated (8) | 5/8 (3 inconclusive) | 6/8 (2 inconclusive) | 5/8 (3 miss) | 7/8 (1 miss) | 6/8 (2 inconclusive) |
+| chimeric (6) | 3/6 (1 miss, 2 inconclusive) | 3/6 (3 inconclusive) | 3/6 (3 miss) | 4/6 (2 miss) | 6/6 |
+| retracted (6) | 3/6 (3 miss) | 6/6 | 6/6 | 6/6 | 6/6 |
+| specific-not-in-abstract (6) | 0/6 (6 miss) | 0/6 (6 miss) | out of scope | out of scope | out of scope |
 
 Per-sample outcomes (verdict → outcome):
 
-| Sample | veripaper (before fix) | RefExists | citegate | refchecker (no-LLM) |
-|---|---|---|---|---|
-| real-01 | CITED [STALE:2016] → pass | verified → pass | verified → pass | verified (retraction: clean) → pass |
-| real-02 | CITED → pass | verified → pass | mismatch → metadata-flag | verified (retraction: no_doi) → pass |
-| real-03 | CITED → pass | verified → pass | verified → pass | verified (retraction: no_doi) → pass |
-| real-04 | CITED → pass | verified → pass | verified → pass | verified (retraction: clean) → pass |
-| real-05 | RATE_LIMITED → inconclusive | likely → pass | mismatch → metadata-flag | suggestion (retraction: no_doi) → pass |
-| real-06 | CITED → pass | verified → pass | verified → pass | verified (retraction: clean) → pass |
-| real-07 | CITED → pass | verified → pass | mismatch → metadata-flag | warning (retraction: no_doi) → metadata-flag |
-| real-08 | CITED → pass | verified → pass | verified → pass | verified (retraction: no_doi) → pass |
-| fab-01 | FABRICATED → pass | not_found → pass | not-found → pass | unverified (retraction: unknown) → pass |
-| fab-02 | FABRICATED → pass | not_found → pass | not-found → pass | unverified (retraction: unknown) → pass |
-| fab-03 | FABRICATED → pass | not_found → pass | not-found → pass | unverified (retraction: no_doi) → inconclusive |
-| fab-04 | FABRICATED → pass | partial → miss | not-found → pass | unverified (retraction: unknown) → pass |
-| fab-05 | FABRICATED → pass | not_found → pass | not-found → pass | unverified (retraction: no_doi) → inconclusive |
-| fab-06 | RATE_LIMITED → inconclusive | partial → miss | not-found → pass | unverified (retraction: no_doi) → pass |
-| fab-07 | RATE_LIMITED → inconclusive | no_match → pass | mismatch → miss | unverified (retraction: no_doi) → pass |
-| fab-08 | RATE_LIMITED → inconclusive | partial → miss | not-found → pass | unverified (retraction: no_doi) → pass |
-| chim-01 | RATE_LIMITED → inconclusive | partial → pass | mismatch → pass | error (retraction: no_doi) → pass |
-| chim-02 | CITED [CHIMERIC:author-mismatch] → pass | partial → pass | mismatch → pass | error (retraction: clean) → pass |
-| chim-03 | CITED [CHIMERIC:author-mismatch] → pass | verified → miss | not-found → miss | error (retraction: no_doi) → pass |
-| chim-04 | CITED [CHIMERIC:author-mismatch] → pass | verified → miss | mismatch → pass | error (retraction: clean) → pass |
-| chim-05 | UNVERIFIED → miss | partial → pass | mismatch → pass | error (retraction: no_doi) → pass |
-| chim-06 | RATE_LIMITED → inconclusive | no_match → miss | not-found → miss | error (retraction: no_doi) → pass |
-| retr-01 | CITED [RETRACTED] → pass | verified + retracted → pass | retracted → pass | verified (retraction: retracted) → pass |
-| retr-02 | CITED [RETRACTED] → pass | verified + retracted → pass | retracted → pass | verified (retraction: retracted) → pass |
-| retr-03 | CITED [RETRACTED] → pass | verified + retracted → pass | retracted → pass | verified (retraction: retracted) → pass |
-| retr-04 | CITED → miss | verified + retracted → pass | retracted → pass | verified (retraction: retracted) → pass |
-| retr-05 | CITED → miss | verified + retracted → pass | retracted → pass | verified (retraction: retracted) → pass |
-| retr-06 | CITED → miss | verified + retracted → pass | retracted → pass | verified (retraction: retracted) → pass |
-| spec-01 | CITED → miss | verified → out-of-scope | verified → out-of-scope | verified (retraction: no_doi) → out-of-scope |
-| spec-02 | CITED [STALE:2016] → miss | verified → out-of-scope | verified → out-of-scope | verified (retraction: clean) → out-of-scope |
-| spec-03 | CITED → miss | verified → out-of-scope | mismatch → out-of-scope | verified (retraction: no_doi) → out-of-scope |
-| spec-04 | CITED [STALE:2006] → miss | verified → out-of-scope | verified → out-of-scope | verified (retraction: no_doi) → out-of-scope |
-| spec-05 | CITED → miss | verified → out-of-scope | not-found → out-of-scope | warning (retraction: no_doi) → out-of-scope |
-| spec-06 | CITED → miss | verified → out-of-scope | mismatch → out-of-scope | error (retraction: no_doi) → out-of-scope |
+| Sample | veripaper (before fix) | veripaper (+ retraction fix) | RefExists | citegate | refchecker (no-LLM) |
+|---|---|---|---|---|---|
+| real-01 | CITED [STALE:2016] → pass | CITED [STALE:2016] → pass | verified → pass | verified → pass | verified (retraction: clean) → pass |
+| real-02 | CITED → pass | CITED → pass | verified → pass | mismatch → metadata-flag | verified (retraction: no_doi) → pass |
+| real-03 | CITED → pass | CITED → pass | verified → pass | verified → pass | verified (retraction: no_doi) → pass |
+| real-04 | CITED → pass | CITED → pass | verified → pass | verified → pass | verified (retraction: clean) → pass |
+| real-05 | RATE_LIMITED → inconclusive | RATE_LIMITED → inconclusive | likely → pass | mismatch → metadata-flag | suggestion (retraction: no_doi) → pass |
+| real-06 | CITED → pass | CITED → pass | verified → pass | verified → pass | verified (retraction: clean) → pass |
+| real-07 | CITED → pass | CITED → pass | verified → pass | mismatch → metadata-flag | warning (retraction: no_doi) → metadata-flag |
+| real-08 | CITED → pass | CITED → pass | verified → pass | verified → pass | verified (retraction: no_doi) → pass |
+| fab-01 | FABRICATED → pass | FABRICATED → pass | not_found → pass | not-found → pass | unverified (retraction: unknown) → pass |
+| fab-02 | FABRICATED → pass | FABRICATED → pass | not_found → pass | not-found → pass | unverified (retraction: unknown) → pass |
+| fab-03 | FABRICATED → pass | FABRICATED → pass | not_found → pass | not-found → pass | unverified (retraction: no_doi) → inconclusive |
+| fab-04 | FABRICATED → pass | FABRICATED → pass | partial → miss | not-found → pass | unverified (retraction: unknown) → pass |
+| fab-05 | FABRICATED → pass | FABRICATED → pass | not_found → pass | not-found → pass | unverified (retraction: no_doi) → inconclusive |
+| fab-06 | RATE_LIMITED → inconclusive | UNVERIFIED → pass | partial → miss | not-found → pass | unverified (retraction: no_doi) → pass |
+| fab-07 | RATE_LIMITED → inconclusive | RATE_LIMITED → inconclusive | no_match → pass | mismatch → miss | unverified (retraction: no_doi) → pass |
+| fab-08 | RATE_LIMITED → inconclusive | RATE_LIMITED → inconclusive | partial → miss | not-found → pass | unverified (retraction: no_doi) → pass |
+| chim-01 | RATE_LIMITED → inconclusive | RATE_LIMITED → inconclusive | partial → pass | mismatch → pass | error (retraction: no_doi) → pass |
+| chim-02 | CITED [CHIMERIC:author-mismatch] → pass | CITED [CHIMERIC:author-mismatch] → pass | partial → pass | mismatch → pass | error (retraction: clean) → pass |
+| chim-03 | CITED [CHIMERIC:author-mismatch] → pass | CITED [CHIMERIC:author-mismatch] → pass | verified → miss | not-found → miss | error (retraction: no_doi) → pass |
+| chim-04 | CITED [CHIMERIC:author-mismatch] → pass | CITED [CHIMERIC:author-mismatch] → pass | verified → miss | mismatch → pass | error (retraction: clean) → pass |
+| chim-05 | UNVERIFIED → miss | RATE_LIMITED → inconclusive | partial → pass | mismatch → pass | error (retraction: no_doi) → pass |
+| chim-06 | RATE_LIMITED → inconclusive | RATE_LIMITED → inconclusive | no_match → miss | not-found → miss | error (retraction: no_doi) → pass |
+| retr-01 | CITED [RETRACTED] → pass | CITED [RETRACTED] → pass | verified + retracted → pass | retracted → pass | verified (retraction: retracted) → pass |
+| retr-02 | CITED [RETRACTED] → pass | CITED [RETRACTED] → pass | verified + retracted → pass | retracted → pass | verified (retraction: retracted) → pass |
+| retr-03 | CITED [RETRACTED] → pass | CITED [RETRACTED] → pass | verified + retracted → pass | retracted → pass | verified (retraction: retracted) → pass |
+| retr-04 | CITED → miss | CITED [RETRACTED] → pass | verified + retracted → pass | retracted → pass | verified (retraction: retracted) → pass |
+| retr-05 | CITED → miss | CITED [RETRACTED] → pass | verified + retracted → pass | retracted → pass | verified (retraction: retracted) → pass |
+| retr-06 | CITED → miss | CITED [RETRACTED] → pass | verified + retracted → pass | retracted → pass | verified (retraction: retracted) → pass |
+| spec-01 | CITED → miss | CITED → miss | verified → out-of-scope | verified → out-of-scope | verified (retraction: no_doi) → out-of-scope |
+| spec-02 | CITED [STALE:2016] → miss | CITED [STALE:2016] → miss | verified → out-of-scope | verified → out-of-scope | verified (retraction: clean) → out-of-scope |
+| spec-03 | CITED → miss | CITED → miss | verified → out-of-scope | mismatch → out-of-scope | verified (retraction: no_doi) → out-of-scope |
+| spec-04 | CITED [STALE:2006] → miss | CITED [STALE:2006] → miss | verified → out-of-scope | verified → out-of-scope | verified (retraction: no_doi) → out-of-scope |
+| spec-05 | CITED → miss | CITED → miss | verified → out-of-scope | not-found → out-of-scope | warning (retraction: no_doi) → out-of-scope |
+| spec-06 | CITED → miss | CITED → miss | verified → out-of-scope | mismatch → out-of-scope | error (retraction: no_doi) → out-of-scope |
 
 Run provenance:
 
 - **veripaper (before fix)** — tool: `veripaper (python pipeline, no-key default)`; commit: `605b409dbdf50df9abcff2ca6254f339f1c436fd`; input: `samples.json `draft``; run_finished_at: `2026-10-21T23:02:01+00:00`
+- **veripaper (+ retraction fix)** — tool: `veripaper (python pipeline, no-key default)`; commit: `2e4432047fe245a91e8f50539a4cb4c1633f4f81`; input: `samples.json `draft``; run_finished_at: `2026-10-21T23:14:30+00:00`
 - **RefExists** — tool: `RefExists (DSL4-Digital/RefExists)`; commit: `5fa3ffbaf3bc2f40877a5d3e2e446615455a5a62`; input: `samples.json `refexists_ref``; node: `v20.19.2`; run_finished_at: `2026-10-21T22:45:19Z`
 - **citegate** — tool: `citegate`; version: `citegate 0.3.0`; commit: `94cc0a02a63a11154664c88b25923cbd0dc7c028`; input: `samples.bib (one entry per run)`; config: `defaults; --workers 1; no --mailto`; run_finished_at: `2026-10-21T22:29:10+00:00`
 - **refchecker (no-LLM)** — tool: `refchecker (academic-refchecker)`; version: `3.1.7`; commit: `66d0cb59945474a1c9bd59df6e5b40c9d0c197d3`; input: `samples.bib`; config: `refchecker-webui check --no-llm --check-retractions --json --paper <bib>  (no LLM, no S2 key)`; run_finished_at: `2026-10-21T22:52:07+00:00`
@@ -139,10 +140,11 @@ Run provenance:
 
 ## Reading the numbers
 
-**veripaper's misses and gaps (default no-key configuration), before the
-fix below:**
+**veripaper's misses and gaps (default no-key configuration). Columns:
+"before fix" = unmodified pipeline; "+ retraction fix" = after commit
+`2e44320` (see the before/after section):**
 
-- **Retracted: 3/6.** It only read Crossref's `RETRACTED:` title prefix;
+- **Retracted: 3/6 before the fix, 6/6 after.** It only read Crossref's `RETRACTED:` title prefix;
   retr-04/05/06 are Springer Nature records titled `RETRACTED ARTICLE: …`.
   All three other tools caught 6/6 (OpenAlex `is_retracted`, and for
   citegate also Crossref/Retraction Watch update records). See the fix
@@ -183,11 +185,42 @@ fix below:**
   three attempts. One metadata flag on a real citation (real-07, LoRA:
   BibTeX says 2022, index says 2021).
 
+## Retraction fix: before / after
+
+Separate commit `2e44320` ("Retraction detection: read CrossRef
+'updated-by' …"). Both signals come from the CrossRef record veripaper
+already fetches — no extra request:
+
+1. the title-prefix pattern now also accepts `RETRACTED ARTICLE:`
+   (Springer Nature's format), alongside `RETRACTED:` / `WITHDRAWN:`;
+2. the record's `updated-by` notices of type `retraction` / `withdrawal` /
+   `removal` — CrossRef attaches these from publishers and from the
+   Retraction Watch database it hosts. Corrections and expressions of
+   concern alone do not flag.
+
+Same samples, same runner, re-run after the commit (`veripaper_after.json`):
+
+| Category | before (pipeline @ `605b409`) | after (pipeline @ `2e44320`) |
+|---|---|---|
+| retracted (6) | 3/6 (3 miss: retr-04/05/06) | **6/6** |
+| real (8) | 7/8, 1 inconclusive | 7/8, 1 inconclusive — no new false alarm |
+| `[RETRACTED]` on a non-retracted sample | 0 | 0 |
+
+Only three verdicts changed because of the fix (retr-04/05/06 `CITED` →
+`CITED [RETRACTED]`). Two others changed between the runs for an unrelated
+reason — Semantic Scholar rate limiting on entries without an identifier:
+fab-06 `RATE_LIMITED` → `UNVERIFIED` (now a pass) and chim-05 `UNVERIFIED`
+→ `RATE_LIMITED` (miss → inconclusive). The fix does not touch that code
+path; this is the run-to-run noise described under Limitations. The web app
+got the same change (`ground.js`); a headless-Chromium run against the live
+registries flagged all four retracted DOIs `[RETRACTED]` after the change
+vs. one of four before.
+
 ## Reproduce
 
 ```bash
 pip install -e .                                    # veripaper (this repo)
-python3 benchmark/comparison/run_veripaper.py veripaper_before
+python3 benchmark/comparison/run_veripaper.py veripaper_after   # or _before on 605b409
 
 git clone https://github.com/DSL4-Digital/RefExists
 REFEXISTS_VERIFIER=$PWD/RefExists/public/verifier.js \
