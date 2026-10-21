@@ -3,8 +3,49 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>veripaper — catch invented citations in AI drafts</title>
-<meta name="description" content="Open-source workbench that verifies the citations in a research draft. Checks every cited source exists, flags the ones that don't, labels honestly.">
+<title>veripaper — Free Citation Checker for Hallucinated References in AI Drafts</title>
+<meta name="description" content="Free, open-source citation checker for AI-written research drafts. Checks each cited source against CrossRef, arXiv, Semantic Scholar and more, and flags references that don&#x27;t exist.">
+<link rel="canonical" href="https://szzxli.github.io/veripaper/web/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="veripaper">
+<meta property="og:title" content="veripaper — Free Citation Checker for Hallucinated References in AI Drafts">
+<meta property="og:description" content="Free, open-source citation checker for AI-written research drafts. Checks each cited source against CrossRef, arXiv, Semantic Scholar and more, and flags references that don&#x27;t exist.">
+<meta property="og:url" content="https://szzxli.github.io/veripaper/web/">
+<meta property="og:image" content="https://opengraph.githubassets.com/1/szzxli/veripaper">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="veripaper — Free Citation Checker for Hallucinated References in AI Drafts">
+<meta name="twitter:description" content="Free, open-source citation checker for AI-written research drafts. Checks each cited source against CrossRef, arXiv, Semantic Scholar and more, and flags references that don&#x27;t exist.">
+<meta name="twitter:image" content="https://opengraph.githubassets.com/1/szzxli/veripaper">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "veripaper",
+  "applicationCategory": "ReferenceApplication",
+  "applicationSubCategory": "Citation checker",
+  "description": "Open-source, browser-based workbench that checks whether the citations in a research draft exist (CrossRef, DataCite, arXiv, Semantic Scholar, Europe PMC, DBLP) and labels each claim honestly: verified, cited, unverified, or stale.",
+  "operatingSystem": "Any (web browser)",
+  "url": "https://szzxli.github.io/veripaper/web/",
+  "image": "https://opengraph.githubassets.com/1/szzxli/veripaper",
+  "isAccessibleForFree": true,
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "license": "https://opensource.org/licenses/MIT",
+  "inLanguage": "en",
+  "author": {
+    "@type": "Person",
+    "name": "szzxli",
+    "url": "https://github.com/szzxli"
+  },
+  "sameAs": [
+    "https://github.com/szzxli/veripaper"
+  ]
+}
+</script>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#16324f">
 <style>
@@ -340,6 +381,7 @@ footer .colophon a{color:var(--navy)}
 
 <footer><div class="wrap">
   <div class="colophon">VERIPAPER · v0.1 · SET IN GEORGIA · MIT LICENSE · <a href="https://github.com/szzxli/veripaper">GITHUB</a> · <a href="https://github.com/szzxli/veripaper/issues">FEEDBACK</a> · <a href="#" id="buglink">REPORT BUG</a></div>
+  <p class="colophon" style="margin-top:8px;text-transform:none;letter-spacing:0">Privacy: we count anonymous page views with <a href="https://www.goatcounter.com" rel="noopener">GoatCounter</a> — no cookies, no personal data. Your drafts and keys are never sent to it; your content stays in your browser except for the lookups you start (CrossRef / DataCite / arXiv, and OpenRouter only if you add your own key).</p>
 </div></footer>
 
 <script>
@@ -371,6 +413,7 @@ document.getElementById("buglink").addEventListener("click", function (e) {
 <script src="datasets.js"></script>
 <script src="venues.js"></script>
 <script src="rebuttal.js"></script>
+<script src="analytics.js" defer></script>
 <script>
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});}
 

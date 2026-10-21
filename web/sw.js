@@ -10,8 +10,12 @@ self.addEventListener('activate',e=>{
       .then(()=>self.clients.claim())
   );
 });
-// network-first: fresh code on every load; cache fallback keeps it working offline
+// network-first: fresh code on every load; cache fallback keeps it working offline.
+// Only same-origin GETs (the app shell) go through the cache: Cache.put() rejects
+// non-GET requests (e.g. the BYOK OpenRouter POST), and registry API responses
+// (CrossRef/arXiv/...) must not be persisted here or replayed offline.
 self.addEventListener('fetch',e=>{
+  if(e.request.method!=='GET'||new URL(e.request.url).origin!==self.location.origin) return;
   e.respondWith(
     fetch(e.request).then(r=>{
       const cp=r.clone();

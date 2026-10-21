@@ -1,6 +1,14 @@
-# veripaper (working name)
+# veripaper — catch hallucinated citations in AI-written research drafts
+
+> **Your AI wrote the draft. Did it invent the citations?** veripaper checks every cited source against CrossRef, arXiv, Semantic Scholar and other registries, flags references that don't exist, and labels each claim honestly. Free and open source (MIT).
+>
+> **▶ Live demo:** https://szzxli.github.io/veripaper/web/ — paste a draft or upload .docx/.pdf; everything runs in your browser, nothing is uploaded.
+
+*(veripaper is a working name.)*
 
 Open-source academic paper tool: **the paper is just the final presentation.**
+
+**Live workbench (runs in your browser, no install):** https://szzxli.github.io/veripaper/web/
 
 Researchers should only do three things: **creative ideas, logical reasoning, empirical proof**.
 Everything else — writing, benchmarking, venue targeting, rebuttals — is handled by the tool.
@@ -76,3 +84,7 @@ and scoring rules in `benchmark/METHOD.md`, latest scored runs
   productization direction → evidence grounding → template generation →
   venue auto-optimization → reviewer simulation → venue targeting →
   rebuttal management → acceptance-rate review loop (learning)
+
+## Privacy
+
+Privacy: we count anonymous page views with [GoatCounter](https://www.goatcounter.com) — no cookies, no personal data, no consent banner needed. Your content never goes to the counter: anything you type, paste or upload stays in your browser (except requests you start yourself, such as an AI-grading or lookup call to a provider you choose). Exactly what is sent is documented at the top of the site's `analytics.js`.
