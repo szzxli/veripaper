@@ -403,11 +403,22 @@ async function resolveMarker(type, id, refmap) {
 
 /* ---------------- existence (reuse page's verify fns when present) ---------------- */
 
-/* Retraction signal: CrossRef prefixes retracted titles with "RETRACTED:"
- * (verified against known-retracted DOIs). Only CrossRef carries it —
- * no signal means "unknown", never "not retracted". */
-const RETRACTED_RE = /^\s*(retracted|withdrawn)\s*:/i;
+/* Retraction signals, both read from the CrossRef record already fetched
+ * (no extra request):
+ *  1. title prefix — "RETRACTED: …" or (Springer Nature) "RETRACTED ARTICLE: …";
+ *     "WITHDRAWN: …" likewise;
+ *  2. the record's `updated-by` list — CrossRef attaches retraction / withdrawal /
+ *     removal notices there, including Retraction Watch data (source
+ *     "retraction-watch").
+ * No signal means "unknown", never "not retracted". */
+const RETRACTED_RE = /^\s*(retracted|withdrawn)(\s+article)?\s*:/i;
 function isRetractedTitle(t) { return RETRACTED_RE.test(t || ''); }
+const RETRACTION_UPDATE_TYPES = ['retraction', 'withdrawal', 'removal'];
+function crossrefRetractionUpdates(m) {
+  return ((m && m['updated-by']) || [])
+    .map(u => String((u && u.type) || '').toLowerCase())
+    .filter(t => RETRACTION_UPDATE_TYPES.includes(t));
+}
 
 /* Chimeric-hallucination detection: the title matches a real paper but the
  * authors named in the entry match none of the paper's real authors.
@@ -440,7 +451,7 @@ async function pgCheckCrossRef(doi) {
     venue: ((m['container-title'] || [])[0] || ''),
     year: yr ? yr[0][0] : '',
     exists: true,
-    retracted: isRetractedTitle(title),
+    retracted: isRetractedTitle(title) || crossrefRetractionUpdates(m).length > 0,
   };
 }
 async function pgCheckDataCite(doi) {

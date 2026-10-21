@@ -64,6 +64,26 @@ const ok = (name, cond, extra) => {
   ok('retracted title detected', isRetractedTitle('RETRACTED: Ileal-lymphoid-nodular hyperplasia'));
   ok('normal title not retracted', !isRetractedTitle('Attention is all you need'));
   ok('null title not retracted', !isRetractedTitle(null));
+  ok('"RETRACTED ARTICLE:" prefix detected (Springer Nature format)',
+    isRetractedTitle('RETRACTED ARTICLE: Room-temperature superconductivity in a carbonaceous sulfur hydride'));
+  ok('"Retracted" inside a title is not a prefix signal',
+    !isRetractedTitle('Why retracted articles keep being cited'));
+  ok('"RETRACTED ARTICLES" heading word is not the prefix', !isRetractedTitle('RETRACTED ARTICLES: a survey'));
+
+  console.log('— retraction via CrossRef updated-by (Retraction Watch) —');
+  const mkCr = (title, updatedBy) => makeSandbox(async (url) => String(url).includes('crossref') ? {
+    ok: true, status: 200,
+    json: async () => ({ message: { title: [title], author: [{ given: 'H', family: 'Obokata' }],
+      'updated-by': updatedBy } }),
+  } : { ok: false, status: 404 });
+  const vu = await mkCr('Stimulus-triggered fate conversion of somatic cells into pluripotency',
+    [{ type: 'retraction', source: 'retraction-watch', DOI: '10.1038/nature13598' }]).verifyDoi('10.1038/nature12968');
+  ok('updated-by retraction flags an unprefixed title', vu.retracted === true);
+  const vc = await mkCr('Some paper', [{ type: 'correction', source: 'publisher' },
+    { type: 'expression_of_concern', source: 'retraction-watch' }]).verifyDoi('10.1000/x');
+  ok('correction / expression of concern alone is not a retraction', vc.retracted === false);
+  const vw = await mkCr('Some paper', [{ type: 'withdrawal', source: 'publisher' }]).verifyDoi('10.1000/y');
+  ok('withdrawal notice flags', vw.retracted === true);
 
   console.log('— 429 is not not-found —');
   const sb429 = makeSandbox(async () => ({ ok: false, status: 429 }));
