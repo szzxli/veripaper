@@ -17,6 +17,27 @@ from veripaper.contracts import EvidenceRef
 from veripaper.verify import bibtex, citations, claims, extract, freshness, references
 
 
+def _apply_tags(label: str, *groups: str) -> str:
+    """Append bracket tags to ``label``, each tag at most once.
+
+    Application is idempotent: a tag already present on ``label`` (or named
+    again in a later group) is skipped. First-seen order is preserved, and
+    the base label text is left unchanged. Callers that concatenate the same
+    tag string twice therefore still emit each label once.
+    """
+    present = set(label.split())
+    extra: list[str] = []
+    for group in groups:
+        for tag in (group or "").split():
+            if tag in present:
+                continue
+            present.add(tag)
+            extra.append(tag)
+    if not extra:
+        return label
+    return f"{label} {' '.join(extra)}" if label else " ".join(extra)
+
+
 def _verify_ids(doi: str | None, arxiv_id: str | None, via_note: str) -> dict:
     # fabricated: an explicit identifier checked against its registry and
     # positively NOT found — evidence of fabrication, never folded into
@@ -144,20 +165,20 @@ def run_ground(draft_path: str, out_path: str) -> str:
                 # rate-limited is NOT not-found: say so explicitly
                 evidence.append(EvidenceRef(
                     claim=p["claim"], source_doi=res["doi"],
-                    label="RATE_LIMITED" + tag_str,
+                    label=_apply_tags("RATE_LIMITED", tag_str),
                     note=("source(s) rate-limited (HTTP 429) while checking — "
                           "not checked, NOT proven fake. Try again later.")))
             elif res.get("fabricated"):
                 evidence.append(EvidenceRef(
                     claim=p["claim"], source_doi=res["doi"],
-                    label="FABRICATED" + tag_str,
+                    label=_apply_tags("FABRICATED", tag_str),
                     note=("identifier checked against its registry and does not "
                           "exist — fabricated or mistyped; do not cite. "
                           + res["note"])))
             else:
                 evidence.append(EvidenceRef(
                     claim=p["claim"], source_doi=res["doi"],
-                    label="UNVERIFIED" + tag_str, note=res["note"]))
+                    label=_apply_tags("UNVERIFIED", tag_str), note=res["note"]))
             continue
 
         if bib_mode:
@@ -169,13 +190,17 @@ def run_ground(draft_path: str, out_path: str) -> str:
                 note = ("CHIMERIC citation: the title matches a real paper but the "
                         "listed authors do not — " + note)
             evidence.append(EvidenceRef(claim=p["claim"], source_doi=res["doi"],
-                                        label="CITED" + tag_str, note=note))
+                                        label=_apply_tags("CITED", tag_str), note=note))
             continue
 
         abstract = claims.fetch_abstract(doi=res["doi"], arxiv_id=res["arxiv_id"])
         sup = claims.check_claim_support(p["claim"], abstract, res["title"] or "", doi=res["doi"])
-        label = (("ABSTRACT-SUPPORTED" if sup["verdict"] == "verified" else "CITED")
-                 + tag_str + sup.get("tag", ""))
+        # Tags are attached before the retraction rewrite and again when the
+        # evidence row is recorded. The second apply must not repeat a tag
+        # already on the label.
+        label = _apply_tags(
+            "ABSTRACT-SUPPORTED" if sup["verdict"] == "verified" else "CITED",
+            tag_str, sup.get("tag", ""))
         note = sup["reason"]
         if res.get("retracted"):
             if label == "ABSTRACT-SUPPORTED":
@@ -188,7 +213,7 @@ def run_ground(draft_path: str, out_path: str) -> str:
             note = "no abstract fetched; " + note
         evidence.append(EvidenceRef(
             claim=p["claim"], source_doi=res["doi"],
-            label=label + tag_str, note=note))
+            label=_apply_tags(label, tag_str), note=note))
 
     _write_report(out_path, draft_path, pairs, evidence)
     return out_path
