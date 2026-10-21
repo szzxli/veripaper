@@ -54,6 +54,14 @@ python -m veripaper ground draft.md --out report.md
 
 Input: paper markdown. Output: claim-by-claim verification report.
 
+**BibTeX input.** Give it a `.bib` instead (`… ground refs.bib --out report.md`,
+or paste/upload the `.bib` in the web app) and every entry is checked by DOI /
+arXiv ID / title lookup with the same labels (`CITED` / `UNVERIFIED` /
+`FABRICATED` / `RATE_LIMITED` + `[CHIMERIC]` / `[RETRACTED]`). Parsing happens
+locally — in the web app, entirely in your browser; the only network traffic is
+the registry lookups. A `.bib` carries no claims, so this mode is
+existence-level: no claim-support judgment and no freshness tags.
+
 ## Benchmark
 
 A public citation-checking benchmark (34 samples, ground truth verified

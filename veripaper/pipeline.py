@@ -14,7 +14,7 @@ Honest-label rules (contracts.EvidenceRef):
 from __future__ import annotations
 
 from veripaper.contracts import EvidenceRef
-from veripaper.verify import citations, claims, extract, freshness, references
+from veripaper.verify import bibtex, citations, claims, extract, freshness, references
 
 
 def _verify_ids(doi: str | None, arxiv_id: str | None, via_note: str) -> dict:
@@ -106,8 +106,20 @@ def _read_draft(draft_path: str) -> str:
 
 
 def run_ground(draft_path: str, out_path: str) -> str:
-    """Run the full pipeline; write report markdown; return out_path."""
-    text = _read_draft(draft_path)
+    """Run the full pipeline; write report markdown; return out_path.
+
+    A .bib input is converted locally (verify/bibtex.py) into a reference
+    list and checked entry by entry with the same lookups and labels —
+    existence-level only (no claims, so no support judgment / freshness).
+    """
+    bib_mode = draft_path.lower().endswith((".bib", ".bibtex"))
+    bib_titles: dict = {}
+    if bib_mode:
+        conv = bibtex.bib_to_draft(open(draft_path, encoding="utf-8").read())
+        text = conv["draft"]
+        bib_titles = {e["key"]: bibtex.clean_latex(e["fields"].get("title", "")) for e in conv["entries"]}
+    else:
+        text = _read_draft(draft_path)
     pairs = extract.extract_pairs(text)
     refmap = references.parse_references(text)
 
@@ -116,7 +128,10 @@ def run_ground(draft_path: str, out_path: str) -> str:
 
     for p in pairs:
         res = _resolve(p, cache, refmap)
-        fr = freshness.check_freshness(p["claim"])
+        if bib_mode:
+            key = p["cite_id"]
+            p = dict(p, claim=f"@{key} — {bib_titles.get(key) or '(no title in entry)'}")
+        fr = {"stale": False} if bib_mode else freshness.check_freshness(p["claim"])
         tags = [fr["tag"]] if fr["stale"] else []
         if res.get("chimeric"):
             tags.append("[CHIMERIC:author-mismatch]")
@@ -143,6 +158,18 @@ def run_ground(draft_path: str, out_path: str) -> str:
                 evidence.append(EvidenceRef(
                     claim=p["claim"], source_doi=res["doi"],
                     label="UNVERIFIED" + tag_str, note=res["note"]))
+            continue
+
+        if bib_mode:
+            note = ("BibTeX entry: the record exists (" + res["note"] + "). "
+                    "A .bib has no claims, so support is not judged.")
+            if res.get("retracted"):
+                note = "RETRACTED paper — do not cite it as support. " + note
+            if res.get("chimeric"):
+                note = ("CHIMERIC citation: the title matches a real paper but the "
+                        "listed authors do not — " + note)
+            evidence.append(EvidenceRef(claim=p["claim"], source_doi=res["doi"],
+                                        label="CITED" + tag_str, note=note))
             continue
 
         abstract = claims.fetch_abstract(doi=res["doi"], arxiv_id=res["arxiv_id"])
