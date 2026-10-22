@@ -4,8 +4,8 @@
 Usage: python3 make_table.py [tool-result-name ...]   -> prints markdown
        python3 make_table.py --write [names ...]        -> rewrites the block between
          <!-- GENERATED:BEGIN --> and <!-- GENERATED:END --> in ../COMPARISON.md
-Default order: veripaper_before veripaper_after refexists citegate refchecker
-(names without a results file are skipped).
+Default order: veripaper_after veripaper_web_before veripaper_web_after refexists
+citegate refchecker (names without a results file are skipped).
 """
 from __future__ import annotations
 
@@ -20,8 +20,10 @@ from score import CATEGORIES  # noqa: E402
 
 LABELS = {
     "veripaper_before": "veripaper (before fix)",
-    "veripaper_after": "veripaper (+ retraction fix)",
+    "veripaper_after": "veripaper Python CLI, no key (+ retraction fix)",
     "veripaper": "veripaper",
+    "veripaper_web_before": "veripaper web, no key (before: main @ b4bb41a)",
+    "veripaper_web_after": "veripaper web, no key (after: fallbacks + keyless NLI)",
     "refexists": "RefExists",
     "citegate": "citegate",
     "refchecker": "refchecker (no-LLM)",
@@ -61,7 +63,8 @@ def main():
     args = sys.argv[1:]
     write = "--write" in args
     args = [a for a in args if a != "--write"]
-    names = args or ["veripaper_before", "veripaper_after", "refexists", "citegate", "refchecker"]
+    names = args or ["veripaper_after", "veripaper_web_before", "veripaper_web_after",
+                     "refexists", "citegate", "refchecker"]
     docs = [(n, load(n)) for n in names]
     docs = [(n, d) for n, d in docs if d]
     samples = json.loads((HERE.parent / "samples.json").read_text())["samples"]

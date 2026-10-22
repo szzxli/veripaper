@@ -211,12 +211,16 @@ footer .colophon a{color:var(--navy)}
     </div>
     <textarea id="ground-input" rows="9" placeholder="Paste your draft — claims with [@key], [1], (Author, 2020), DOI or arXiv citations, plus a References section…"></textarea>
     <div class="btnrow">
-      <input id="ground-key" type="password" placeholder="OpenRouter key (optional — enables abstract-vs-claim judgment)" style="flex:1;min-width:220px">
+      <input id="ground-key" type="password" placeholder="OpenRouter key (optional — higher-accuracy LLM judgment)" style="flex:1;min-width:220px">
       <button id="ground-btn" class="btn primary">Ground this draft</button>
     </div>
+    <label class="hint" style="display:flex;gap:8px;align-items:flex-start;margin:4px 0 0;cursor:pointer">
+      <input id="ground-keyless" type="checkbox" checked style="margin-top:3px">
+      <span><b>Keyless claim check</b> (free, default): a small NLI model (nli-deberta-v3-xsmall, ~87&nbsp;MB, downloaded once on first use and cached by your browser) runs on this page and compares each claim with the cited paper's <i>abstract only</i>, plus exact checks that the claim's numbers, quoted phrases and named entities appear in that abstract. Smaller and less accurate than an LLM — results are tagged <code>[KEYLESS-NLI]</code>. Your draft never leaves the page.</span>
+    </label>
     <div id="ground-progress" class="progress"></div>
     <div id="ground-result" style="margin-top:14px"></div>
-    <p class="hint">Without a key, existing sources are honestly labeled <i>cited</i> (support not checked). With a key, each abstract is compared against its claim — partial or unclear cases still downgrade, never pretend.</p>
+    <p class="hint">Without a key, the keyless check above runs in your browser (abstract-only, smaller model); untick it to only check that sources exist. With an OpenRouter key, an LLM compares each abstract with its claim instead — the optional higher-accuracy path. Either way, partial or unclear cases downgrade to <i>cited</i>, never pretend. Lookups go to free public indexes (Crossref, DataCite/arXiv, OpenAlex, Europe PMC, DBLP; Semantic Scholar only as a last resort), paced and cached locally so you hit fewer rate limits.</p>
   </div>
 </section>
 
@@ -381,7 +385,7 @@ footer .colophon a{color:var(--navy)}
 
 <footer><div class="wrap">
   <div class="colophon">VERIPAPER · v0.1 · SET IN GEORGIA · MIT LICENSE · <a href="https://github.com/szzxli/veripaper">GITHUB</a> · <a href="https://github.com/szzxli/veripaper/issues">FEEDBACK</a> · <a href="#" id="buglink">REPORT BUG</a></div>
-  <p class="colophon" style="margin-top:8px;text-transform:none;letter-spacing:0">Privacy: we count anonymous page views with <a href="https://www.goatcounter.com" rel="noopener">GoatCounter</a> — no cookies, no personal data. Your drafts and keys are never sent to it; your content stays in your browser except for the lookups you start (CrossRef / DataCite / arXiv, and OpenRouter only if you add your own key).</p>
+  <p class="colophon" style="margin-top:8px;text-transform:none;letter-spacing:0">Privacy: we count anonymous page views with <a href="https://www.goatcounter.com" rel="noopener">GoatCounter</a> — no cookies, no personal data. Your drafts and keys are never sent to it; your content stays in your browser except for the lookups you start (Crossref / DataCite / arXiv / OpenAlex / Europe PMC / DBLP / Semantic Scholar — identifiers and reference text only — and OpenRouter only if you add your own key). The keyless claim-check model is downloaded from the Hugging Face hub and runs locally; claims are not sent anywhere.</p>
 </div></footer>
 
 <script>

@@ -94,7 +94,8 @@ REFEXISTS_COMMIT=$(git -C RefExists rev-parse HEAD) \
 ```
 
 Raw per-sample outputs: `results_veripaper.json`, `results_refexists.json`.
-Summary and reading of the numbers: `RESULTS.md`.
+Summary and reading of the numbers: `COMPARISON.md` (latest runs, including
+the web app's keyless configuration via `comparison/run_veripaper_web.mjs`).
 
 ## Limitations
 
