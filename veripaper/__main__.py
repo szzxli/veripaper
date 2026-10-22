@@ -1,4 +1,8 @@
-"""Command-line entry point: ``python -m veripaper ground draft.md --out report.md``."""
+"""Command-line entry point.
+
+  python -m veripaper ground draft.md --out report.md   # full report
+  python -m veripaper check refs.bib                   # CI gate for .bib files
+"""
 from __future__ import annotations
 
 import argparse
@@ -12,6 +16,12 @@ def main(argv: list[str] | None = None) -> int:
     g = sub.add_parser("ground", help="claim-by-claim citation verification report")
     g.add_argument("draft", help="paper draft: .md / .txt, .docx / .pdf, or a BibTeX .bib (every entry checked)")
     g.add_argument("--out", default="report.md", help="report path (default: report.md)")
+    sub.add_parser("check", help="CI gate: check .bib files, exit 1 on fabricated / chimeric / retracted entries",
+                   add_help=False)
+    argv = sys.argv[1:] if argv is None else argv
+    if argv and argv[0] == "check":
+        from veripaper.ci import main as check_main
+        return check_main(argv[1:])
     args = ap.parse_args(argv)
 
     if args.cmd == "ground":

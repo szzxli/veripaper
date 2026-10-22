@@ -72,10 +72,10 @@ def verify_doi(doi: str) -> dict:
     """
     doi = doi.strip()
     r = _get(CROSSREF + doi)
-    if r is None:
-        return {"exists": False, "title": None, "reason": "network: crossref unreachable",
-                "limited": False, "retracted": False}
-    if r.status_code == 200:
+    # A network failure is "not checked", never "does not exist": reported
+    # like a rate limit (limited=True) so it can't become FABRICATED.
+    cr_unreachable = r is None
+    if r is not None and r.status_code == 200:
         try:
             msg = r.json()["message"]
             title = (msg.get("title") or [None])[0]
@@ -89,20 +89,23 @@ def verify_doi(doi: str) -> dict:
                 "limited": False,
                 "retracted": is_retracted_title(title) or bool(notices),
                 "authors": authors}
-    cr_limited = (r.status_code == 429)
+    cr_limited = (r is not None and r.status_code == 429)
+    cr_desc = "crossref unreachable" if cr_unreachable else f"crossref http {r.status_code}"
     # Fallback: DataCite (arXiv DOIs live here, not in CrossRef)
     r2 = _get(DATACITE + doi)
     if r2 is None:
-        return {"exists": False, "title": None, "reason": "network: datacite unreachable",
-                "limited": cr_limited, "retracted": False}
+        return {"exists": False, "title": None,
+                "reason": f"network: datacite unreachable ({cr_desc}) — not checked",
+                "limited": True, "unreachable": True, "retracted": False}
     if r2.status_code == 429:
         return {"exists": False, "title": None,
                 "reason": "rate-limited by crossref and datacite",
                 "limited": True, "retracted": False}
     if r2.status_code != 200:
+        not_checked = cr_limited or cr_unreachable
         return {"exists": False, "title": None,
-                "reason": f"crossref http {r.status_code}, datacite http {r2.status_code}",
-                "limited": cr_limited, "retracted": False}
+                "reason": f"{cr_desc}, datacite http {r2.status_code}" + (" — not checked" if cr_unreachable else ""),
+                "limited": not_checked, "unreachable": cr_unreachable, "retracted": False}
     try:
         attrs = r2.json()["data"]["attributes"]
         title = (attrs.get("titles") or [{}])[0].get("title")
@@ -131,7 +134,10 @@ def verify_arxiv(arxiv_id: str) -> dict:
     url = f"https://export.arxiv.org/api/query?id_list={aid}"
     r = _get(url)
     if r is None:
-        return {"exists": False, "title": None, "reason": "network: arxiv unreachable",
+        # DataCite (which holds a DOI for every arXiv paper) already answered
+        # a clean "no such DOI"; arXiv itself could not be asked.
+        return {"exists": False, "title": None,
+                "reason": "datacite has no 10.48550/arXiv DOI for this id (arXiv API unreachable)",
                 "limited": False, "retracted": False}
     ok = r.status_code == 200 and "<entry>" in r.text and base in r.text
     return {"exists": ok, "title": None,

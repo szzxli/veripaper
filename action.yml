@@ -1,0 +1,39 @@
+name: veripaper citation check
+description: Check BibTeX files for fabricated, chimeric (wrong-author) or retracted citations against free registries. No API key.
+author: szzxli
+branding:
+  icon: check-circle
+  color: blue
+inputs:
+  files:
+    description: Space-separated .bib paths or glob patterns, e.g. "paper/refs.bib" or "**/*.bib"
+    required: true
+  fail-on:
+    description: Comma-separated categories that fail the job (fabricated, chimeric, retracted, unverified, rate_limited) or "none"
+    required: false
+    default: fabricated,chimeric,retracted
+  json:
+    description: Optional path for a JSON report of every entry
+    required: false
+    default: ""
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+    - name: Install veripaper
+      shell: bash
+      run: python -m pip install --quiet "$GITHUB_ACTION_PATH"
+    - name: Check .bib files
+      shell: bash
+      env:
+        VP_FILES: ${{ inputs.files }}
+        VP_FAIL_ON: ${{ inputs.fail-on }}
+        VP_JSON: ${{ inputs.json }}
+      run: |
+        set -f                      # globs are expanded by veripaper, not the shell
+        read -r -a files <<< "$VP_FILES"
+        extra=()
+        if [ -n "$VP_JSON" ]; then extra+=(--json "$VP_JSON"); fi
+        python -m veripaper check "${files[@]}" --fail-on "$VP_FAIL_ON" --summary "$GITHUB_STEP_SUMMARY" "${extra[@]}"

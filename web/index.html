@@ -143,6 +143,17 @@ footer{border-top:4px double var(--navy);margin-top:56px;padding:26px 0 40px;
 footer .colophon{font-family:var(--sans);font-size:12px;color:var(--ink-soft);
   letter-spacing:.06em}
 footer .colophon a{color:var(--navy)}
+table.acc{width:100%;border-collapse:collapse;font-family:var(--sans);font-size:13.5px}
+table.acc th,table.acc td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line-soft)}
+table.acc th{color:var(--navy);font-size:12px;letter-spacing:.04em;border-bottom:1px solid var(--navy)}
+table.acc td:nth-child(n+2),table.acc th:nth-child(n+2){text-align:right;white-space:nowrap}
+.acc-wrap{overflow-x:auto}
+details.fold{border:1px solid var(--line);background:var(--card);padding:12px 18px;margin:12px 0}
+details.fold summary{cursor:pointer;font-family:var(--sans);font-size:14px;color:var(--navy)}
+details.fold section.side{padding:26px 0 4px}
+.st-no{color:var(--crimson);font-family:var(--sans);font-size:12.5px;font-style:normal;font-weight:700}
+.st-live{color:var(--green);font-family:var(--sans);font-size:12.5px;font-style:normal}
+.linkbtn{background:none;border:0;padding:0;color:var(--navy);font:inherit;text-decoration:underline;cursor:pointer}
 .progress{font-family:var(--sans);font-size:13px;color:var(--ink-soft);margin-top:10px}
 @media(max-width:640px){.wrap{padding:0 18px}.titleblock{padding:36px 0 6px}}
 </style>
@@ -151,57 +162,23 @@ footer .colophon a{color:var(--navy)}
 
 <header class="masthead"><div class="wrap">
   <div class="journal">veri<span>paper</span></div>
-  <div class="tagline">An open workbench for evidence-grounded research</div>
+  <div class="tagline">A free, open-source citation checker for research drafts</div>
   <div class="meta">v0.1 &nbsp;·&nbsp; MIT License &nbsp;·&nbsp; <a href="https://github.com/szzxli/veripaper">github.com/szzxli/veripaper</a></div>
 </div></header>
 
 <div class="wrap">
-<div id="project-bar" class="toolcard" style="margin:26px 0 0">
-  <div class="btnrow" style="margin-top:0;align-items:center">
-    <span class="sec-no">PROJECT</span>
-    <select id="pj-select" style="flex:1;min-width:160px;padding:10px;border:1px solid var(--line);font-family:var(--sans);font-size:14px;background:#fff"></select>
-    <button id="pj-new" class="btn ghost" style="padding:9px 16px;font-size:13px">+ New</button>
-    <button id="pj-rename" class="btn ghost" style="padding:9px 16px;font-size:13px">Rename</button>
-    <button id="pj-del" class="btn ghost" style="padding:9px 16px;font-size:13px">Delete</button>
-  </div>
-  <p class="hint" id="pj-hint" style="margin-bottom:0"></p>
-</div>
 <div class="titleblock">
   <h1>Your AI wrote the draft.<br>Did it invent the citations?</h1>
-  <div class="byline">Paste the draft — veripaper checks every citation against the real paper, and flags the ones that don't exist.</div>
-  <div class="btnrow" style="justify-content:center;margin:24px 0 4px">
-    <button id="demo-btn" class="btn primary" style="padding:13px 34px;font-size:15px">▶ Try the 30-second demo</button>
-    <a href="#idea" class="btn ghost">Evaluate a research idea</a>
+  <div class="byline">Paste a draft or a BibTeX file. veripaper checks every citation — free, in your browser.</div>
+  <div class="btnrow" style="justify-content:center;margin:26px 0 4px">
+    <a href="#ground" id="cta-check" class="btn primary" style="padding:14px 38px;font-size:16px">Check citations</a>
   </div>
-  <div class="abstract">
-    <div class="ah">Abstract</div>
-    <p>veripaper is an open-source workbench that verifies the citations in a research draft. It looks up whether each cited source exists (CrossRef, DataCite, arXiv, Semantic Scholar, Europe PMC, DBLP), resolves reference-list markers to identifiers, and — with your own API key — judges whether a source's abstract substantively supports the claim. Every claim receives an honest label: <i>verified</i>, <i>cited</i>, <i>unverified</i>, or <i>stale</i>.</p>
-    <p>It never generates content and never pretends. When evidence is uncertain, it downgrades the label and leaves the judgment to the author.</p>
-  </div>
+  <p class="hint" style="text-align:center;margin-top:12px">Draft, .docx, .pdf or .bib &nbsp;·&nbsp; or <button id="demo-btn" class="linkbtn">watch a 30-second demo</button></p>
 </div>
 
-<section id="idea">
-  <div class="sec-head"><span class="sec-no">§0</span><h2>Evaluate an idea</h2></div>
-  <p class="sec-lede">Can this become a paper? Live publication heat, venue map, and key papers — then a scored assessment. Numbers are free; judgment needs your key.</p>
-  <div class="toolcard">
-    <div class="btnrow" style="margin:0 0 12px">
-      <button id="idea-sample" class="btn ghost">Load sample</button>
-      <span class="hint" style="margin:0">or describe your idea in 2–5 sentences</span>
-    </div>
-    <textarea id="idea-input" rows="5" placeholder="e.g. Using retrieval-augmented generation to verify citations in drafts…"></textarea>
-    <div class="btnrow">
-      <input id="idea-key" type="password" placeholder="OpenRouter key (optional — enables novelty / feasibility / impact scoring)" style="flex:1;min-width:220px">
-      <button id="idea-btn" class="btn primary">Evaluate this idea</button>
-    </div>
-    <div id="idea-progress" class="progress"></div>
-    <div id="idea-result" style="margin-top:14px"></div>
-    <p class="hint">Heat counts come from OpenAlex (live). A thin count can mean a blue ocean <i>or</i> a dead end — the tool shows you the numbers; the field decides.</p>
-  </div>
-</section>
-
 <section id="ground">
-  <div class="sec-head"><span class="sec-no">§1</span><h2>Ground a draft</h2></div>
-  <p class="sec-lede">Paste a markdown draft, or upload a .docx / .pdf — text is extracted in your browser, never uploaded. Or paste / upload a BibTeX <code>.bib</code> file to check every entry (DOI / arXiv / title lookup). Each cited claim is checked and labeled. Everything runs in your browser — nothing is uploaded.</p>
+  <div class="sec-head"><span class="sec-no">§1</span><h2>Check citations</h2></div>
+  <p class="sec-lede">Paste a draft (markdown or plain text), upload a .docx / .pdf, or paste / upload a BibTeX <code>.bib</code>. Four checks per citation: does it <b>exist</b>, does its <b>metadata match</b> (authors vs. title), is it <b>retracted</b>, and does the cited abstract <b>support the claim</b>. Text is extracted in your browser — nothing is uploaded.</p>
   <div class="toolcard">
     <div class="btnrow" style="margin:0 0 12px">
       <button id="ground-sample" class="btn ghost">Load sample</button>
@@ -212,7 +189,7 @@ footer .colophon a{color:var(--navy)}
     <textarea id="ground-input" rows="9" placeholder="Paste your draft — claims with [@key], [1], (Author, 2020), DOI or arXiv citations, plus a References section…"></textarea>
     <div class="btnrow">
       <input id="ground-key" type="password" placeholder="OpenRouter key (optional — higher-accuracy LLM judgment)" style="flex:1;min-width:220px">
-      <button id="ground-btn" class="btn primary">Ground this draft</button>
+      <button id="ground-btn" class="btn primary">Check citations</button>
     </div>
     <label class="hint" style="display:flex;gap:8px;align-items:flex-start;margin:4px 0 0;cursor:pointer">
       <input id="ground-keyless" type="checkbox" checked style="margin-top:3px">
@@ -220,7 +197,7 @@ footer .colophon a{color:var(--navy)}
     </label>
     <div id="ground-progress" class="progress"></div>
     <div id="ground-result" style="margin-top:14px"></div>
-    <p class="hint">Without a key, the keyless check above runs in your browser (abstract-only, smaller model); untick it to only check that sources exist. With an OpenRouter key, an LLM compares each abstract with its claim instead — the optional higher-accuracy path. Either way, partial or unclear cases downgrade to <i>cited</i>, never pretend. Lookups go to free public indexes (Crossref, DataCite/arXiv, OpenAlex, Europe PMC, DBLP; Semantic Scholar only as a last resort), paced and cached locally so you hit fewer rate limits.</p>
+    <p class="hint">Without a key, the keyless check above runs in your browser (abstract-only, smaller model); untick it to only check that sources exist. With an OpenRouter key, an LLM compares each abstract with its claim instead — the optional higher-accuracy path. The keyless check is a <b>first-pass screen</b>, not a substitute for reading the sources — see <a href="#limits">what it can and cannot do</a>. Either way, partial or unclear cases downgrade to <i>cited</i>, never pretend. Lookups go to free public indexes (Crossref, DataCite/arXiv, OpenAlex, Europe PMC, DBLP; Semantic Scholar only as a last resort), paced and cached locally so you hit fewer rate limits.</p>
   </div>
 </section>
 
@@ -237,8 +214,52 @@ footer .colophon a{color:var(--navy)}
   </div>
 </section>
 
+<section id="accuracy">
+  <div class="sec-head"><span class="sec-no">§3</span><h2>Accuracy</h2></div>
+  <p class="sec-lede">Measured, not promised. Every number is generated from published result files, misses and false alarms included.</p>
+  <div class="toolcard" style="padding:18px 20px">
+    <p class="hint" style="margin:0 0 8px"><b>Our labelled set: 34 samples</b> — web app, no key, keyless check on (run 2026-10-21).</p>
+    <div class="acc-wrap"><table class="acc">
+      <thead><tr><th>Category</th><th>n</th><th>Caught</th><th>Misses</th><th>False alarms</th></tr></thead>
+      <tbody>
+        <tr><td>Real citations (should pass)</td><td>8</td><td>8/8 recognised</td><td>—</td><td>0</td></tr>
+        <tr><td>Fabricated</td><td>8</td><td>8/8</td><td>0</td><td>—</td></tr>
+        <tr><td>Chimeric (real title, wrong authors)</td><td>6</td><td>6/6</td><td>0</td><td>—</td></tr>
+        <tr><td>Retracted</td><td>6</td><td>6/6</td><td>0</td><td>—</td></tr>
+        <tr><td>Specific not in abstract*</td><td>6</td><td>6/6</td><td>0</td><td>—</td></tr>
+      </tbody>
+    </table></div>
+<!-- PUBLIC:BEGIN -->
+    <p class="hint" style="margin:14px 0 8px"><b>Public third-party datasets</b> — existence / metadata level, same web pipeline, run 2026-10-21. Recall = problem references flagged; false alarms = real references flagged (rate-limited items left out).</p>
+    <div class="acc-wrap"><table class="acc">
+      <thead><tr><th>Dataset (licence)</th><th>n</th><th>Recall</th><th>False alarms</th><th>Not checked</th></tr></thead>
+      <tbody>
+        <tr><td>Badalova &amp; Mayr 2026 — the July 2026 study's data (CC BY 4.0)</td><td>104</td><td>22/33</td><td>15/71</td><td>0</td></tr>
+        <tr><td>CiteMe benchmark v1, sample (CC BY 4.0)</td><td>50 <span style="color:var(--ink-soft)">(+100 corrupted-field, in full results)</span></td><td>22/25</td><td>0/25</td><td>0</td></tr>
+        <tr><td>CiteTracer synthetic set, sample (MIT)</td><td>135</td><td>42/90</td><td>0/45</td><td>0</td></tr>
+        <tr><td>ICLR 2026 desk-rejected references, sample (MIT)</td><td>50</td><td>39/50</td><td>—</td><td>0</td></tr>
+      </tbody>
+    </table></div>
+    <p class="hint" style="margin-top:8px">On the July 2026 study's own data, veripaper raised fewer false alarms than any of the 5 tools tested there (21% vs. 28–75%) but caught fewer problems than 4 of them (recall 67% vs. 55–97%); it does not check venue, pages or partly wrong author lists. Web pages, software and standards have no scholarly record, so they count as false alarms here (<i>UNVERIFIED</i>).</p>
+<!-- PUBLIC:END -->
+    <p class="hint" style="margin-top:10px"><b>The sample is small</b> (6–8 per category), so read these as signals, not rates. The set is first-party (built and scored by us), registries change, and results vary with rate limits. *These six were built with the same deterministic check that flags them, so that row is not independent evidence of claim checking.</p>
+    <p class="hint" style="margin-top:6px"><a href="https://github.com/szzxli/veripaper/blob/main/benchmark/COMPARISON.md">Full comparison, method and per-sample results →</a> (also vs. RefExists, citegate and refchecker)</p>
+  </div>
+</section>
+
+<section id="limits">
+  <div class="sec-head"><span class="sec-no">§4</span><h2>What the free check is — and isn't</h2></div>
+  <ol class="tight">
+    <li><b>A first-pass screen, not a verdict.</b> Use it to decide which references to check by hand. It is not a substitute for human review.</li>
+    <li><b>Keyless claim check: abstract only, small model.</b> Without a key, each claim is compared with the cited paper's <i>abstract</i> by a small in-browser model (nli-deberta-v3-xsmall), plus exact checks for numbers and names. It never reads the full text.</li>
+    <li><b>Bring your own key for better claim judgments.</b> With your own OpenRouter key, an LLM judges each claim against the abstract instead. That is the more accurate path (a far larger model), though we have not scored it in our benchmark yet, and it is still abstract-only.</li>
+    <li><b>"Not found" is not proof of fabrication.</b> A real paper can be missing from the free indexes. That is why a reference without an identifier gets <i>UNVERIFIED</i>, not <i>FABRICATED</i>.</li>
+    <li><b>No tool of this kind is reliable unsupervised.</b> An independent July 2026 study of five hallucinated-citation checkers (Badalova &amp; Mayr, <a href="https://arxiv.org/abs/2607.22693">arXiv:2607.22693</a>) found all five limited by reference-extraction errors, incomplete metadata, database coverage and inconsistent results, and advised checking flagged references by hand. veripaper was not one of the tools tested, and we have no reason to think it is exempt.</li>
+  </ol>
+</section>
+
 <section id="contract">
-  <div class="sec-head"><span class="sec-no">§3</span><h2>The honesty contract</h2></div>
+  <div class="sec-head"><span class="sec-no">§5</span><h2>The honesty contract</h2></div>
   <p class="sec-lede">Five labels, three tags. No sixth option, no hedging.</p>
   <dl class="contract">
     <dt><span class="label l-verified">ABSTRACT-SUPPORTED</span></dt>
@@ -262,22 +283,16 @@ footer .colophon a{color:var(--navy)}
   <p class="footnote">The governing rule is <i>downgrade-only</i>: uncertainty always resolves toward the weaker label. A tool that cannot verify must say so.</p>
 </section>
 
-<section id="pipeline">
-  <div class="sec-head"><span class="sec-no">§4</span><h2>From idea to acceptance</h2></div>
-  <p class="sec-lede">veripaper is a workbench, not a writing tool. Each phase hands a typed contract to the next.</p>
-  <ol class="tight">
-    <li><b>Proposal decision.</b> Compare candidate directions: heat index from top venues, citation forecast, frontier-extrapolation for data-scarce bets. <i>§0 above is live in v0.1.</i></li>
-    <li><b>Idea distillation.</b> From rough notes to a concept note: novelty check, contribution statement, research questions.</li>
-    <li><b>Evidence grounding.</b> Every claim gets an honest label — §1 and §2 above. <i>Live in v0.1.</i></li>
-    <li><b>Top-venue benchmarking.</b> Measured against real accepted papers from top venues — not imagined standards.</li>
-    <li><b>Reviewer simulation.</b> Pre-submission critique in the voice of the target venue. Evidence gaps first.</li>
-    <li><b>Venue targeting.</b> Acceptance-probability estimates and submission strategy. A wrong venue costs months.</li>
-    <li><b>Rebuttal &amp; acceptance loop.</b> Point-by-point responses and revision tracking, so acceptance compounds.</li>
-  </ol>
+<section id="about">
+  <div class="abstract">
+    <div class="ah">About</div>
+    <p>veripaper is an open-source citation checker for research drafts. It looks up whether each cited source exists (CrossRef, DataCite, arXiv, OpenAlex, Europe PMC, DBLP, Semantic Scholar), resolves reference-list markers to identifiers, compares the authors you cited with the record, flags retractions, and screens whether the cited abstract supports the claim — with a small in-browser model by default, or an LLM with your own API key. Every citation receives an honest label from the contract above.</p>
+    <p>It never generates content and never pretends. When evidence is uncertain, it downgrades the label and leaves the judgment to the author.</p>
+  </div>
 </section>
 
 <section id="principles">
-  <div class="sec-head"><span class="sec-no">§5</span><h2>Principles</h2></div>
+  <div class="sec-head"><span class="sec-no">§6</span><h2>Principles</h2></div>
   <ol class="tight">
     <li><b>Lookup, not generation.</b> The tool queries registries; it never writes your argument for you.</li>
     <li><b>Downgrade, never pretend.</b> Uncertain evidence gets the weaker label. The author always has the last word.</li>
@@ -286,8 +301,57 @@ footer .colophon a{color:var(--navy)}
   </ol>
 </section>
 
-<section id="datasets">
-  <div class="sec-head"><span class="sec-no">§6</span><h2>Dataset &amp; methods checklist</h2></div>
+<section id="roadmap">
+  <div class="sec-head"><span class="sec-no">Later</span><h2>Roadmap</h2></div>
+  <details class="fold" id="roadmap-vision">
+    <summary>Long-term vision — <b>not built</b>. Show the seven stages</summary>
+    <p class="hint" style="margin-top:10px">Where the project might go, not what it does today. Only stage 3, the citation checker, is built. Nothing on this site estimates acceptance chances or plans a submission strategy.</p>
+  <p class="sec-lede">veripaper is a workbench, not a writing tool. Each phase hands a typed contract to the next.</p>
+  <ol class="tight">
+    <li><b>Proposal decision.</b> Compare candidate directions: heat index from top venues, citation forecast, frontier-extrapolation for data-scarce bets. <i class="st-live">Partly built: an experimental idea-heat helper is under “Experimental side tools” below.</i></li>
+    <li><b>Idea distillation.</b> From rough notes to a concept note: novelty check, contribution statement, research questions. <i class="st-no">Not built.</i></li>
+    <li><b>Evidence grounding.</b> Every claim gets an honest label — §1 and §2 above. <i class="st-live">Built — this is the citation checker above (§1, §2).</i></li>
+    <li><b>Top-venue benchmarking.</b> Measured against real accepted papers from top venues — not imagined standards. <i class="st-no">Not built.</i></li>
+    <li><b>Reviewer simulation.</b> Pre-submission critique in the voice of the target venue. Evidence gaps first. <i class="st-no">Not built.</i></li>
+    <li><b>Venue targeting.</b> Acceptance-probability estimates and submission strategy. A wrong venue costs months. <i class="st-no">Not built</i> <i class="st-live" style="color:var(--ink-soft)">— no acceptance estimate exists; a simple venue-shortlist helper is under side tools.</i></li>
+    <li><b>Rebuttal &amp; acceptance loop.</b> Point-by-point responses and revision tracking, so acceptance compounds. <i class="st-no">Not built</i> <i class="st-live" style="color:var(--ink-soft)">— only a basic review splitter and a submission tracker exist, under side tools.</i></li>
+  </ol>
+  </details>
+  <details class="fold" id="side-tools">
+    <summary>Experimental side tools — early, unvalidated, not the focus of this site</summary>
+    <p class="hint" style="margin-top:10px">Small helpers built along the way. They are not benchmarked; treat their output as a starting point only.</p>
+<div id="project-bar" class="toolcard" style="margin:14px 0 0">
+  <div class="btnrow" style="margin-top:0;align-items:center">
+    <span class="sec-no">PROJECT</span>
+    <select id="pj-select" style="flex:1;min-width:160px;padding:10px;border:1px solid var(--line);font-family:var(--sans);font-size:14px;background:#fff"></select>
+    <button id="pj-new" class="btn ghost" style="padding:9px 16px;font-size:13px">+ New</button>
+    <button id="pj-rename" class="btn ghost" style="padding:9px 16px;font-size:13px">Rename</button>
+    <button id="pj-del" class="btn ghost" style="padding:9px 16px;font-size:13px">Delete</button>
+  </div>
+  <p class="hint" id="pj-hint" style="margin-bottom:0"></p>
+</div>
+
+<section class="side" id="idea">
+  <div class="sec-head"><span class="sec-no">Side</span><h2>Evaluate an idea</h2></div>
+  <p class="sec-lede">Can this become a paper? Live publication heat, venue map, and key papers — then a scored assessment. Numbers are free; judgment needs your key.</p>
+  <div class="toolcard">
+    <div class="btnrow" style="margin:0 0 12px">
+      <button id="idea-sample" class="btn ghost">Load sample</button>
+      <span class="hint" style="margin:0">or describe your idea in 2–5 sentences</span>
+    </div>
+    <textarea id="idea-input" rows="5" placeholder="e.g. Using retrieval-augmented generation to verify citations in drafts…"></textarea>
+    <div class="btnrow">
+      <input id="idea-key" type="password" placeholder="OpenRouter key (optional — enables novelty / feasibility / impact scoring)" style="flex:1;min-width:220px">
+      <button id="idea-btn" class="btn primary">Evaluate this idea</button>
+    </div>
+    <div id="idea-progress" class="progress"></div>
+    <div id="idea-result" style="margin-top:14px"></div>
+    <p class="hint">Heat counts come from OpenAlex (live). A thin count can mean a blue ocean <i>or</i> a dead end — the tool shows you the numbers; the field decides.</p>
+  </div>
+</section>
+
+<section class="side" id="datasets">
+  <div class="sec-head"><span class="sec-no">Side</span><h2>Dataset &amp; methods checklist</h2></div>
   <p class="sec-lede">Pick the paper type and target venue. Get the checklist: where data is needed, how to collect it, and the bar for "done".</p>
   <div class="toolcard">
     <div class="btnrow" style="margin-top:0">
@@ -312,8 +376,8 @@ footer .colophon a{color:var(--navy)}
   </div>
 </section>
 
-<section id="venues">
-  <div class="sec-head"><span class="sec-no">§7</span><h2>Where to submit</h2></div>
+<section class="side" id="venues">
+  <div class="sec-head"><span class="sec-no">Side</span><h2>Where to submit</h2></div>
   <p class="sec-lede">Describe the topic. Get a ranked venue shortlist with fit reasons — a starting filter, not a prediction.</p>
   <div class="toolcard">
     <div class="btnrow" style="margin:0 0 12px">
@@ -334,8 +398,8 @@ footer .colophon a{color:var(--navy)}
   </div>
 </section>
 
-<section id="rebuttal">
-  <div class="sec-head"><span class="sec-no">§8</span><h2>Rebuttal manager</h2></div>
+<section class="side" id="rebuttal">
+  <div class="sec-head"><span class="sec-no">Side</span><h2>Rebuttal manager</h2></div>
   <p class="sec-lede">Paste the reviews. Each point is split out, classified, and given a response template. Track what is addressed — export when done.</p>
   <div class="toolcard">
     <textarea id="rb-input" rows="7" placeholder="Paste reviews here — prefix reviewers (Reviewer 1: …) and number points (1. 2. 3.) for best parsing…"></textarea>
@@ -349,8 +413,8 @@ footer .colophon a{color:var(--navy)}
   </div>
 </section>
 
-<section id="submissions">
-  <div class="sec-head"><span class="sec-no">§9</span><h2>Track to acceptance</h2></div>
+<section class="side" id="submissions">
+  <div class="sec-head"><span class="sec-no">Side</span><h2>Track submissions</h2></div>
   <p class="sec-lede">Where the draft went, what state it is in, and when the clock runs out. Per project.</p>
   <div class="toolcard">
     <div class="btnrow" style="margin-top:0">
@@ -366,6 +430,8 @@ footer .colophon a{color:var(--navy)}
     </div>
     <div id="sub-list" style="margin-top:14px"></div>
   </div>
+</section>
+  </details>
 </section>
 
 <section id="references">

@@ -1,0 +1,434 @@
+{
+ "dataset": "iclr",
+ "meta": {
+  "tool": "veripaper web pipeline (web/bibtex.js + web/ground.js), groundDraft bibMode, no LLM key",
+  "commit": "eba375bda6b25263790d699863b0488594495b6b",
+  "dataset": "iclr",
+  "population": 807,
+  "sample": "stratified random, 50 per stratum, mulberry32 seed 20261021",
+  "runtime": "Node v20.19.2, fresh vm context + empty cache per item",
+  "started_at": "2026-10-22T03:37:24+00:00"
+ },
+ "summary": {
+  "problem": {
+   "n": 50,
+   "flagged": 39,
+   "not_flagged": 11,
+   "inconclusive": 0
+  },
+  "ok": {
+   "n": 0,
+   "flagged": 0,
+   "not_flagged": 0,
+   "inconclusive": 0
+  },
+  "corrupted": {
+   "n": 0,
+   "flagged": 0,
+   "not_flagged": 0,
+   "inconclusive": 0
+  }
+ },
+ "items": [
+  {
+   "id": "9JxOVBdwNf:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "CITED [CHIMERIC:author-mismatch]",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:37:26+00:00"
+  },
+  {
+   "id": "bqGo9yYTiz:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:37:27+00:00"
+  },
+  {
+   "id": "8yWECy22Zi:ref:2",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:37:38+00:00"
+  },
+  {
+   "id": "l852J55j9n:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "CITED [CHIMERIC:author-mismatch]",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:37:39+00:00"
+  },
+  {
+   "id": "F63ARIi43t:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:37:39+00:00"
+  },
+  {
+   "id": "fFgzAQAUqs:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:37:51+00:00"
+  },
+  {
+   "id": "xeIheyQAV8:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "CITED [CHIMERIC:author-mismatch]",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:37:51+00:00"
+  },
+  {
+   "id": "8yWECy22Zi:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "CITED [CHIMERIC:author-mismatch]",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:37:53+00:00"
+  },
+  {
+   "id": "eGwRxSuApK:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:38:03+00:00"
+  },
+  {
+   "id": "TeZ2witssB:ref:7",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:38:15+00:00"
+  },
+  {
+   "id": "8csiEcwVsK:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "CITED [CHIMERIC:author-mismatch]",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:38:17+00:00"
+  },
+  {
+   "id": "bQnMZIAlah:ref:3",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:38:27+00:00"
+  },
+  {
+   "id": "nbGPu6mtCZ:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:38:29+00:00"
+  },
+  {
+   "id": "F41nD6rplT:ref:15",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:38:42+00:00"
+  },
+  {
+   "id": "sGvkPW8en4:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:38:42+00:00"
+  },
+  {
+   "id": "QCRWjbp4p0:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:38:43+00:00"
+  },
+  {
+   "id": "tgJubHar53:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "CITED [CHIMERIC:author-mismatch]",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:38:43+00:00"
+  },
+  {
+   "id": "IFdg7jCIDE:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:38:55+00:00"
+  },
+  {
+   "id": "V95N4bbWb5:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:39:07+00:00"
+  },
+  {
+   "id": "bs7m1LbRKT:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "FABRICATED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:39:09+00:00"
+  },
+  {
+   "id": "WnYPeKNPhM:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "CITED [CHIMERIC:author-mismatch]",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:39:10+00:00"
+  },
+  {
+   "id": "IsuH97hLke:ref:3",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:39:21+00:00"
+  },
+  {
+   "id": "aN3rmWuMtf:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:39:25+00:00"
+  },
+  {
+   "id": "9235Gzvgiq:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:39:35+00:00"
+  },
+  {
+   "id": "fvy8Z6kd4b:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:39:46+00:00"
+  },
+  {
+   "id": "n25T76QbxQ:ref:5",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:39:47+00:00"
+  },
+  {
+   "id": "X9AOxvq73b:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:39:48+00:00"
+  },
+  {
+   "id": "x9I1V6JY0r:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "CITED [CHIMERIC:author-mismatch]",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:39:48+00:00"
+  },
+  {
+   "id": "4lUoPAXrCe:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "CITED [CHIMERIC:author-mismatch]",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:39:49+00:00"
+  },
+  {
+   "id": "Jj7xrsQOL6:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:40:00+00:00"
+  },
+  {
+   "id": "F41nD6rplT:ref:19",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:40:12+00:00"
+  },
+  {
+   "id": "v2rYV1G6tO:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:40:13+00:00"
+  },
+  {
+   "id": "oml3PWSYcc:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "FABRICATED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:40:13+00:00"
+  },
+  {
+   "id": "s9cAknJjRB:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:40:25+00:00"
+  },
+  {
+   "id": "Ksxvz8XLVi:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:40:26+00:00"
+  },
+  {
+   "id": "UVhAIvnmbz:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "CITED [CHIMERIC:author-mismatch]",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:40:27+00:00"
+  },
+  {
+   "id": "3N0QtlXz6u:ref:2",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:40:38+00:00"
+  },
+  {
+   "id": "0a6WXyNxBG:ref:2",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:40:51+00:00"
+  },
+  {
+   "id": "ah4o7n1ABR:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:41:03+00:00"
+  },
+  {
+   "id": "ew4ILUkTWw:ref:2",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:41:06+00:00"
+  },
+  {
+   "id": "Qkeu3hMoUr:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "CITED [CHIMERIC:author-mismatch]",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:41:07+00:00"
+  },
+  {
+   "id": "w0mev3QEB1:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:41:07+00:00"
+  },
+  {
+   "id": "n25T76QbxQ:ref:3",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "CITED [CHIMERIC:author-mismatch]",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:41:08+00:00"
+  },
+  {
+   "id": "ew4ILUkTWw:ref:5",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:41:18+00:00"
+  },
+  {
+   "id": "2CPHv8mWS4:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:41:29+00:00"
+  },
+  {
+   "id": "WtYmmVgAZv:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:41:41+00:00"
+  },
+  {
+   "id": "34WC2yucLy:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:41:53+00:00"
+  },
+  {
+   "id": "bGGv4WAGFJ:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:42:05+00:00"
+  },
+  {
+   "id": "qcNu1mL46N:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:42:06+00:00"
+  },
+  {
+   "id": "HM7OkY1jFw:ref:1",
+   "stratum": "iclr2026-desk-reject",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:42:18+00:00"
+  }
+ ]
+}
