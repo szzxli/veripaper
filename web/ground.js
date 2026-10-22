@@ -367,7 +367,9 @@ function parseIntextAuthoryear(marker) {
  *   hit         — a record passed the acceptance gate (title-in-entry + year)
  *   miss        — the index answered; nothing passed the gate
  *   limited     — HTTP 429 / 503 (or the host is cooling down)
- *   unavailable — network error, CORS, non-JSON (e.g. a bot-check page)
+ *   unavailable — network error, CORS, timeout, any other HTTP status,
+ *                 non-JSON (e.g. a bot-check page)
+ * A 404 is a clean answer (miss). "unavailable" is never a clean answer.
  * Order: free, keyless, generous sources first — Crossref (polite pool),
  * DataCite (also every arXiv DOI), OpenAlex, DBLP — and Semantic Scholar
  * last, only if none of them matched. */
@@ -380,6 +382,7 @@ function bibQuery(entryRaw, max) {
 async function bibFetchJson(url, init) {
   let r;
   try { r = await vpFetch(url, init); } catch (e) { return { st: BIB_UNAVAILABLE }; }
+  if (r && r.status === 404) return { st: BIB_MISS };   // a genuine "nothing here" answer
   if (!r || !r.ok) return { st: (r && (r.status === 429 || r.status === 503)) ? BIB_LIMITED : BIB_UNAVAILABLE };
   try { return { json: await r.json() }; } catch (e) { return { st: BIB_UNAVAILABLE }; }
 }
@@ -545,10 +548,15 @@ async function bibliographicLookup(entryRaw, entryYear) {
     else if (r.status === 'unavailable') unavailable.push(key);
     else answered.push(key);
   }
+  /* Fewer than two clean answers and at least one source that could not be
+   * asked (rate limit OR network / HTTP failure) = not checked. Offline,
+   * every source is unavailable: that must never read as "no match". */
   if (!out) out = { doi: null, arxiv_id: null, record: null, via: 'none',
-    limited: answered.length < BIB_MIN_CLEAN_ANSWERS && limited.length > 0,
+    limited: answered.length < BIB_MIN_CLEAN_ANSWERS && (limited.length + unavailable.length) > 0,
+    unreachable: answered.length < BIB_MIN_CLEAN_ANSWERS && unavailable.length > 0,
     answered, limitedSources: limited, unavailable };
-  if (!out.limited && !limited.length) vpCacheSet('meta', bkey, out);
+  // cache only answers every consulted source gave cleanly (or a hit)
+  if (!out.limited && !limited.length && (out.via !== 'none' || !unavailable.length)) vpCacheSet('meta', bkey, out);
   return out;
 }
 
@@ -581,14 +589,17 @@ async function resolveMarker(type, id, refmap) {
     return { doi: bl.doi, arxiv_id: bl.arxiv_id, record: bl.record, via: bl.via,
       entryRaw: entry.raw, note: (BIB_SOURCE_NAME[bl.via] || bl.via) + ' bibliographic match (title-in-entry + year)' };
   }
-  const skipped = (bl.limitedSources && bl.limitedSources.length)
-    ? ` (not consulted — rate-limited: ${names(bl.limitedSources)})` : '';
-  return { doi: null, arxiv_id: null, via: 'none', limited: !!bl.limited,
+  const skipped = [
+    (bl.limitedSources && bl.limitedSources.length) ? `rate-limited: ${names(bl.limitedSources)}` : '',
+    (bl.unavailable && bl.unavailable.length) ? `unreachable: ${names(bl.unavailable)}` : '',
+  ].filter(Boolean).join('; ');
+  const skippedNote = skipped ? ` (not consulted — ${skipped})` : '';
+  return { doi: null, arxiv_id: null, via: 'none', limited: !!bl.limited, unreachable: !!bl.unreachable,
     note: bl.limited
-      ? `sources rate-limited while checking this entry (${names(bl.limitedSources)}) — not checked, not proven fake`
+      ? `sources could not be asked while checking this entry (${skipped}) — not checked, not proven fake`
       : (bl.answered && bl.answered.length
-        ? `reference entry has no DOI/arXiv ID and no confident bibliographic match in ${names(bl.answered)}${skipped}`
-        : 'reference entry has no DOI/arXiv ID and no confident bibliographic match' + skipped) };
+        ? `reference entry has no DOI/arXiv ID and no confident bibliographic match in ${names(bl.answered)}${skippedNote}`
+        : 'reference entry has no DOI/arXiv ID and no confident bibliographic match' + skippedNote) };
 }
 
 /* ---------------- existence (reuse page's verify fns when present) ---------------- */
@@ -628,11 +639,36 @@ function detectChimeric(entryRaw, authors) {
   return !fams.some(f => words.has(f));
 }
 
+/* Single-record registry GETs answer in one of three ways, and only one of
+ * them means "does not exist":
+ *   miss  — a genuine "no such record": HTTP 404 (or, for a search, an empty
+ *           result list — handled by the caller)
+ *   fail  — could not ask: {limited} for 429 / 503 after the retries, or
+ *           {unavailable} for anything else — offline, CORS, timeout, any
+ *           other HTTP status, an unreadable body
+ *   json  — the record
+ * A failure is "not checked", never "not found": treating it as a miss used
+ * to label a real DOI FABRICATED whenever the network or a registry failed. */
+function vpUnavailable(why) { return { unavailable: true, why: why || 'request failed' }; }
+async function vpGetRecord(url, init) {
+  let r;
+  try { r = await vpFetch(url, init); } catch (e) {
+    return { fail: vpUnavailable(e && e.name === 'TimeoutError' ? 'timeout' : 'network error') };
+  }
+  if (!r) return { fail: vpUnavailable('no response') };
+  if (r.status === 404) return { miss: true };
+  if (r.status === 429 || r.status === 503) return { fail: { limited: true, why: 'HTTP ' + r.status } };
+  if (!r.ok) return { fail: vpUnavailable('HTTP ' + r.status) };
+  try { return { json: await r.json() }; } catch (e) { return { fail: vpUnavailable('unreadable response') }; }
+}
+
 async function pgCheckCrossRef(doi) {
-  const r = await vpFetch(vpPolite('https://api.crossref.org/works/' + encodeURIComponent(doi)),
+  const g = await vpGetRecord(vpPolite('https://api.crossref.org/works/' + encodeURIComponent(doi)),
     { headers: { Accept: 'application/json' } });
-  if (!r.ok) return r.status === 429 ? { limited: true } : null;
-  const m = (await r.json()).message;
+  if (g.miss) return null;
+  if (g.fail) return g.fail;
+  const m = (g.json || {}).message;
+  if (!m) return vpUnavailable('unexpected response');
   const title = (m.title || ['(no title)'])[0];
   const yr = (m['published-print'] || m['published-online'] || m.created || {})['date-parts'];
   return {
@@ -660,11 +696,12 @@ function openalexAbstract(inv) {
   return pos.filter(w => w != null).join(' ').trim();
 }
 async function openalexWork(doi) {
-  const r = await vpFetch(vpPolite('https://api.openalex.org/works/doi:' + encodeURIComponent(doi) + '?' +
+  const g = await vpGetRecord(vpPolite('https://api.openalex.org/works/doi:' + encodeURIComponent(doi) + '?' +
     new URLSearchParams({ select: 'id,doi,title,publication_year,authorships,primary_location,is_retracted,abstract_inverted_index' })));
-  if (!r.ok) return r.status === 429 ? { limited: true } : null;
-  const w = await r.json();
-  if (!w || !w.id) return null;
+  if (g.miss) return null;
+  if (g.fail) return g.fail;
+  const w = g.json;
+  if (!w || !w.id) return vpUnavailable('unexpected response');
   return {
     title: w.title || '(no title)',
     authors: openalexAuthors(w),
@@ -677,10 +714,12 @@ async function openalexWork(doi) {
 }
 async function pgCheckOpenAlex(doi) { return openalexWork(doi); }
 async function pgCheckDataCite(doi) {
-  const r = await vpFetch('https://api.datacite.org/dois/' + encodeURIComponent(doi),
+  const g = await vpGetRecord('https://api.datacite.org/dois/' + encodeURIComponent(doi),
     { headers: { Accept: 'application/vnd.api+json' } });
-  if (!r.ok) return r.status === 429 ? { limited: true } : null;
-  const a = (await r.json()).data.attributes;
+  if (g.miss) return null;
+  if (g.fail) return g.fail;
+  const a = ((g.json || {}).data || {}).attributes;
+  if (!a) return vpUnavailable('unexpected response');
   const title = (((a.titles || [])[0] || {}).title || '(no title)');
   const desc = (a.descriptions || []).filter(d => (d.descriptionType || '').toLowerCase() === 'abstract');
   return {
@@ -695,11 +734,14 @@ async function pgCheckDataCite(doi) {
 }
 /* Europe PMC: biomedical/life-science coverage incl. abstracts; CORS-enabled. */
 async function pgCheckEuropePMC(doi) {
-  const r = await vpFetch('https://www.ebi.ac.uk/europepmc/webservices/rest/search?' + new URLSearchParams({
+  const g = await vpGetRecord('https://www.ebi.ac.uk/europepmc/webservices/rest/search?' + new URLSearchParams({
     query: 'DOI:"' + doi + '"', format: 'json', resultType: 'core', pageSize: '1' }));
-  if (!r.ok) return r.status === 429 ? { limited: true } : null;
-  const res = (((await r.json()).resultList || {}).result || []);
-  if (!res.length) return null;
+  if (g.miss) return null;
+  if (g.fail) return g.fail;
+  const rl = (g.json || {}).resultList;
+  if (!rl || !Array.isArray(rl.result)) return vpUnavailable('unexpected response');
+  const res = rl.result;
+  if (!res.length) return null;   // the search answered: no record with this DOI
   const p = res[0];
   const title = p.title || '(no title)';
   return {
@@ -732,13 +774,26 @@ async function dblpLookup(entryRaw, entryYear) {
   }
   return BIB_MISS;
 }
+/* A DOI is "not found" only when EVERY registry gave a genuine not-found
+ * answer. If any of them could not be asked (rate limit, offline, CORS,
+ * timeout, 5xx, unreadable answer) and none had the record, the result is
+ * not checked (limited: true; unreachable: true when a failure was not a
+ * rate limit) — never evidence of fabrication. */
+function vpNotChecked(failed) {
+  return { exists: false, title: null, authors: [], venue: '', year: '', retracted: false,
+    limited: true, unreachable: failed.some(f => !f.limited), failed };
+}
+const VP_REGISTRY_NAME = { pgCheckCrossRef: 'Crossref', pgCheckDataCite: 'DataCite', pgCheckEuropePMC: 'Europe PMC', pgCheckOpenAlex: 'OpenAlex' };
 async function _verifyDoiLive(doi) {
   const miss = { exists: false, title: null, authors: [], venue: '', year: '', retracted: false, limited: false };
-  let limited = false;
+  const failed = [];
   for (const fn of [pgCheckCrossRef, pgCheckDataCite, pgCheckEuropePMC, pgCheckOpenAlex]) {
     let hit = null;
-    try { hit = await fn(doi); } catch { hit = null; }
-    if (hit && hit.limited) { limited = true; continue; }
+    try { hit = await fn(doi); } catch (e) { hit = vpUnavailable('unexpected response'); }
+    if (hit && (hit.limited || hit.unavailable)) {
+      failed.push({ source: VP_REGISTRY_NAME[fn.name] || fn.name, limited: !!hit.limited, why: hit.why || '' });
+      continue;
+    }
     if (hit) return {
       exists: true, title: hit.title, authors: hit.authors || [],
       venue: hit.venue || '', year: hit.year || '',
@@ -746,7 +801,7 @@ async function _verifyDoiLive(doi) {
       abstract: hit.abstract || null,
     };
   }
-  return limited ? Object.assign({}, miss, { limited: true }) : miss;
+  return failed.length ? vpNotChecked(failed) : miss;
 }
 /* Meta cache: paper existence/title/authors barely change (7-day TTL).
  * Rate-limited results are NEVER cached — a limit must not poison future runs. */
@@ -764,9 +819,9 @@ async function verifyDoi(doi) {
 async function _verifyArxivLive(id) {
   const base = id.replace(/v\d+$/i, '');
   let hit = null;
-  try { hit = await pgCheckDataCite('10.48550/arXiv.' + base); } catch { hit = null; }
-  if (hit && hit.limited)
-    return { exists: false, title: null, authors: [], venue: '', year: '', retracted: false, limited: true };
+  try { hit = await pgCheckDataCite('10.48550/arXiv.' + base); } catch (e) { hit = vpUnavailable('unexpected response'); }
+  if (hit && (hit.limited || hit.unavailable))
+    return vpNotChecked([{ source: 'DataCite', limited: !!hit.limited, why: hit.why || '' }]);
   return hit
     ? { exists: true, title: hit.title, authors: hit.authors || [], venue: 'arXiv preprint', year: hit.year || '', retracted: !!hit.retracted, limited: false, abstract: hit.abstract || null }
     : { exists: false, title: null, authors: [], venue: '', year: '', retracted: false, limited: false };
@@ -790,7 +845,8 @@ async function resolveCitation(pair, refmap, cache) {
       exists: res.exists, title: res.title, doi: res.exists ? doi : null,
       arxiv_id: res.exists ? arxivId : null,
       authors: res.authors || [], venue: res.venue || '', year: res.year || '',
-      limited: !!res.limited, retracted: !!res.retracted,
+      limited: !!res.limited, unreachable: !!res.unreachable, failed: res.failed || null,
+      retracted: !!res.retracted,
       chimeric: !!(extra && extra.chimeric),
       // only an identifier the AUTHOR wrote can be "fabricated"; one that a
       // lookup produced and then failed to verify proves nothing about the draft
@@ -832,7 +888,7 @@ async function resolveCitation(pair, refmap, cache) {
       out = wrap(v, null, null, viaNote + ' (index record, no DOI)',
         { chimeric: detectChimeric(rm.entryRaw, v.authors), fromLookup: true });
     } else out = { exists: false, title: null, doi: null, arxiv_id: null,
-      authors: [], venue: '', year: '', limited: !!rm.limited,
+      authors: [], venue: '', year: '', limited: !!rm.limited, unreachable: !!rm.unreachable,
       retracted: false, chimeric: false, fabricated: false, claimed: null,
       note: 'reference-list: ' + rm.note };
   } else {
@@ -1448,9 +1504,16 @@ async function groundDraft(text, opts, onStep) {
         if (k >= 0) extraTags.splice(k, 1);  // the tag marks a keyless SUPPORTED verdict only
       }
     } else if (res.limited) {
-      // rate-limited is NOT not-found: say so explicitly, never imply fabrication
+      // rate-limited / unreachable is NOT not-found: say so, never imply fabrication
       base = 'RATE_LIMITED';
-      note = 'source(s) rate-limited (HTTP 429) while checking — not checked, NOT proven fake. Try again later.';
+      if (res.unreachable) {
+        const which = (res.failed || []).map(f => f.source + (f.why ? ' (' + f.why + ')' : '')).join(', ');
+        note = 'could not reach the registries' + (which ? ': ' + which : '') +
+          ' — not checked, could not verify, NOT proven fake. Check your connection and try again.' +
+          (!which && res.note ? ' [' + res.note + ']' : '');
+      } else {
+        note = 'source(s) rate-limited (HTTP 429) while checking — not checked, NOT proven fake. Try again later.';
+      }
     } else if (res.fabricated) {
       base = 'FABRICATED';
       const id = res.claimed || '';
@@ -1582,7 +1645,7 @@ function renderReport(evidence, ropts) {
     `Labels: ABSTRACT-SUPPORTED = the abstract substantively supports the claim's key assertion (full text NOT checked — supporting evidence may live in the paper body); CITED = source exists but support is uncertain/unchecked (author decides); ` +
     `UNVERIFIED = no record found or marker not resolvable (absence of evidence, not evidence of fabrication); ` +
     `FABRICATED = identifier checked against its registry and found not to exist — fabricated or mistyped; ` +
-    `RATE_LIMITED = sources were rate-limited while checking — not checked, NOT proven fake; ` +
+    `RATE_LIMITED = sources were rate-limited or could not be reached (offline, blocked, server error) while checking — not checked, NOT proven fake; ` +
     `[STALE:YYYY] = data older than the freshness window; ` +
     `[CHIMERIC:author-mismatch] = title matches a real paper but the listed authors do not; ` +
     `[RETRACTED] = the paper has been retracted — do not cite it as support; ` +
