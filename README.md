@@ -6,6 +6,75 @@
 
 *(veripaper is a working name.)*
 
+**What it checks, per citation:** does the cited work **exist** (DOI / arXiv ID /
+title lookup in free registries), does its **metadata match** (the authors you
+cited vs. the record), is it **retracted**, and — for a draft with claims —
+does the cited **abstract support the claim**. Input: a draft (markdown, plain
+text, .docx, .pdf) or a BibTeX `.bib`. It is a **first-pass screen**: use it
+to decide which references to check by hand, not as a substitute for human
+review (see [Limits](#limits)).
+
+## Accuracy
+
+Measured on a 34-sample first-party set (8 real, 8 fabricated, 6 chimeric,
+6 retracted, 6 specific-not-in-abstract) and on openly licensed third-party
+datasets, including the data of the July 2026 five-tool study. Per-category
+numbers, misses, false alarms, method and caveats:
+[benchmark/COMPARISON.md](benchmark/COMPARISON.md). The samples are small —
+read the numbers as signals, not rates.
+
+## Limits
+
+- The keyless claim check reads **abstracts only** and uses a **small model**
+  (nli-deberta-v3-xsmall in the browser). Bring your own OpenRouter key for an
+  LLM judgment instead — the more accurate path, not yet scored in our
+  benchmark, and still abstract-only.
+- "Not found" is not proof of fabrication: real papers, software, web pages
+  and standards can be missing from the free indexes (`UNVERIFIED`, not
+  `FABRICATED`).
+- Venue, year, pages and a *partly* wrong author list are not checked.
+- An independent July 2026 study of five hallucinated-citation checkers
+  (Badalova & Mayr, [arXiv:2607.22693](https://arxiv.org/abs/2607.22693))
+  found all of them limited by extraction errors, incomplete metadata,
+  database coverage and inconsistent results, and advised manual checks of
+  flagged references. veripaper was not one of the tools tested, and we have
+  no reason to think it is exempt.
+
+## Check .bib files in CI (GitHub Action / CLI)
+
+```bash
+pip install git+https://github.com/szzxli/veripaper
+python -m veripaper check paper/refs.bib            # exit 1 on fabricated / chimeric / retracted
+python -m veripaper check "**/*.bib" --fail-on fabricated,chimeric,retracted,unverified --json report.json
+```
+
+```yaml
+# .github/workflows/citations.yml
+on: [pull_request]
+jobs:
+  citations:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: szzxli/veripaper@main
+        with:
+          files: paper/refs.bib          # space-separated paths or globs
+          # fail-on: fabricated,chimeric,retracted   (default; add unverified to be strict)
+```
+
+Free registries, no key, no account. `UNVERIFIED` and `RATE_LIMITED` are
+warnings by default (a real paper can be missing from the indexes; a rate
+limit proves nothing); flagged entries appear as annotations and in the job
+summary. This uses the Python pipeline, which has fewer free fallbacks than
+the web app (see COMPARISON.md) — review every flag by hand.
+
+## Roadmap — vision, not built
+
+Everything in this section is a plan, not a feature. Only evidence grounding
+(the citation checker) is built; a few early, unvalidated side tools (idea
+heat, venue shortlist, review splitter, submission tracker) sit collapsed at
+the bottom of the web page. Nothing estimates acceptance chances.
+
 Open-source academic paper tool: **the paper is just the final presentation.**
 
 **Live workbench (runs in your browser, no install):** https://szzxli.github.io/veripaper/web/
@@ -20,7 +89,7 @@ It can't give you taste — taste is the whole PhD.
 idea → proposal decision → idea distillation → evidence grounding → top-venue benchmarking → reviewer simulation → venue targeting → rebuttal → publishable
 ```
 
-## What it does differently
+### Long-term vision (not built)
 
 Draft-generation tools solve "a draft in 10 minutes"; their strength is citation
 *existence* verification — checking that sources exist, not that claims about
@@ -119,7 +188,8 @@ networks.
 ## Benchmark
 
 A public citation-checking benchmark (34 samples, ground truth verified
-live against the registries): [benchmark/](benchmark/) — construction
+live against the registries), plus runs on openly licensed third-party
+datasets (`benchmark/public/`): [benchmark/](benchmark/) — construction
 and scoring rules in `benchmark/METHOD.md`. **Latest scored runs, with
 before/after numbers for the web app and a comparison with other
 open-source checkers** (RefExists, citegate, refchecker — same samples,
@@ -128,10 +198,10 @@ tools we could not test and why):
 [benchmark/COMPARISON.md](benchmark/COMPARISON.md). (`benchmark/RESULTS.md`
 holds only a pointer; the 2026-10-20 first run is in git history.)
 
-## Roadmap
+## Version plan (not built beyond v0.1)
 
 - v0.1: Evidence grounding (current state of this repo)
-- v1.0 (Phase 1 assembly): end-to-end — proposal decision → impact assessment →
+- v1.0 (Phase 1 assembly, **not built**): end-to-end — proposal decision → impact assessment →
   productization direction → evidence grounding → template generation →
   venue auto-optimization → reviewer simulation → venue targeting →
   rebuttal management → acceptance-rate review loop (learning)

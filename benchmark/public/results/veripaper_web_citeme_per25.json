@@ -1,0 +1,1234 @@
+{
+ "dataset": "citeme",
+ "meta": {
+  "tool": "veripaper web pipeline (web/bibtex.js + web/ground.js), groundDraft bibMode, no LLM key",
+  "commit": "eba375bda6b25263790d699863b0488594495b6b",
+  "dataset": "citeme",
+  "population": 340,
+  "sample": "stratified random, 25 per stratum, mulberry32 seed 20261021",
+  "runtime": "Node v20.19.2, fresh vm context + empty cache per item",
+  "started_at": "2026-10-22T03:31:22+00:00"
+ },
+ "summary": {
+  "problem": {
+   "n": 25,
+   "flagged": 22,
+   "not_flagged": 3,
+   "inconclusive": 0
+  },
+  "ok": {
+   "n": 25,
+   "flagged": 0,
+   "not_flagged": 25,
+   "inconclusive": 0
+  },
+  "corrupted": {
+   "n": 100,
+   "flagged": 28,
+   "not_flagged": 72,
+   "inconclusive": 0
+  }
+ },
+ "items": [
+  {
+   "id": "case-en-015-r1",
+   "stratum": "EXISTS_CORRECT",
+   "truth": "ok",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:31:23+00:00"
+  },
+  {
+   "id": "case-pt-033-r5",
+   "stratum": "EXISTS_CORRECT",
+   "truth": "ok",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:31:23+00:00"
+  },
+  {
+   "id": "case-en-046-r1",
+   "stratum": "EXISTS_CORRECT",
+   "truth": "ok",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:31:24+00:00"
+  },
+  {
+   "id": "case-en-050-r1",
+   "stratum": "EXISTS_CORRECT",
+   "truth": "ok",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:31:25+00:00"
+  },
+  {
+   "id": "case-en-030-r1",
+   "stratum": "EXISTS_CORRECT",
+   "truth": "ok",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:31:26+00:00"
+  },
+  {
+   "id": "case-de-006-r11",
+   "stratum": "EXISTS_CORRECT",
+   "truth": "ok",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:31:26+00:00"
+  },
+  {
+   "id": "case-pt-003-r1",
+   "stratum": "EXISTS_CORRECT",
+   "truth": "ok",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:31:27+00:00"
+  },
+  {
+   "id": "case-pt-035-r22",
+   "stratum": "EXISTS_CORRECT",
+   "truth": "ok",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:31:30+00:00"
+  },
+  {
+   "id": "case-en-056-r23",
+   "stratum": "EXISTS_CORRECT",
+   "truth": "ok",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:31:31+00:00"
+  },
+  {
+   "id": "case-es-017-r20",
+   "stratum": "EXISTS_CORRECT",
+   "truth": "ok",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:31:31+00:00"
+  },
+  {
+   "id": "case-en-056-r11",
+   "stratum": "EXISTS_CORRECT",
+   "truth": "ok",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:31:33+00:00"
+  },
+  {
+   "id": "case-es-016-r5",
+   "stratum": "EXISTS_CORRECT",
+   "truth": "ok",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:31:34+00:00"
+  },
+  {
+   "id": "case-en-056-r1",
+   "stratum": "EXISTS_CORRECT",
+   "truth": "ok",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:31:35+00:00"
+  },
+  {
+   "id": "case-en-052-r10",
+   "stratum": "EXISTS_CORRECT",
+   "truth": "ok",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:31:36+00:00"
+  },
+  {
+   "id": "case-es-017-r13",
+   "stratum": "EXISTS_CORRECT",
+   "truth": "ok",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:31:36+00:00"
+  },
+  {
+   "id": "case-pt-032-r10",
+   "stratum": "EXISTS_CORRECT",
+   "truth": "ok",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:31:36+00:00"
+  },
+  {
+   "id": "case-pt-035-r20",
+   "stratum": "EXISTS_CORRECT",
+   "truth": "ok",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:31:38+00:00"
+  },
+  {
+   "id": "case-es-017-r17",
+   "stratum": "EXISTS_CORRECT",
+   "truth": "ok",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:31:38+00:00"
+  },
+  {
+   "id": "case-es-016-r2",
+   "stratum": "EXISTS_CORRECT",
+   "truth": "ok",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:31:39+00:00"
+  },
+  {
+   "id": "case-pt-035-r7",
+   "stratum": "EXISTS_CORRECT",
+   "truth": "ok",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:31:41+00:00"
+  },
+  {
+   "id": "case-en-002-r1",
+   "stratum": "EXISTS_CORRECT",
+   "truth": "ok",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:31:42+00:00"
+  },
+  {
+   "id": "case-en-056-r7",
+   "stratum": "EXISTS_CORRECT",
+   "truth": "ok",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:31:43+00:00"
+  },
+  {
+   "id": "case-es-013-r1",
+   "stratum": "EXISTS_CORRECT",
+   "truth": "ok",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:31:45+00:00"
+  },
+  {
+   "id": "case-en-054-r1",
+   "stratum": "EXISTS_CORRECT",
+   "truth": "ok",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:31:46+00:00"
+  },
+  {
+   "id": "case-pt-035-r23",
+   "stratum": "EXISTS_CORRECT",
+   "truth": "ok",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:31:47+00:00"
+  },
+  {
+   "id": "case-en-047-r1",
+   "stratum": "EXISTS_CORRUPTED:author",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:31:48+00:00"
+  },
+  {
+   "id": "case-en-032-r1",
+   "stratum": "EXISTS_CORRUPTED:author",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:31:49+00:00"
+  },
+  {
+   "id": "case-pt-033-r4",
+   "stratum": "EXISTS_CORRUPTED:author",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:31:49+00:00"
+  },
+  {
+   "id": "case-pt-033-r18",
+   "stratum": "EXISTS_CORRUPTED:author",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:31:49+00:00"
+  },
+  {
+   "id": "case-en-019-r1",
+   "stratum": "EXISTS_CORRUPTED:author",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:31:50+00:00"
+  },
+  {
+   "id": "case-pt-001-r1",
+   "stratum": "EXISTS_CORRUPTED:author",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:31:51+00:00"
+  },
+  {
+   "id": "case-en-056-r15",
+   "stratum": "EXISTS_CORRUPTED:author",
+   "truth": "corrupted",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:32:03+00:00"
+  },
+  {
+   "id": "case-en-052-r4",
+   "stratum": "EXISTS_CORRUPTED:author",
+   "truth": "corrupted",
+   "verdict": "CITED [CHIMERIC:author-mismatch]",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:32:04+00:00"
+  },
+  {
+   "id": "case-es-008-r1",
+   "stratum": "EXISTS_CORRUPTED:author",
+   "truth": "corrupted",
+   "verdict": "CITED [CHIMERIC:author-mismatch]",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:32:04+00:00"
+  },
+  {
+   "id": "case-de-006-r12",
+   "stratum": "EXISTS_CORRUPTED:author",
+   "truth": "corrupted",
+   "verdict": "CITED [CHIMERIC:author-mismatch]",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:32:05+00:00"
+  },
+  {
+   "id": "case-en-024-r1",
+   "stratum": "EXISTS_CORRUPTED:author",
+   "truth": "corrupted",
+   "verdict": "CITED [CHIMERIC:author-mismatch]",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:32:05+00:00"
+  },
+  {
+   "id": "case-en-056-r25",
+   "stratum": "EXISTS_CORRUPTED:author",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:06+00:00"
+  },
+  {
+   "id": "case-pt-033-r13",
+   "stratum": "EXISTS_CORRUPTED:author",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:07+00:00"
+  },
+  {
+   "id": "case-en-053-r3",
+   "stratum": "EXISTS_CORRUPTED:author",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:08+00:00"
+  },
+  {
+   "id": "case-en-052-r22",
+   "stratum": "EXISTS_CORRUPTED:author",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:08+00:00"
+  },
+  {
+   "id": "case-pt-031-r1",
+   "stratum": "EXISTS_CORRUPTED:author",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:10+00:00"
+  },
+  {
+   "id": "case-es-014-r1",
+   "stratum": "EXISTS_CORRUPTED:author",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:11+00:00"
+  },
+  {
+   "id": "case-es-016-r3",
+   "stratum": "EXISTS_CORRUPTED:author",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:12+00:00"
+  },
+  {
+   "id": "case-en-055-r16",
+   "stratum": "EXISTS_CORRUPTED:doi",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:14+00:00"
+  },
+  {
+   "id": "case-pt-035-r8",
+   "stratum": "EXISTS_CORRUPTED:doi",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:15+00:00"
+  },
+  {
+   "id": "case-en-052-r1",
+   "stratum": "EXISTS_CORRUPTED:doi",
+   "truth": "corrupted",
+   "verdict": "FABRICATED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:32:17+00:00"
+  },
+  {
+   "id": "case-en-055-r6",
+   "stratum": "EXISTS_CORRUPTED:doi",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:19+00:00"
+  },
+  {
+   "id": "case-en-037-r1",
+   "stratum": "EXISTS_CORRUPTED:doi",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:20+00:00"
+  },
+  {
+   "id": "case-en-054-r21",
+   "stratum": "EXISTS_CORRUPTED:doi",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:21+00:00"
+  },
+  {
+   "id": "case-pt-035-r1",
+   "stratum": "EXISTS_CORRUPTED:doi",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:23+00:00"
+  },
+  {
+   "id": "case-en-052-r13",
+   "stratum": "EXISTS_CORRUPTED:doi",
+   "truth": "corrupted",
+   "verdict": "FABRICATED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:32:25+00:00"
+  },
+  {
+   "id": "case-es-018-r1",
+   "stratum": "EXISTS_CORRUPTED:doi",
+   "truth": "corrupted",
+   "verdict": "CITED [CHIMERIC:author-mismatch]",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:32:26+00:00"
+  },
+  {
+   "id": "case-pt-033-r9",
+   "stratum": "EXISTS_CORRUPTED:doi",
+   "truth": "corrupted",
+   "verdict": "CITED [CHIMERIC:author-mismatch]",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:32:26+00:00"
+  },
+  {
+   "id": "case-en-053-r5",
+   "stratum": "EXISTS_CORRUPTED:doi",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:27+00:00"
+  },
+  {
+   "id": "case-en-054-r12",
+   "stratum": "EXISTS_CORRUPTED:doi",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:29+00:00"
+  },
+  {
+   "id": "case-pt-036-r3",
+   "stratum": "EXISTS_CORRUPTED:doi",
+   "truth": "corrupted",
+   "verdict": "FABRICATED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:32:31+00:00"
+  },
+  {
+   "id": "case-es-017-r3",
+   "stratum": "EXISTS_CORRUPTED:doi",
+   "truth": "corrupted",
+   "verdict": "FABRICATED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:32:32+00:00"
+  },
+  {
+   "id": "case-de-006-r2",
+   "stratum": "EXISTS_CORRUPTED:doi",
+   "truth": "corrupted",
+   "verdict": "CITED [CHIMERIC:author-mismatch]",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:32:32+00:00"
+  },
+  {
+   "id": "case-pt-024-r1",
+   "stratum": "EXISTS_CORRUPTED:doi",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:34+00:00"
+  },
+  {
+   "id": "case-en-055-r15",
+   "stratum": "EXISTS_CORRUPTED:journal",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:35+00:00"
+  },
+  {
+   "id": "case-es-017-r11",
+   "stratum": "EXISTS_CORRUPTED:journal",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:35+00:00"
+  },
+  {
+   "id": "case-pt-036-r4",
+   "stratum": "EXISTS_CORRUPTED:journal",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:36+00:00"
+  },
+  {
+   "id": "case-pt-021-r1",
+   "stratum": "EXISTS_CORRUPTED:journal",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:37+00:00"
+  },
+  {
+   "id": "case-en-053-r13",
+   "stratum": "EXISTS_CORRUPTED:journal",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:38+00:00"
+  },
+  {
+   "id": "case-en-056-r19",
+   "stratum": "EXISTS_CORRUPTED:journal",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:40+00:00"
+  },
+  {
+   "id": "case-es-016-r8",
+   "stratum": "EXISTS_CORRUPTED:journal",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:41+00:00"
+  },
+  {
+   "id": "case-en-049-r1",
+   "stratum": "EXISTS_CORRUPTED:journal",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:41+00:00"
+  },
+  {
+   "id": "case-en-014-r1",
+   "stratum": "EXISTS_CORRUPTED:journal",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:43+00:00"
+  },
+  {
+   "id": "case-en-051-r1",
+   "stratum": "EXISTS_CORRUPTED:journal",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:44+00:00"
+  },
+  {
+   "id": "case-pt-034-r8",
+   "stratum": "EXISTS_CORRUPTED:journal",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:44+00:00"
+  },
+  {
+   "id": "case-de-006-r8",
+   "stratum": "EXISTS_CORRUPTED:journal",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:45+00:00"
+  },
+  {
+   "id": "case-en-052-r15",
+   "stratum": "EXISTS_CORRUPTED:journal",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:45+00:00"
+  },
+  {
+   "id": "case-pt-033-r8",
+   "stratum": "EXISTS_CORRUPTED:journal",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:45+00:00"
+  },
+  {
+   "id": "case-en-052-r20",
+   "stratum": "EXISTS_CORRUPTED:journal",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:46+00:00"
+  },
+  {
+   "id": "case-pt-034-r7",
+   "stratum": "EXISTS_CORRUPTED:journal",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:46+00:00"
+  },
+  {
+   "id": "case-en-055-r4",
+   "stratum": "EXISTS_CORRUPTED:pages_volume",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:48+00:00"
+  },
+  {
+   "id": "case-pt-033-r19",
+   "stratum": "EXISTS_CORRUPTED:pages_volume",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:48+00:00"
+  },
+  {
+   "id": "case-en-054-r8",
+   "stratum": "EXISTS_CORRUPTED:pages_volume",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:49+00:00"
+  },
+  {
+   "id": "case-es-012-r1",
+   "stratum": "EXISTS_CORRUPTED:pages_volume",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:51+00:00"
+  },
+  {
+   "id": "case-en-054-r15",
+   "stratum": "EXISTS_CORRUPTED:pages_volume",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:52+00:00"
+  },
+  {
+   "id": "case-en-017-r1",
+   "stratum": "EXISTS_CORRUPTED:pages_volume",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:53+00:00"
+  },
+  {
+   "id": "case-pt-035-r11",
+   "stratum": "EXISTS_CORRUPTED:pages_volume",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:55+00:00"
+  },
+  {
+   "id": "case-en-052-r5",
+   "stratum": "EXISTS_CORRUPTED:pages_volume",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:55+00:00"
+  },
+  {
+   "id": "case-pt-033-r16",
+   "stratum": "EXISTS_CORRUPTED:pages_volume",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:55+00:00"
+  },
+  {
+   "id": "case-es-018-r2",
+   "stratum": "EXISTS_CORRUPTED:pages_volume",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:56+00:00"
+  },
+  {
+   "id": "case-en-026-r1",
+   "stratum": "EXISTS_CORRUPTED:pages_volume",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:57+00:00"
+  },
+  {
+   "id": "case-en-055-r11",
+   "stratum": "EXISTS_CORRUPTED:pages_volume",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:32:58+00:00"
+  },
+  {
+   "id": "case-en-055-r9",
+   "stratum": "EXISTS_CORRUPTED:pages_volume",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:33:00+00:00"
+  },
+  {
+   "id": "case-pt-033-r12",
+   "stratum": "EXISTS_CORRUPTED:pages_volume",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:33:00+00:00"
+  },
+  {
+   "id": "case-pt-035-r2",
+   "stratum": "EXISTS_CORRUPTED:pages_volume",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:33:01+00:00"
+  },
+  {
+   "id": "case-en-053-r9",
+   "stratum": "EXISTS_CORRUPTED:title",
+   "truth": "corrupted",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:33:14+00:00"
+  },
+  {
+   "id": "case-pt-036-r5",
+   "stratum": "EXISTS_CORRUPTED:title",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:33:15+00:00"
+  },
+  {
+   "id": "case-en-052-r23",
+   "stratum": "EXISTS_CORRUPTED:title",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:33:15+00:00"
+  },
+  {
+   "id": "case-en-056-r14",
+   "stratum": "EXISTS_CORRUPTED:title",
+   "truth": "corrupted",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:33:22+00:00"
+  },
+  {
+   "id": "case-en-053-r7",
+   "stratum": "EXISTS_CORRUPTED:title",
+   "truth": "corrupted",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:33:34+00:00"
+  },
+  {
+   "id": "case-de-006-r7",
+   "stratum": "EXISTS_CORRUPTED:title",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:33:35+00:00"
+  },
+  {
+   "id": "case-pt-033-r22",
+   "stratum": "EXISTS_CORRUPTED:title",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:33:35+00:00"
+  },
+  {
+   "id": "case-pt-010-r1",
+   "stratum": "EXISTS_CORRUPTED:title",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:33:37+00:00"
+  },
+  {
+   "id": "case-pt-016-r1",
+   "stratum": "EXISTS_CORRUPTED:title",
+   "truth": "corrupted",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:33:49+00:00"
+  },
+  {
+   "id": "case-pt-025-r1",
+   "stratum": "EXISTS_CORRUPTED:title",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:33:49+00:00"
+  },
+  {
+   "id": "case-en-001-r1",
+   "stratum": "EXISTS_CORRUPTED:title",
+   "truth": "corrupted",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:34:01+00:00"
+  },
+  {
+   "id": "case-en-052-r6",
+   "stratum": "EXISTS_CORRUPTED:title",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:34:02+00:00"
+  },
+  {
+   "id": "case-en-053-r4",
+   "stratum": "EXISTS_CORRUPTED:title",
+   "truth": "corrupted",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:34:15+00:00"
+  },
+  {
+   "id": "case-es-017-r1",
+   "stratum": "EXISTS_CORRUPTED:title",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:34:15+00:00"
+  },
+  {
+   "id": "case-es-004-r1",
+   "stratum": "EXISTS_CORRUPTED:title",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:34:15+00:00"
+  },
+  {
+   "id": "case-es-018-r4",
+   "stratum": "EXISTS_CORRUPTED:title",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:34:16+00:00"
+  },
+  {
+   "id": "case-en-053-r10",
+   "stratum": "EXISTS_CORRUPTED:title",
+   "truth": "corrupted",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:34:30+00:00"
+  },
+  {
+   "id": "case-en-054-r5",
+   "stratum": "EXISTS_CORRUPTED:year",
+   "truth": "corrupted",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:34:42+00:00"
+  },
+  {
+   "id": "case-pt-035-r13",
+   "stratum": "EXISTS_CORRUPTED:year",
+   "truth": "corrupted",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:34:45+00:00"
+  },
+  {
+   "id": "case-en-055-r10",
+   "stratum": "EXISTS_CORRUPTED:year",
+   "truth": "corrupted",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:34:55+00:00"
+  },
+  {
+   "id": "case-pt-033-r7",
+   "stratum": "EXISTS_CORRUPTED:year",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:34:55+00:00"
+  },
+  {
+   "id": "case-en-052-r21",
+   "stratum": "EXISTS_CORRUPTED:year",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:34:56+00:00"
+  },
+  {
+   "id": "case-en-054-r20",
+   "stratum": "EXISTS_CORRUPTED:year",
+   "truth": "corrupted",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:34:59+00:00"
+  },
+  {
+   "id": "case-en-010-r1",
+   "stratum": "EXISTS_CORRUPTED:year",
+   "truth": "corrupted",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:35:09+00:00"
+  },
+  {
+   "id": "case-pt-035-r17",
+   "stratum": "EXISTS_CORRUPTED:year",
+   "truth": "corrupted",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:35:22+00:00"
+  },
+  {
+   "id": "case-de-006-r5",
+   "stratum": "EXISTS_CORRUPTED:year",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:35:23+00:00"
+  },
+  {
+   "id": "case-en-056-r3",
+   "stratum": "EXISTS_CORRUPTED:year",
+   "truth": "corrupted",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:35:34+00:00"
+  },
+  {
+   "id": "case-es-017-r12",
+   "stratum": "EXISTS_CORRUPTED:year",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:35:35+00:00"
+  },
+  {
+   "id": "case-en-054-r7",
+   "stratum": "EXISTS_CORRUPTED:year",
+   "truth": "corrupted",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:35:38+00:00"
+  },
+  {
+   "id": "case-en-052-r11",
+   "stratum": "EXISTS_CORRUPTED:year",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:35:39+00:00"
+  },
+  {
+   "id": "case-es-016-r11",
+   "stratum": "EXISTS_CORRUPTED:year",
+   "truth": "corrupted",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:35:49+00:00"
+  },
+  {
+   "id": "case-es-017-r21",
+   "stratum": "EXISTS_CORRUPTED:year",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:35:50+00:00"
+  },
+  {
+   "id": "case-en-006-r1",
+   "stratum": "EXISTS_CORRUPTED:year",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:35:51+00:00"
+  },
+  {
+   "id": "case-pt-013-r1",
+   "stratum": "EXISTS_CORRUPTED:year",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:35:52+00:00"
+  },
+  {
+   "id": "case-pt-032-r1",
+   "stratum": "EXISTS_CORRUPTED:year",
+   "truth": "corrupted",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:35:53+00:00"
+  },
+  {
+   "id": "case-en-042-r1",
+   "stratum": "FABRICATED",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:36:05+00:00"
+  },
+  {
+   "id": "case-en-054-r13",
+   "stratum": "FABRICATED",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:36:17+00:00"
+  },
+  {
+   "id": "case-pt-032-r3",
+   "stratum": "FABRICATED",
+   "truth": "problem",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:36:19+00:00"
+  },
+  {
+   "id": "case-en-052-r14",
+   "stratum": "FABRICATED",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:36:31+00:00"
+  },
+  {
+   "id": "case-es-016-r4",
+   "stratum": "FABRICATED",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:36:43+00:00"
+  },
+  {
+   "id": "case-es-007-r1",
+   "stratum": "FABRICATED",
+   "truth": "problem",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:36:45+00:00"
+  },
+  {
+   "id": "case-en-018-r1",
+   "stratum": "FABRICATED",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:36:56+00:00"
+  },
+  {
+   "id": "case-en-054-r19",
+   "stratum": "FABRICATED",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:37:11+00:00"
+  },
+  {
+   "id": "case-en-038-r1",
+   "stratum": "FABRICATED",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:37:24+00:00"
+  },
+  {
+   "id": "case-en-055-r18",
+   "stratum": "FABRICATED",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:37:36+00:00"
+  },
+  {
+   "id": "case-de-006-r4",
+   "stratum": "FABRICATED",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:37:48+00:00"
+  },
+  {
+   "id": "case-en-005-r1",
+   "stratum": "FABRICATED",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:38:00+00:00"
+  },
+  {
+   "id": "case-en-056-r24",
+   "stratum": "FABRICATED",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:38:03+00:00"
+  },
+  {
+   "id": "case-es-017-r2",
+   "stratum": "FABRICATED",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:38:13+00:00"
+  },
+  {
+   "id": "case-en-028-r1",
+   "stratum": "FABRICATED",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:38:25+00:00"
+  },
+  {
+   "id": "case-en-009-r1",
+   "stratum": "FABRICATED",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:38:37+00:00"
+  },
+  {
+   "id": "case-es-017-r18",
+   "stratum": "FABRICATED",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:38:50+00:00"
+  },
+  {
+   "id": "case-en-054-r4",
+   "stratum": "FABRICATED",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:39:03+00:00"
+  },
+  {
+   "id": "case-en-056-r20",
+   "stratum": "FABRICATED",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:39:15+00:00"
+  },
+  {
+   "id": "case-pt-026-r1",
+   "stratum": "FABRICATED",
+   "truth": "problem",
+   "verdict": "CITED",
+   "outcome": "not_flagged",
+   "checked_at": "2026-10-22T03:39:16+00:00"
+  },
+  {
+   "id": "case-en-054-r3",
+   "stratum": "FABRICATED",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:39:27+00:00"
+  },
+  {
+   "id": "case-de-006-r9",
+   "stratum": "FABRICATED",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:39:30+00:00"
+  },
+  {
+   "id": "case-pt-034-r3",
+   "stratum": "FABRICATED",
+   "truth": "problem",
+   "verdict": "CITED [CHIMERIC:author-mismatch]",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:39:32+00:00"
+  },
+  {
+   "id": "case-es-006-r1",
+   "stratum": "FABRICATED",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:39:42+00:00"
+  },
+  {
+   "id": "case-en-053-r15",
+   "stratum": "FABRICATED",
+   "truth": "problem",
+   "verdict": "UNVERIFIED",
+   "outcome": "flagged",
+   "checked_at": "2026-10-22T03:39:55+00:00"
+  }
+ ]
+}

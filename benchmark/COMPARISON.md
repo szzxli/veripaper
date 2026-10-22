@@ -14,6 +14,181 @@ alarm and inconclusive sample — veripaper's included — is shown. Raw
 outputs, inputs, runners and tool versions are all in this directory.
 Please re-run it and file corrections.
 
+**Two kinds of evidence here.** (1) The 34-sample first-party set, compared
+with three open-source checkers (most of this file). (2) Since 2026-10-21,
+runs on **openly licensed third-party datasets** — including the data of the
+July 2026 five-tool study — in the next section; larger and not built by us,
+but existence/metadata level only.
+
+## Public labelled datasets (third-party ground truth)
+
+Added 2026-10-21 (America/Los_Angeles; UTC timestamps below). The 34-sample
+set above is small and first-party. This section runs the same web pipeline
+on **openly licensed datasets built by other people**, so the ground truth is
+not ours. What we searched, what we used and why: see
+[Datasets considered](#datasets-considered-licences-and-decisions) below.
+
+**Method.** `public/run_public.mjs` loads the shipped `web/bibtex.js` +
+`web/ground.js` unmodified into a Node vm context (fresh context and empty
+cache per item, no LLM key) and runs `groundDraft` in its existence-level
+`.bib` mode — the datasets label *references*, not claims, so claim support
+is not exercised here. Reference strings go in as a one-entry reference list;
+structured records (CiteTracer) are rendered as one BibTeX entry and go
+through the site's own `bibToDraft`. **Flagged** = `FABRICATED`,
+`UNVERIFIED`, `[CHIMERIC:author-mismatch]` or `[RETRACTED]` (what tells a
+user "check this before citing"); **not flagged** = `CITED`;
+**inconclusive** = `RATE_LIMITED` / runner error after two retry rounds
+(90 s, 240 s). Large sets were sampled at random, stratified by label,
+with a fixed seed (`mulberry32`, 20261021); the sampled ids are in
+`public/results/*.meta.json`. `public/score_public.py --write` generates the
+block below from the raw results; no number is typed by hand. Datasets are
+downloaded by `public/fetch_datasets.sh` (with SHA-256 sums) and are not
+committed; result files keep ids and verdicts only.
+
+**Caveats, stated plainly.**
+
+- Existence and metadata only. veripaper's flags cover: identifier does not
+  exist, no confident match in the free indexes, **none** of the listed
+  authors on the matched record, retraction. It does **not** check venue,
+  year, pages/volume, or a partly wrong author list, and it does not compare
+  the entry's title with the record behind an embedded DOI. References that
+  are wrong only in those fields are misses by design — they are counted as
+  misses anyway.
+- `UNVERIFIED` is counted as flagged, so web pages, software, standards and
+  model cards (no scholarly record exists) show up as false alarms. That is
+  the honest cost of the label; a user still has to check them by hand.
+- Sample sizes and 95% Wilson intervals are given for every rate. Live
+  registries, shared egress IP, run-to-run variation: re-run before quoting.
+- First-party run of third-party data: we chose the datasets, the input
+  rendering and the flag mapping (fixed above before scoring).
+
+<!-- PUBLIC:BEGIN -->
+### 1. Badalova & Mayr (2026) manual verification set — the July 2026 study's own data
+
+104 references from three documents (71 verified, 33 problematic: invented works, wrong DOI, title, authors, venue or year), labelled by hand; the five tools' outcomes are published in the same file. [Zenodo 10.5281/zenodo.21457492](https://doi.org/10.5281/zenodo.21457492), **CC BY 4.0**. veripaper received each `reference` string as a one-entry reference list (no claim), the same input the study gave tools that accept reference text.
+
+- **Recall on problem references** (inconclusive left out): 22/33 = 67% (95% CI 50–80%); counting inconclusive as flagged: 22/33 = 67% (95% CI 50–80%)
+- **False-alarm rate on real references** (inconclusive left out): 15/71 = 21% (95% CI 13–32%); counting inconclusive as flagged: 15/71 = 21% (95% CI 13–32%)
+- Inconclusive after retries (RATE_LIMITED / error): 0 of 104
+
+Same 104 references, the study's five tools (published outcomes from the dataset file, run by the study's authors in June–July 2026) next to veripaper (this run):
+
+| Tool | TP (problem flagged) | FN (problem missed) | FP (real flagged) | TN (real accepted) | recall | false-alarm rate |
+|---|---|---|---|---|---|---|
+| **veripaper web, no key** (inconclusive left out: 0 problem, 0 real) | 22 | 11 | 15 | 56 | 67% | 21% |
+| veripaper web, no key (inconclusive counted as flagged) | 22 | 11 | 15 | 56 | 67% | 21% |
+| CheckIfExist (published) | 31 | 2 | 34 | 37 | 94% | 48% |
+| HalluCiteChecker (published) | 18 | 15 | 20 | 51 | 55% | 28% |
+| Hallucinator (published) | 29 | 4 | 28 | 43 | 88% | 39% |
+| HalRef (published) | 24 | 9 | 53 | 18 | 73% | 75% |
+| RefChecker (published) | 32 | 1 | 36 | 35 | 97% | 51% |
+
+veripaper's misses (11): `P1-R16`, `P2-R1`, `P2-R10`, `P3-R21`, `P3-R25`, `P3-R50`, `P3-R53`, `P3-R55`, `P3-R57`, `P3-R58`, `P3-R59`.
+veripaper's false alarms (15): `P1-R2` (UNVERIFIED), `P1-R5` (UNVERIFIED), `P1-R6` (UNVERIFIED), `P1-R8` (UNVERIFIED), `P1-R9` (CITED [CHIMERIC:author-mismatch]), `P1-R12` (UNVERIFIED), `P1-R17` (UNVERIFIED), `P1-R19` (UNVERIFIED), `P2-R3` (UNVERIFIED), `P3-R14` (UNVERIFIED), `P3-R30` (UNVERIFIED), `P3-R38` (UNVERIFIED), `P3-R51` (UNVERIFIED), `P3-R60` (UNVERIFIED), `P3-R61` (UNVERIFIED).
+
+Run: `eba375bda6b25263790d699863b0488594495b6b`, Node v20.19.2, fresh vm context + empty cache per item; started 2026-10-22T03:24:24+00:00, last verdict 2026-10-22T03:31:43+00:00 (UTC). Sample: all items — 104 of 104 items scored. Raw: `public/results/veripaper_web_badalova.jsonl` (every attempt), sampled ids in `.meta.json`.
+
+### 2. CiteMe Citation Verification Benchmark v1
+
+340 references built by construction (160 correct, 100 real works with exactly one corrupted field, 80 fabricated), English / Portuguese / Spanish / German, five citation styles, some deliberately sloppy. [Zenodo 10.5281/zenodo.21610297](https://doi.org/10.5281/zenodo.21610297), **CC BY 4.0** (published by CiteMe, a commercial citation tool). Here `problem` = `FABRICATED`, `ok` = `EXISTS_CORRECT`; corrupted references are reported per corrupted field and are not in the two headline rates.
+
+- **Recall on problem references** (inconclusive left out): 22/25 = 88% (95% CI 70–96%); counting inconclusive as flagged: 22/25 = 88% (95% CI 70–96%)
+- **False-alarm rate on real references** (inconclusive left out): 0/25 = 0% (95% CI 0–13%); counting inconclusive as flagged: 0/25 = 0% (95% CI 0–13%)
+- Inconclusive after retries (RATE_LIMITED / error): 0 of 150
+
+| class : corrupted field | truth | n | flagged | not flagged | inconclusive |
+|---|---|---|---|---|---|
+| EXISTS_CORRECT | ok | 25 | 0 | 25 | 0 |
+| EXISTS_CORRUPTED:author | corrupted | 18 | 5 | 13 | 0 |
+| EXISTS_CORRUPTED:doi | corrupted | 16 | 7 | 9 | 0 |
+| EXISTS_CORRUPTED:journal | corrupted | 16 | 0 | 16 | 0 |
+| EXISTS_CORRUPTED:pages_volume | corrupted | 15 | 0 | 15 | 0 |
+| EXISTS_CORRUPTED:title | corrupted | 17 | 7 | 10 | 0 |
+| EXISTS_CORRUPTED:year | corrupted | 18 | 9 | 9 | 0 |
+| FABRICATED | problem | 25 | 22 | 3 | 0 |
+
+Run: `eba375bda6b25263790d699863b0488594495b6b`, Node v20.19.2, fresh vm context + empty cache per item; started 2026-10-22T03:31:22+00:00, last verdict 2026-10-22T03:39:55+00:00 (UTC). Sample: stratified random, 25 per stratum, mulberry32 seed 20261021 — 150 of 340 items scored. Raw: `public/results/veripaper_web_citeme_per25.jsonl` (every attempt), sampled ids in `.meta.json`.
+
+### 3. CiteTracer synthetic set (Li, Lin & Ma 2026)
+
+2,450 structured citations from real BibTeX seeds with controlled LLM mutations, 12 subtypes. [Hugging Face Afrostnova/Hallucinated_Citation](https://huggingface.co/datasets/Afrostnova/Hallucinated_Citation), **MIT**. Scored: R1–R3 (real: exact, format variant, et al.) and H1–H6 (title, author, venue, year, DOI, pages/volume error). The P1/P3 "potential" subtypes are ambiguous by the dataset's own definition and were not sampled. Each record was rendered as one BibTeX entry and checked through the site's .bib path (`bibToDraft`).
+
+- **Recall on problem references** (inconclusive left out): 42/90 = 47% (95% CI 37–57%); counting inconclusive as flagged: 42/90 = 47% (95% CI 37–57%)
+- **False-alarm rate on real references** (inconclusive left out): 0/45 = 0% (95% CI 0–8%); counting inconclusive as flagged: 0/45 = 0% (95% CI 0–8%)
+- Inconclusive after retries (RATE_LIMITED / error): 0 of 135
+- 25 of the 45 sampled real records carry a DOI or arXiv ID, which makes them easier to confirm than typical hand-written reference strings.
+
+| subtype | truth | n | flagged | not flagged | inconclusive |
+|---|---|---|---|---|---|
+| R1 | ok | 15 | 0 | 15 | 0 |
+| R2 | ok | 15 | 0 | 15 | 0 |
+| R3 | ok | 15 | 0 | 15 | 0 |
+| H1 | problem | 15 | 13 | 2 | 0 |
+| H2 | problem | 15 | 6 | 9 | 0 |
+| H3 | problem | 15 | 3 | 12 | 0 |
+| H4 | problem | 15 | 5 | 10 | 0 |
+| H5 | problem | 15 | 15 | 0 | 0 |
+| H6 | problem | 15 | 0 | 15 | 0 |
+
+Run: `eba375bda6b25263790d699863b0488594495b6b`, Node v20.19.2, fresh vm context + empty cache per item; started 2026-10-22T03:31:22+00:00, last verdict 2026-10-22T03:37:24+00:00 (UTC). Sample: stratified random, 15 per stratum, mulberry32 seed 20261021 — 135 of 2179 items scored. Raw: `public/results/veripaper_web_citetracer_per15.jsonl` (every attempt), sampled ids in `.meta.json`.
+
+### 4. ICLR 2026 desk-rejected references (real-world fabrications)
+
+Reference strings that ICLR 2026 program chairs listed when desk-rejecting submissions for hallucinated references ("do not refer to real documents and/or have major errors in bibliographic information"), as collected in the same Hugging Face dataset (**MIT** as published there; the underlying text comes from OpenReview comments). All items are `problem`; there are no real references in this subset, so it gives recall only. Sampled from the 807 references with a reference string in `hallucinated_refs_structured.json` (the dataset card says 957; we used the structured file as published).
+
+- **Recall on problem references** (inconclusive left out): 39/50 = 78% (95% CI 65–87%); counting inconclusive as flagged: 39/50 = 78% (95% CI 65–87%)
+- Inconclusive after retries (RATE_LIMITED / error): 0 of 50
+
+Run: `eba375bda6b25263790d699863b0488594495b6b`, Node v20.19.2, fresh vm context + empty cache per item; started 2026-10-22T03:37:24+00:00, last verdict 2026-10-22T03:42:18+00:00 (UTC). Sample: stratified random, 50 per stratum, mulberry32 seed 20261021 — 50 of 807 items scored. Raw: `public/results/veripaper_web_iclr_per50.jsonl` (every attempt), sampled ids in `.meta.json`.
+<!-- PUBLIC:END -->
+
+**Reading the public numbers** (qualitative; the figures are in the
+generated block above):
+
+- **Real references are rarely flagged when they are scholarly works.** The
+  false alarms on the Badalova & Mayr set are mostly web pages, software,
+  model cards and standards (e.g. `P1-R2` JATS standard, `P1-R6` a Hugging
+  Face model, `P1-R17` a GitHub repository, `P3-R60` a model card) — there is
+  no scholarly record to find, so they get `UNVERIFIED`. One (`P1-R9`, a blog
+  post) matched an unrelated record and was tagged chimeric.
+- **Invented works and invented or wrong identifiers are caught well**
+  (CiteMe `FABRICATED`, CiteTracer H1 title and H5 DOI errors, most ICLR
+  desk-reject references).
+- **Errors in fields veripaper does not check are missed**, as designed:
+  venue / journal (H3, `journal`), pages / volume (H6, `pages_volume`), and
+  author lists where at least one listed author is real (most H2 and
+  `author` misses, and most Badalova & Mayr misses, e.g. `P3-R55`, where
+  one listed author matches the real paper). Year errors are caught only
+  when the year gate rejects the title match.
+- **Compared with the five tools in the July 2026 study**, veripaper sits at
+  the conservative end: fewer false alarms, lower recall. That is a trade-off,
+  not a win: the study's tools flag more of the problematic references.
+  Their numbers come from the study's own runs (June–July 2026, their
+  interfaces and settings); ours from this run — same references, different
+  time and conditions.
+- **Possible next steps** suggested by the misses: compare the entry's
+  title with the record behind an embedded DOI (would catch DOI-swap
+  errors where the authors happen to match), and flag a partial author
+  mismatch or venue mismatch as a softer warning.
+
+
+### Datasets considered: licences and decisions
+
+Searched 2026-10-21: the two sources named in the review, GitHub
+(`hallucinated citations` / `hallucinated references benchmark`), Hugging
+Face datasets and Zenodo. Licences as stated by each host on that date;
+our reading, not legal advice.
+
+| Dataset | Size / labels | Licence | Decision |
+|---|---|---|---|
+| **Badalova & Mayr (2026)**, "Manual Reference Verification Dataset…" — data of the July 2026 five-tool study ([arXiv:2607.22693](https://arxiv.org/abs/2607.22693), [Zenodo 21457492](https://doi.org/10.5281/zenodo.21457492)) | 104 references, 71 verified / 33 problematic, plus the five tools' outcomes | CC BY 4.0 | **Used, all 104.** Small, but it is the study's own data, so veripaper can be read next to the five tools it tested |
+| **CiteMe Citation Verification Benchmark v1** ([Zenodo 21610297](https://doi.org/10.5281/zenodo.21610297), [citeme.app](https://citeme.app/datasets/citation-verification-benchmark)) | 340 references: 160 correct, 100 corrupted (one field), 80 fabricated; 4 languages | CC BY 4.0 | **Used, stratified sample** (25 per class / corrupted field). Published by a commercial vendor; labels are by construction |
+| **CiteTracer "Hallucinated_Citation"** (Li, Lin & Ma 2026, [HF](https://huggingface.co/datasets/Afrostnova/Hallucinated_Citation), code [aaFrostnova/CiteTracer](https://github.com/aaFrostnova/CiteTracer)) | 2,450 synthetic records in 12 subtypes + 957 real fabricated references from ICLR 2026 desk rejections | MIT (dataset card and code repo) | **Used, stratified samples**: 15 per R1–R3 / H1–H6 subtype; 50 random ICLR references (recall only). P1/P3 "potential" subtypes not scored (ambiguous by definition) |
+| **CiteAudit** (Yuan et al. 2026, [arXiv:2602.23452](https://arxiv.org/abs/2602.23452); the "2,500 fabricated citations" in [The Decoder](https://the-decoder.com/?p=32935) are its generated test set) — `data/benchmark.json` in [shiiiikw/CiteAudit](https://github.com/shiiiikw/CiteAudit) | 9,442 citations with real/fake labels (paper: 6,475 real / 2,967 fake) | **none stated** — no licence file; GitHub reports no licence | **Not used.** Without a licence the default is all rights reserved, so we did not download it into the benchmark. Asking the authors for a licence would unlock the largest set found |
+| **CiteResolve** ([HF cheney777/CiteResolve](https://huggingface.co/datasets/cheney777/CiteResolve)) | 423 real-world fabricated citations, recoverable / unrecoverable | CC BY 4.0 | **Not used.** It ships only SHA-1 hashes that join to CiteAudit's unlicensed file |
+| Picazo-Sanchez & Ortiz-Martin, "LLM-Generated Bibliography" ([Zenodo 18657875](https://doi.org/10.5281/zenodo.18657875)) | BibTeX generated by 9 local LLMs per title | CC BY 4.0 | **Not used.** No per-entry real/fabricated label; we would have to label it ourselves |
+| Commercial checkers' private test sets (GPTZero, Citely, …) | — | not public | Not available |
+
 ## Latest: free fallbacks + keyless claim check (web app), before / after
 
 The web app (`web/ground.js`, what the live site runs) was re-run on all 34
@@ -300,6 +475,14 @@ pip install "academic-refchecker[webui]==3.1.7"
 python3 benchmark/comparison/run_refchecker.py
 
 python3 benchmark/comparison/make_table.py --write  # regenerate the tables above
+
+# public third-party datasets (existence/metadata level, web pipeline)
+benchmark/public/fetch_datasets.sh                  # downloads + SHA-256 sums; not committed
+node benchmark/public/run_public.mjs badalova       # all 104
+node benchmark/public/run_public.mjs citeme --per 25
+node benchmark/public/run_public.mjs citetracer --per 15
+node benchmark/public/run_public.mjs iclr --per 50
+python3 benchmark/public/score_public.py --write    # regenerate the public-datasets block
 ```
 
 Each runner writes `comparison/results/<tool>.json` with tool version /

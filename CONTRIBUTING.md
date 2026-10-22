@@ -15,11 +15,11 @@
 
 See README. v0.1 starts with evidence grounding — nail the single point before expanding.
 
-## Tests (there is no CI — run them locally before a PR)
+## Tests (run them locally before a PR; `.github/workflows/tests.yml` runs the same on every PR)
 
 ```bash
 for f in web/tests/*.js; do node "$f" || exit 1; done   # web app (no network; fetch is mocked)
-python3 -m pytest -q tests                              # Python pipeline
+python3 -m pytest -q tests                              # Python pipeline + `check` CI gate (no network)
 ```
 
 `web/tests/fallbacks.js` covers the request queue (backoff, `Retry-After`,

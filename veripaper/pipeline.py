@@ -133,6 +133,13 @@ def run_ground(draft_path: str, out_path: str) -> str:
     list and checked entry by entry with the same lookups and labels —
     existence-level only (no claims, so no support judgment / freshness).
     """
+    pairs, evidence = ground_evidence(draft_path)
+    _write_report(out_path, draft_path, pairs, evidence)
+    return out_path
+
+
+def ground_evidence(draft_path: str) -> tuple[list[dict], list[EvidenceRef]]:
+    """The pipeline without the report: (citation pairs, evidence rows)."""
     bib_mode = draft_path.lower().endswith((".bib", ".bibtex"))
     bib_titles: dict = {}
     if bib_mode:
@@ -166,8 +173,8 @@ def run_ground(draft_path: str, out_path: str) -> str:
                 evidence.append(EvidenceRef(
                     claim=p["claim"], source_doi=res["doi"],
                     label=_apply_tags("RATE_LIMITED", tag_str),
-                    note=("source(s) rate-limited (HTTP 429) while checking — "
-                          "not checked, NOT proven fake. Try again later.")))
+                    note=("source(s) rate-limited (HTTP 429) or unreachable while checking — "
+                          "not checked, NOT proven fake. Try again later. " + res["note"])))
             elif res.get("fabricated"):
                 evidence.append(EvidenceRef(
                     claim=p["claim"], source_doi=res["doi"],
@@ -215,8 +222,7 @@ def run_ground(draft_path: str, out_path: str) -> str:
             claim=p["claim"], source_doi=res["doi"],
             label=_apply_tags(label, tag_str), note=note))
 
-    _write_report(out_path, draft_path, pairs, evidence)
-    return out_path
+    return pairs, evidence
 
 
 def _write_report(out_path: str, draft_path: str, pairs: list[dict],
