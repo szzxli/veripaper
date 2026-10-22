@@ -11,8 +11,8 @@ const notFound = async () => resp(404, {});
 (async () => {
   {
     const sb = makeSandbox(notFound);
-    ok('findInvalidDois', JSON.stringify(sb.findInvalidDois('a 10.1/x b doi:10.12/ab c 10.1234/ok')) === '["10.1/x","10.12/ab"]');
-    const ev = await sb.groundDraft('Transformers beat RNNs (doi:10.1/x).\n\nSee https://doi.org/10.22/bad for more.\n', {}, null);
+    ok('findInvalidDois', JSON.stringify(sb.findInvalidDois('a 10.1/x b doi:10.12/ab c 10.1234/ok 10.5/2')) === '["10.12/ab"]');
+    const ev = await sb.groundDraft('Transformers beat RNNs (doi:10.1/x).\n\nRatio 10.5/2 holds.\n\nSee https://doi.org/10.22/bad for more.\n', {}, null);
     ok('text: INVALID_DOI for both', ev.length === 2 && ev.every(e => e.base === 'INVALID_DOI'), JSON.stringify(ev.map(e => e.base)));
     ok('text: note says DOI format invalid', /DOI format invalid/.test(ev[0].note));
     ok('report counts INVALID_DOI', /INVALID_DOI 2/.test(sb.renderReport(ev)));
