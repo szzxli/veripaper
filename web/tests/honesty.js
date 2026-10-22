@@ -15,7 +15,7 @@ function mkEl() {
     addEventListener() {}, click() {}, scrollIntoView() {}, appendChild() {}, remove() {},
   };
 }
-function makeSandbox(fetchImpl) {
+function makeSandbox(fetchImpl, extraGlobals) {
   const sandbox = {
     console,
     // real timers: ground.js awaits sleep() between claims
@@ -29,6 +29,7 @@ function makeSandbox(fetchImpl) {
     URL: { createObjectURL: () => 'blob:x', revokeObjectURL: () => {} },
     Blob: function () {},
   };
+  Object.assign(sandbox, extraGlobals || {});
   vm.createContext(sandbox);
   vm.runInContext(src, sandbox, { filename: 'ground.js' });
   return sandbox;
@@ -163,11 +164,15 @@ const ok = (name, cond, extra) => {
   ok('evidence order preserved', ev.every((e, i) => e.claim === `Claim number ${i + 1} [${i + 1}].`),
     JSON.stringify(ev.map(e => e.claim)));
   ok('parallel faster than sequential (6 claims x ~1050ms sequential -> well under 6300ms)', dt < 4000, dt + 'ms');
-  ok('all UNVERIFIED (404s)', ev.every(e => e.base === 'UNVERIFIED'));
+  // this sandbox has no URLSearchParams, so most lookups throw before any
+  // request: that is "could not ask" (RATE_LIMITED / not checked), never a
+  // verdict about the reference — and never FABRICATED
+  ok('none FABRICATED, none CITED (no identifiers, lookups failed or 404)',
+    ev.every(e => e.base === 'UNVERIFIED' || e.base === 'RATE_LIMITED'), JSON.stringify(ev.map(e => e.base)));
 
   console.log('— FABRICATED vs UNVERIFIED —');
   // all registries answer 404: positive non-existence
-  const sb404 = makeSandbox(async () => ({ ok: false, status: 404 }));
+  const sb404 = makeSandbox(async () => ({ ok: false, status: 404 }), { URLSearchParams });
   const fabMd = '# T\n\nFake paper arXiv:2401.99999. Fake DOI 10.9999/fake.doi.1234. ' +
     'Dangling marker [9]. Entry without identifiers [7].\n\n## References\n\n' +
     '[9] No identifiers in this entry at all.\n\n[7] Anonymous. A title no database knows. 2020.';

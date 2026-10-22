@@ -1,0 +1,351 @@
+{
+  "tool": "veripaper (web pipeline web/ground.js, no LLM key, keyless in-browser NLI on)",
+  "source": "web/ground.js",
+  "commit": "d8eab718592b2e1e5ea0fb221c3dce2af4c347cb",
+  "nli_model": "Xenova/nli-deberta-v3-xsmall (q8) via @huggingface/transformers 4.3.1",
+  "input": "samples.json `draft`",
+  "runtime": "Node v20.19.2, fresh vm context + empty cache per sample",
+  "run_finished_at": "2026-10-22T04:11:46+00:00",
+  "results": [
+    {
+      "id": "real-01",
+      "category": "real",
+      "subtype": "doi-in-text",
+      "verdict": "CITED [STALE:2016]",
+      "base_label": "CITED",
+      "note": "abstract does not clearly support the claim (model: entailment 1%, contradiction 1%) — keyless in-browser check: small NLI model, abstract only — less accurate than the LLM mode; author decides.",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:10:07+00:00"
+    },
+    {
+      "id": "real-02",
+      "category": "real",
+      "subtype": "arxiv-in-text",
+      "verdict": "CITED",
+      "base_label": "CITED",
+      "note": "mixed signal: the model finds passages that support the claim and passages that conflict with it (model: entailment 99%, contradiction 100%) — read the abstract — keyless in-browser check: small NLI model, abstract only — less accurate than the LLM mode; author decides.",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:10:09+00:00"
+    },
+    {
+      "id": "real-03",
+      "category": "real",
+      "subtype": "arxiv-in-text",
+      "verdict": "CITED",
+      "base_label": "CITED",
+      "note": "mixed signal: the model finds passages that support the claim and passages that conflict with it (model: entailment 100%, contradiction 89%) — read the abstract — keyless in-browser check: small NLI model, abstract only — less accurate than the LLM mode; author decides.",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:10:10+00:00"
+    },
+    {
+      "id": "real-04",
+      "category": "real",
+      "subtype": "reference-entry-with-doi",
+      "verdict": "CITED",
+      "base_label": "CITED",
+      "note": "abstract does not clearly support the claim (model: entailment 2%, contradiction 3%) — keyless in-browser check: small NLI model, abstract only — less accurate than the LLM mode; author decides.",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:10:12+00:00"
+    },
+    {
+      "id": "real-05",
+      "category": "real",
+      "subtype": "reference-entry-no-id",
+      "verdict": "CITED",
+      "base_label": "CITED",
+      "note": "abstract does not clearly support the claim (model: entailment 41%, contradiction 95%) — keyless in-browser check: small NLI model, abstract only — less accurate than the LLM mode; author decides.",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:10:14+00:00"
+    },
+    {
+      "id": "real-06",
+      "category": "real",
+      "subtype": "doi-in-text",
+      "verdict": "CITED",
+      "base_label": "CITED",
+      "note": "no abstract available — support not checked (abstract-level checks need an abstract)",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:10:25+00:00"
+    },
+    {
+      "id": "real-07",
+      "category": "real",
+      "subtype": "arxiv-in-text",
+      "verdict": "CITED",
+      "base_label": "CITED",
+      "note": "mixed signal: the model finds passages that support the claim and passages that conflict with it (model: entailment 98%, contradiction 88%) — read the abstract — keyless in-browser check: small NLI model, abstract only — less accurate than the LLM mode; author decides.",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:10:27+00:00"
+    },
+    {
+      "id": "real-08",
+      "category": "real",
+      "subtype": "reference-entry-with-arxiv",
+      "verdict": "CITED",
+      "base_label": "CITED",
+      "note": "abstract does not clearly support the claim (model: entailment 0%, contradiction 20%) — keyless in-browser check: small NLI model, abstract only — less accurate than the LLM mode; author decides.",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:10:28+00:00"
+    },
+    {
+      "id": "fab-01",
+      "category": "fabricated",
+      "subtype": "fabricated-doi",
+      "verdict": "FABRICATED",
+      "base_label": "FABRICATED",
+      "note": "DOI 10.1038/s41586-024-99999-9 checked against its registry and does not exist — fabricated or mistyped; do not cite.",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:10:30+00:00"
+    },
+    {
+      "id": "fab-02",
+      "category": "fabricated",
+      "subtype": "fabricated-doi",
+      "verdict": "FABRICATED",
+      "base_label": "FABRICATED",
+      "note": "DOI 10.1126/science.adq9999 checked against its registry and does not exist — fabricated or mistyped; do not cite.",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:10:31+00:00"
+    },
+    {
+      "id": "fab-03",
+      "category": "fabricated",
+      "subtype": "fabricated-arxiv",
+      "verdict": "FABRICATED",
+      "base_label": "FABRICATED",
+      "note": "DOI 10.48550/arXiv.2406.99999 checked against its registry and does not exist — fabricated or mistyped; do not cite.",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:10:31+00:00"
+    },
+    {
+      "id": "fab-04",
+      "category": "fabricated",
+      "subtype": "fabricated-doi",
+      "verdict": "FABRICATED",
+      "base_label": "FABRICATED",
+      "note": "DOI 10.1109/CVPR.2024.99999 checked against its registry and does not exist — fabricated or mistyped; do not cite.",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:10:32+00:00"
+    },
+    {
+      "id": "fab-05",
+      "category": "fabricated",
+      "subtype": "fabricated-arxiv",
+      "verdict": "FABRICATED",
+      "base_label": "FABRICATED",
+      "note": "DOI 10.48550/arXiv.2302.99998 checked against its registry and does not exist — fabricated or mistyped; do not cite.",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:10:33+00:00"
+    },
+    {
+      "id": "fab-06",
+      "category": "fabricated",
+      "subtype": "fabricated-entry-no-id",
+      "verdict": "UNVERIFIED",
+      "base_label": "UNVERIFIED",
+      "note": "reference-list: reference entry has no DOI/arXiv ID and no confident bibliographic match in CrossRef, DataCite/arXiv, OpenAlex (not consulted — rate-limited: Semantic Scholar; unreachable: DBLP)",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:10:44+00:00"
+    },
+    {
+      "id": "fab-07",
+      "category": "fabricated",
+      "subtype": "fabricated-entry-no-id",
+      "verdict": "UNVERIFIED",
+      "base_label": "UNVERIFIED",
+      "note": "reference-list: reference entry has no DOI/arXiv ID and no confident bibliographic match in CrossRef, DataCite/arXiv, OpenAlex (not consulted — rate-limited: Semantic Scholar; unreachable: DBLP)",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:10:57+00:00"
+    },
+    {
+      "id": "fab-08",
+      "category": "fabricated",
+      "subtype": "fabricated-entry-no-id",
+      "verdict": "UNVERIFIED",
+      "base_label": "UNVERIFIED",
+      "note": "reference-list: reference entry has no DOI/arXiv ID and no confident bibliographic match in CrossRef, DataCite/arXiv, OpenAlex (not consulted — rate-limited: Semantic Scholar; unreachable: DBLP)",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:11:09+00:00"
+    },
+    {
+      "id": "chim-01",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "verdict": "CITED [CHIMERIC:author-mismatch]",
+      "base_label": "CITED",
+      "note": "CHIMERIC citation: the title matches a real paper but the listed authors do not — abstract does not clearly support the claim (model: entailment 1%, contradiction 95%) — keyless in-browser check: small NLI model, abstract only — less accurate than the LLM mode; author decides.",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:11:12+00:00"
+    },
+    {
+      "id": "chim-02",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "verdict": "CITED [CHIMERIC:author-mismatch]",
+      "base_label": "CITED",
+      "note": "CHIMERIC citation: the title matches a real paper but the listed authors do not — abstract does not clearly support the claim (model: entailment 12%, contradiction 20%) — keyless in-browser check: small NLI model, abstract only — less accurate than the LLM mode; author decides.",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:11:15+00:00"
+    },
+    {
+      "id": "chim-03",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "verdict": "CITED [CHIMERIC:author-mismatch]",
+      "base_label": "CITED",
+      "note": "CHIMERIC citation: the title matches a real paper but the listed authors do not — abstract does not clearly support the claim (model: entailment 20%, contradiction 61%) — keyless in-browser check: small NLI model, abstract only — less accurate than the LLM mode; author decides.",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:11:16+00:00"
+    },
+    {
+      "id": "chim-04",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "verdict": "CITED [CHIMERIC:author-mismatch]",
+      "base_label": "CITED",
+      "note": "CHIMERIC citation: the title matches a real paper but the listed authors do not — abstract does not clearly support the claim (model: entailment 23%, contradiction 2%) — keyless in-browser check: small NLI model, abstract only — less accurate than the LLM mode; author decides.",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:11:18+00:00"
+    },
+    {
+      "id": "chim-05",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "verdict": "CITED [CHIMERIC:author-mismatch]",
+      "base_label": "CITED",
+      "note": "CHIMERIC citation: the title matches a real paper but the listed authors do not — mixed signal: the model finds passages that support the claim and passages that conflict with it (model: entailment 93%, contradiction 99%) — read the abstract — keyless in-browser check: small NLI model, abstract only — less accurate than the LLM mode; author decides.",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:11:20+00:00"
+    },
+    {
+      "id": "chim-06",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "verdict": "CITED [CHIMERIC:author-mismatch]",
+      "base_label": "CITED",
+      "note": "CHIMERIC citation: the title matches a real paper but the listed authors do not — mixed signal: the model finds passages that support the claim and passages that conflict with it (model: entailment 99%, contradiction 92%) — read the abstract — keyless in-browser check: small NLI model, abstract only — less accurate than the LLM mode; author decides.",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:11:22+00:00"
+    },
+    {
+      "id": "retr-01",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "verdict": "CITED [RETRACTED]",
+      "base_label": "CITED",
+      "note": "RETRACTED paper — do not cite it as support. abstract does not clearly support the claim (model: entailment 71%, contradiction 72%) — keyless in-browser check: small NLI model, abstract only — less accurate than the LLM mode; author decides.",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:11:25+00:00"
+    },
+    {
+      "id": "retr-02",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "verdict": "CITED [RETRACTED]",
+      "base_label": "CITED",
+      "note": "RETRACTED paper — do not cite it as support. abstract does not clearly support the claim (model: entailment 81%, contradiction 94%) — keyless in-browser check: small NLI model, abstract only — less accurate than the LLM mode; author decides.",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:11:27+00:00"
+    },
+    {
+      "id": "retr-03",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "verdict": "CITED [RETRACTED]",
+      "base_label": "CITED",
+      "note": "RETRACTED paper — do not cite it as support. mixed signal: the model finds passages that support the claim and passages that conflict with it (model: entailment 95%, contradiction 88%) — read the abstract — keyless in-browser check: small NLI model, abstract only — less accurate than the LLM mode; author decides.",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:11:28+00:00"
+    },
+    {
+      "id": "retr-04",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "verdict": "CITED [RETRACTED]",
+      "base_label": "CITED",
+      "note": "RETRACTED paper — do not cite it as support. abstract does not clearly support the claim (model: entailment 0%, contradiction 46%) — keyless in-browser check: small NLI model, abstract only — less accurate than the LLM mode; author decides.",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:11:30+00:00"
+    },
+    {
+      "id": "retr-05",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "verdict": "CITED [RETRACTED]",
+      "base_label": "CITED",
+      "note": "RETRACTED paper — do not cite it as support. abstract does not clearly support the claim (model: entailment 1%, contradiction 0%) — keyless in-browser check: small NLI model, abstract only — less accurate than the LLM mode; author decides.",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:11:32+00:00"
+    },
+    {
+      "id": "retr-06",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "verdict": "CITED [RETRACTED]",
+      "base_label": "CITED",
+      "note": "RETRACTED paper — do not cite it as support. abstract does not clearly support the claim (model: entailment 40%, contradiction 93%) — keyless in-browser check: small NLI model, abstract only — less accurate than the LLM mode; author decides.",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:11:34+00:00"
+    },
+    {
+      "id": "spec-01",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "verdict": "CITED [SPECIFIC-NOT-IN-ABSTRACT]",
+      "base_label": "CITED",
+      "note": "claim cites specifics not found in the abstract (98.7%) — support is thin; check the full text. Deterministic check (no model). model: entailment 1%, contradiction 98%. Author decides.",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:11:37+00:00"
+    },
+    {
+      "id": "spec-02",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "verdict": "CITED [STALE:2016] [SPECIFIC-NOT-IN-ABSTRACT]",
+      "base_label": "CITED",
+      "note": "claim cites specifics not found in the abstract (94.8%) — support is thin; check the full text. Deterministic check (no model). model: entailment 0%, contradiction 98%. Author decides.",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:11:39+00:00"
+    },
+    {
+      "id": "spec-03",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "verdict": "CITED [SPECIFIC-NOT-IN-ABSTRACT]",
+      "base_label": "CITED",
+      "note": "claim cites specifics not found in the abstract (99.1%) — support is thin; check the full text. Deterministic check (no model). model: entailment 0%, contradiction 71%. Author decides.",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:11:41+00:00"
+    },
+    {
+      "id": "spec-04",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "verdict": "CITED [STALE:2006] [SPECIFIC-NOT-IN-ABSTRACT]",
+      "base_label": "CITED",
+      "note": "claim cites specifics not found in the abstract (4.67; DDPM) — support is thin; check the full text. Deterministic check (no model). model: entailment 0%, contradiction 86%. Author decides.",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:11:43+00:00"
+    },
+    {
+      "id": "spec-05",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "verdict": "CITED [SPECIFIC-NOT-IN-ABSTRACT]",
+      "base_label": "CITED",
+      "note": "claim cites specifics not found in the abstract (91.7%; MNLI) — support is thin; check the full text. Deterministic check (no model). model: entailment 5%, contradiction 23%. Author decides.",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:11:44+00:00"
+    },
+    {
+      "id": "spec-06",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "verdict": "CITED [SPECIFIC-NOT-IN-ABSTRACT]",
+      "base_label": "CITED",
+      "note": "claim cites specifics not found in the abstract (89.4%; MNIST) — support is thin; check the full text. Deterministic check (no model). model: entailment 14%, contradiction 5%. Author decides.",
+      "outcome": "pass",
+      "checked_at": "2026-10-22T04:11:46+00:00"
+    }
+  ]
+}

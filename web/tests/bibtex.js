@@ -30,6 +30,7 @@ function makeSandbox(fetchImpl) {
     window: {}, navigator: {}, location: { href: '' },
     fetch: fetchImpl || (async () => { throw new Error('no network'); }),
     URL: { createObjectURL: () => 'blob:x', revokeObjectURL: () => {} },
+    URLSearchParams,  // browsers always have it; without it a lookup throws, which is now (correctly) 'not checked'
     Blob: function () {},
   };
   vm.createContext(sandbox);
@@ -167,11 +168,15 @@ const BIB = String.raw`% exported from a reference manager
   ok('no [STALE] tag in bib mode (entries carry old years)', ev.every(e => !/STALE/.test(e.label)));
   ok('display text is "@key — title"', ev.some(e => e.claim === '@wakefield1998 — Ileal-lymphoid-nodular hyperplasia, non-specific colitis, and pervasive developmental disorder in children'));
   ok('no LLM call even with a key', !urls.some(u => u.includes('openrouter')));
-  ok('no abstract fetch (OpenAlex / Semantic Scholar paper endpoints)',
-    !urls.some(u => /openalex\.org\/works|semanticscholar\.org\/graph\/v1\/paper\/(?!search)/.test(u)), JSON.stringify(urls.filter(u => /openalex|semanticscholar/.test(u))));
+  // OpenAlex is part of the existence chain (works?search= lookup, works/doi:
+  // record check); an abstract fetch would be a Semantic Scholar paper GET
+  ok('no abstract fetch (Semantic Scholar paper endpoint; OpenAlex only search / doi: record)',
+    !urls.some(u => /semanticscholar\.org\/graph\/v1\/paper\/(?!search)/.test(u)) &&
+    urls.filter(u => /openalex\.org/.test(u)).every(u => /openalex\.org\/works(\?search=|\/doi:)/.test(u)),
+    JSON.stringify(urls.filter(u => /openalex|semanticscholar/.test(u))));
   const hosts = [...new Set(urls.map(u => new URL(u).host))].sort();
   const allowed = ['api.crossref.org', 'api.datacite.org', 'export.arxiv.org', 'www.ebi.ac.uk',
-    'api.semanticscholar.org', 'dblp.org'];
+    'api.openalex.org', 'api.semanticscholar.org', 'dblp.org'];
   ok('only registry lookup hosts contacted', hosts.every(h => allowed.includes(h)), JSON.stringify(hosts));
   const html = sbNet.renderReport(ev, { unit: 'BibTeX entries' });
   ok('report counts entries', /5<\/b> BibTeX entries checked/.test(html));

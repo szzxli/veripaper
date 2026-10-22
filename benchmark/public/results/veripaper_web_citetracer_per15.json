@@ -2,12 +2,12 @@
  "dataset": "citetracer",
  "meta": {
   "tool": "veripaper web pipeline (web/bibtex.js + web/ground.js), groundDraft bibMode, no LLM key",
-  "commit": "eba375bda6b25263790d699863b0488594495b6b",
+  "commit": "d8eab718592b2e1e5ea0fb221c3dce2af4c347cb",
   "dataset": "citetracer",
   "population": 2179,
   "sample": "stratified random, 15 per stratum, mulberry32 seed 20261021",
   "runtime": "Node v20.19.2, fresh vm context + empty cache per item",
-  "started_at": "2026-10-22T03:31:22+00:00"
+  "started_at": "2026-10-22T04:15:27+00:00"
  },
  "summary": {
   "problem": {
@@ -36,7 +36,7 @@
    "truth": "problem",
    "verdict": "UNVERIFIED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:31:35+00:00"
+   "checked_at": "2026-10-22T04:15:40+00:00"
   },
   {
    "id": "H1-0133",
@@ -44,7 +44,7 @@
    "truth": "problem",
    "verdict": "UNVERIFIED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:31:47+00:00"
+   "checked_at": "2026-10-22T04:15:53+00:00"
   },
   {
    "id": "H1-0115",
@@ -52,7 +52,7 @@
    "truth": "problem",
    "verdict": "UNVERIFIED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:32:00+00:00"
+   "checked_at": "2026-10-22T04:16:04+00:00"
   },
   {
    "id": "H1-0053",
@@ -60,7 +60,7 @@
    "truth": "problem",
    "verdict": "UNVERIFIED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:32:12+00:00"
+   "checked_at": "2026-10-22T04:16:16+00:00"
   },
   {
    "id": "H1-0097",
@@ -68,7 +68,7 @@
    "truth": "problem",
    "verdict": "UNVERIFIED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:32:24+00:00"
+   "checked_at": "2026-10-22T04:16:22+00:00"
   },
   {
    "id": "H1-0128",
@@ -76,7 +76,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:32:26+00:00"
+   "checked_at": "2026-10-22T04:16:25+00:00"
   },
   {
    "id": "H1-0141",
@@ -84,7 +84,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:32:28+00:00"
+   "checked_at": "2026-10-22T04:16:26+00:00"
   },
   {
    "id": "H1-0179",
@@ -92,7 +92,7 @@
    "truth": "problem",
    "verdict": "UNVERIFIED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:32:39+00:00"
+   "checked_at": "2026-10-22T04:16:37+00:00"
   },
   {
    "id": "H1-0031",
@@ -100,7 +100,7 @@
    "truth": "problem",
    "verdict": "UNVERIFIED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:32:51+00:00"
+   "checked_at": "2026-10-22T04:16:49+00:00"
   },
   {
    "id": "H1-0157",
@@ -108,7 +108,7 @@
    "truth": "problem",
    "verdict": "UNVERIFIED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:33:04+00:00"
+   "checked_at": "2026-10-22T04:17:01+00:00"
   },
   {
    "id": "H1-0145",
@@ -116,7 +116,7 @@
    "truth": "problem",
    "verdict": "UNVERIFIED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:33:16+00:00"
+   "checked_at": "2026-10-22T04:17:14+00:00"
   },
   {
    "id": "H1-0155",
@@ -124,7 +124,7 @@
    "truth": "problem",
    "verdict": "UNVERIFIED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:33:28+00:00"
+   "checked_at": "2026-10-22T04:17:28+00:00"
   },
   {
    "id": "H1-0061",
@@ -132,7 +132,7 @@
    "truth": "problem",
    "verdict": "UNVERIFIED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:33:40+00:00"
+   "checked_at": "2026-10-22T04:17:40+00:00"
   },
   {
    "id": "H1-0047",
@@ -140,7 +140,7 @@
    "truth": "problem",
    "verdict": "UNVERIFIED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:33:53+00:00"
+   "checked_at": "2026-10-22T04:17:43+00:00"
   },
   {
    "id": "H1-0127",
@@ -148,7 +148,7 @@
    "truth": "problem",
    "verdict": "UNVERIFIED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:34:04+00:00"
+   "checked_at": "2026-10-22T04:18:02+00:00"
   },
   {
    "id": "H2-0086",
@@ -156,7 +156,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:34:06+00:00"
+   "checked_at": "2026-10-22T04:18:04+00:00"
   },
   {
    "id": "H2-0064",
@@ -164,7 +164,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:34:07+00:00"
+   "checked_at": "2026-10-22T04:18:05+00:00"
   },
   {
    "id": "H2-0157",
@@ -172,7 +172,7 @@
    "truth": "problem",
    "verdict": "CITED [CHIMERIC:author-mismatch]",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:34:08+00:00"
+   "checked_at": "2026-10-22T04:18:06+00:00"
   },
   {
    "id": "H2-0106",
@@ -180,7 +180,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:34:10+00:00"
+   "checked_at": "2026-10-22T04:18:08+00:00"
   },
   {
    "id": "H2-0053",
@@ -188,7 +188,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:34:11+00:00"
+   "checked_at": "2026-10-22T04:18:09+00:00"
   },
   {
    "id": "H2-0134",
@@ -196,7 +196,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:34:12+00:00"
+   "checked_at": "2026-10-22T04:18:10+00:00"
   },
   {
    "id": "H2-0188",
@@ -204,7 +204,7 @@
    "truth": "problem",
    "verdict": "CITED [CHIMERIC:author-mismatch]",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:34:14+00:00"
+   "checked_at": "2026-10-22T04:18:12+00:00"
   },
   {
    "id": "H2-0135",
@@ -212,7 +212,7 @@
    "truth": "problem",
    "verdict": "CITED [CHIMERIC:author-mismatch]",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:34:15+00:00"
+   "checked_at": "2026-10-22T04:18:13+00:00"
   },
   {
    "id": "H2-0030",
@@ -220,7 +220,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:34:16+00:00"
+   "checked_at": "2026-10-22T04:18:14+00:00"
   },
   {
    "id": "H2-0097",
@@ -228,7 +228,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:34:18+00:00"
+   "checked_at": "2026-10-22T04:18:16+00:00"
   },
   {
    "id": "H2-0179",
@@ -236,7 +236,7 @@
    "truth": "problem",
    "verdict": "CITED [CHIMERIC:author-mismatch]",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:34:19+00:00"
+   "checked_at": "2026-10-22T04:18:17+00:00"
   },
   {
    "id": "H2-0077",
@@ -244,7 +244,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:34:20+00:00"
+   "checked_at": "2026-10-22T04:18:18+00:00"
   },
   {
    "id": "H2-0146",
@@ -252,7 +252,7 @@
    "truth": "problem",
    "verdict": "CITED [CHIMERIC:author-mismatch]",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:34:22+00:00"
+   "checked_at": "2026-10-22T04:18:19+00:00"
   },
   {
    "id": "H2-0142",
@@ -260,7 +260,7 @@
    "truth": "problem",
    "verdict": "CITED [CHIMERIC:author-mismatch]",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:34:23+00:00"
+   "checked_at": "2026-10-22T04:18:21+00:00"
   },
   {
    "id": "H2-0108",
@@ -268,7 +268,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:34:24+00:00"
+   "checked_at": "2026-10-22T04:18:22+00:00"
   },
   {
    "id": "H3-0165",
@@ -276,7 +276,7 @@
    "truth": "problem",
    "verdict": "UNVERIFIED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:34:36+00:00"
+   "checked_at": "2026-10-22T04:18:35+00:00"
   },
   {
    "id": "H3-0063",
@@ -284,7 +284,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:34:37+00:00"
+   "checked_at": "2026-10-22T04:18:36+00:00"
   },
   {
    "id": "H3-0127",
@@ -292,7 +292,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:34:39+00:00"
+   "checked_at": "2026-10-22T04:18:37+00:00"
   },
   {
    "id": "H3-0118",
@@ -300,7 +300,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:34:40+00:00"
+   "checked_at": "2026-10-22T04:18:39+00:00"
   },
   {
    "id": "H3-0108",
@@ -308,7 +308,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:34:41+00:00"
+   "checked_at": "2026-10-22T04:18:40+00:00"
   },
   {
    "id": "H3-0032",
@@ -316,7 +316,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:34:43+00:00"
+   "checked_at": "2026-10-22T04:18:42+00:00"
   },
   {
    "id": "H3-0055",
@@ -324,7 +324,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:34:44+00:00"
+   "checked_at": "2026-10-22T04:18:43+00:00"
   },
   {
    "id": "H3-0068",
@@ -332,7 +332,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:34:45+00:00"
+   "checked_at": "2026-10-22T04:18:47+00:00"
   },
   {
    "id": "H3-0083",
@@ -340,7 +340,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:34:47+00:00"
+   "checked_at": "2026-10-22T04:18:49+00:00"
   },
   {
    "id": "H3-0100",
@@ -348,7 +348,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:34:48+00:00"
+   "checked_at": "2026-10-22T04:18:50+00:00"
   },
   {
    "id": "H3-0181",
@@ -356,7 +356,7 @@
    "truth": "problem",
    "verdict": "UNVERIFIED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:35:00+00:00"
+   "checked_at": "2026-10-22T04:19:01+00:00"
   },
   {
    "id": "H3-0137",
@@ -364,7 +364,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:35:01+00:00"
+   "checked_at": "2026-10-22T04:19:03+00:00"
   },
   {
    "id": "H3-0069",
@@ -372,7 +372,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:35:03+00:00"
+   "checked_at": "2026-10-22T04:19:04+00:00"
   },
   {
    "id": "H3-0167",
@@ -380,7 +380,7 @@
    "truth": "problem",
    "verdict": "UNVERIFIED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:35:08+00:00"
+   "checked_at": "2026-10-22T04:19:18+00:00"
   },
   {
    "id": "H3-0086",
@@ -388,7 +388,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:35:10+00:00"
+   "checked_at": "2026-10-22T04:19:19+00:00"
   },
   {
    "id": "H4-0019",
@@ -396,7 +396,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:35:11+00:00"
+   "checked_at": "2026-10-22T04:19:20+00:00"
   },
   {
    "id": "H4-0126",
@@ -404,7 +404,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:35:12+00:00"
+   "checked_at": "2026-10-22T04:19:21+00:00"
   },
   {
    "id": "H4-0050",
@@ -412,7 +412,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:35:14+00:00"
+   "checked_at": "2026-10-22T04:19:23+00:00"
   },
   {
    "id": "H4-0023",
@@ -420,7 +420,7 @@
    "truth": "problem",
    "verdict": "UNVERIFIED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:35:25+00:00"
+   "checked_at": "2026-10-22T04:19:35+00:00"
   },
   {
    "id": "H4-0199",
@@ -428,7 +428,7 @@
    "truth": "problem",
    "verdict": "UNVERIFIED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:35:37+00:00"
+   "checked_at": "2026-10-22T04:19:46+00:00"
   },
   {
    "id": "H4-0095",
@@ -436,7 +436,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:35:39+00:00"
+   "checked_at": "2026-10-22T04:19:47+00:00"
   },
   {
    "id": "H4-0074",
@@ -444,7 +444,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:35:40+00:00"
+   "checked_at": "2026-10-22T04:19:49+00:00"
   },
   {
    "id": "H4-0131",
@@ -452,7 +452,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:35:41+00:00"
+   "checked_at": "2026-10-22T04:19:50+00:00"
   },
   {
    "id": "H4-0013",
@@ -460,7 +460,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:35:42+00:00"
+   "checked_at": "2026-10-22T04:19:51+00:00"
   },
   {
    "id": "H4-0142",
@@ -468,7 +468,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:35:44+00:00"
+   "checked_at": "2026-10-22T04:19:53+00:00"
   },
   {
    "id": "H4-0196",
@@ -476,7 +476,7 @@
    "truth": "problem",
    "verdict": "UNVERIFIED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:35:47+00:00"
+   "checked_at": "2026-10-22T04:20:04+00:00"
   },
   {
    "id": "H4-0069",
@@ -484,7 +484,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:35:48+00:00"
+   "checked_at": "2026-10-22T04:20:05+00:00"
   },
   {
    "id": "H4-0079",
@@ -492,7 +492,7 @@
    "truth": "problem",
    "verdict": "UNVERIFIED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:36:01+00:00"
+   "checked_at": "2026-10-22T04:20:13+00:00"
   },
   {
    "id": "H4-0092",
@@ -500,7 +500,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:02+00:00"
+   "checked_at": "2026-10-22T04:20:14+00:00"
   },
   {
    "id": "H4-0020",
@@ -508,7 +508,7 @@
    "truth": "problem",
    "verdict": "UNVERIFIED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:36:06+00:00"
+   "checked_at": "2026-10-22T04:20:21+00:00"
   },
   {
    "id": "H5-0115",
@@ -516,7 +516,7 @@
    "truth": "problem",
    "verdict": "FABRICATED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:36:08+00:00"
+   "checked_at": "2026-10-22T04:20:24+00:00"
   },
   {
    "id": "H5-0025",
@@ -524,7 +524,7 @@
    "truth": "problem",
    "verdict": "FABRICATED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:36:08+00:00"
+   "checked_at": "2026-10-22T04:20:25+00:00"
   },
   {
    "id": "H5-0061",
@@ -532,7 +532,7 @@
    "truth": "problem",
    "verdict": "FABRICATED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:36:09+00:00"
+   "checked_at": "2026-10-22T04:20:26+00:00"
   },
   {
    "id": "H5-0144",
@@ -540,7 +540,7 @@
    "truth": "problem",
    "verdict": "FABRICATED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:36:10+00:00"
+   "checked_at": "2026-10-22T04:20:27+00:00"
   },
   {
    "id": "H5-0067",
@@ -548,7 +548,7 @@
    "truth": "problem",
    "verdict": "FABRICATED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:36:11+00:00"
+   "checked_at": "2026-10-22T04:20:28+00:00"
   },
   {
    "id": "H5-0005",
@@ -556,7 +556,7 @@
    "truth": "problem",
    "verdict": "FABRICATED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:36:12+00:00"
+   "checked_at": "2026-10-22T04:20:29+00:00"
   },
   {
    "id": "H5-0174",
@@ -564,7 +564,7 @@
    "truth": "problem",
    "verdict": "FABRICATED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:36:13+00:00"
+   "checked_at": "2026-10-22T04:20:29+00:00"
   },
   {
    "id": "H5-0008",
@@ -572,7 +572,7 @@
    "truth": "problem",
    "verdict": "FABRICATED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:36:14+00:00"
+   "checked_at": "2026-10-22T04:20:30+00:00"
   },
   {
    "id": "H5-0158",
@@ -580,7 +580,7 @@
    "truth": "problem",
    "verdict": "FABRICATED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:36:15+00:00"
+   "checked_at": "2026-10-22T04:20:31+00:00"
   },
   {
    "id": "H5-0079",
@@ -588,7 +588,7 @@
    "truth": "problem",
    "verdict": "FABRICATED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:36:15+00:00"
+   "checked_at": "2026-10-22T04:20:32+00:00"
   },
   {
    "id": "H5-0173",
@@ -596,7 +596,7 @@
    "truth": "problem",
    "verdict": "FABRICATED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:36:16+00:00"
+   "checked_at": "2026-10-22T04:20:33+00:00"
   },
   {
    "id": "H5-0161",
@@ -604,7 +604,7 @@
    "truth": "problem",
    "verdict": "FABRICATED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:36:17+00:00"
+   "checked_at": "2026-10-22T04:20:34+00:00"
   },
   {
    "id": "H5-0118",
@@ -612,7 +612,7 @@
    "truth": "problem",
    "verdict": "FABRICATED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:36:18+00:00"
+   "checked_at": "2026-10-22T04:20:35+00:00"
   },
   {
    "id": "H5-0048",
@@ -620,7 +620,7 @@
    "truth": "problem",
    "verdict": "FABRICATED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:36:19+00:00"
+   "checked_at": "2026-10-22T04:20:35+00:00"
   },
   {
    "id": "H5-0183",
@@ -628,7 +628,7 @@
    "truth": "problem",
    "verdict": "FABRICATED",
    "outcome": "flagged",
-   "checked_at": "2026-10-22T03:36:20+00:00"
+   "checked_at": "2026-10-22T04:20:36+00:00"
   },
   {
    "id": "H6-0062",
@@ -636,7 +636,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:21+00:00"
+   "checked_at": "2026-10-22T04:20:38+00:00"
   },
   {
    "id": "H6-0088",
@@ -644,7 +644,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:23+00:00"
+   "checked_at": "2026-10-22T04:20:39+00:00"
   },
   {
    "id": "H6-0154",
@@ -652,7 +652,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:24+00:00"
+   "checked_at": "2026-10-22T04:20:40+00:00"
   },
   {
    "id": "H6-0038",
@@ -660,7 +660,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:25+00:00"
+   "checked_at": "2026-10-22T04:20:41+00:00"
   },
   {
    "id": "H6-0133",
@@ -668,7 +668,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:26+00:00"
+   "checked_at": "2026-10-22T04:20:43+00:00"
   },
   {
    "id": "H6-0166",
@@ -676,7 +676,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:28+00:00"
+   "checked_at": "2026-10-22T04:20:44+00:00"
   },
   {
    "id": "H6-0052",
@@ -684,7 +684,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:29+00:00"
+   "checked_at": "2026-10-22T04:20:45+00:00"
   },
   {
    "id": "H6-0020",
@@ -692,7 +692,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:30+00:00"
+   "checked_at": "2026-10-22T04:20:47+00:00"
   },
   {
    "id": "H6-0014",
@@ -700,7 +700,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:31+00:00"
+   "checked_at": "2026-10-22T04:20:48+00:00"
   },
   {
    "id": "H6-0004",
@@ -708,7 +708,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:33+00:00"
+   "checked_at": "2026-10-22T04:20:49+00:00"
   },
   {
    "id": "H6-0015",
@@ -716,7 +716,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:34+00:00"
+   "checked_at": "2026-10-22T04:20:51+00:00"
   },
   {
    "id": "H6-0102",
@@ -724,7 +724,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:37+00:00"
+   "checked_at": "2026-10-22T04:20:52+00:00"
   },
   {
    "id": "H6-0003",
@@ -732,7 +732,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:38+00:00"
+   "checked_at": "2026-10-22T04:20:53+00:00"
   },
   {
    "id": "H6-0095",
@@ -740,7 +740,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:39+00:00"
+   "checked_at": "2026-10-22T04:20:54+00:00"
   },
   {
    "id": "H6-0161",
@@ -748,7 +748,7 @@
    "truth": "problem",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:41+00:00"
+   "checked_at": "2026-10-22T04:20:56+00:00"
   },
   {
    "id": "R1-0337",
@@ -756,7 +756,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:42+00:00"
+   "checked_at": "2026-10-22T04:20:57+00:00"
   },
   {
    "id": "R1-0034",
@@ -764,7 +764,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:42+00:00"
+   "checked_at": "2026-10-22T04:20:57+00:00"
   },
   {
    "id": "R1-0222",
@@ -772,7 +772,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:42+00:00"
+   "checked_at": "2026-10-22T04:20:58+00:00"
   },
   {
    "id": "R1-0160",
@@ -780,7 +780,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:43+00:00"
+   "checked_at": "2026-10-22T04:20:58+00:00"
   },
   {
    "id": "R1-0151",
@@ -788,7 +788,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:43+00:00"
+   "checked_at": "2026-10-22T04:20:58+00:00"
   },
   {
    "id": "R1-0209",
@@ -796,7 +796,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:43+00:00"
+   "checked_at": "2026-10-22T04:20:59+00:00"
   },
   {
    "id": "R1-0086",
@@ -804,7 +804,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:45+00:00"
+   "checked_at": "2026-10-22T04:21:00+00:00"
   },
   {
    "id": "R1-0030",
@@ -812,7 +812,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:46+00:00"
+   "checked_at": "2026-10-22T04:21:02+00:00"
   },
   {
    "id": "R1-0145",
@@ -820,7 +820,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:47+00:00"
+   "checked_at": "2026-10-22T04:21:03+00:00"
   },
   {
    "id": "R1-0148",
@@ -828,7 +828,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:48+00:00"
+   "checked_at": "2026-10-22T04:21:04+00:00"
   },
   {
    "id": "R1-0091",
@@ -836,7 +836,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:49+00:00"
+   "checked_at": "2026-10-22T04:21:05+00:00"
   },
   {
    "id": "R1-0297",
@@ -844,7 +844,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:49+00:00"
+   "checked_at": "2026-10-22T04:21:05+00:00"
   },
   {
    "id": "R1-0254",
@@ -852,7 +852,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:50+00:00"
+   "checked_at": "2026-10-22T04:21:06+00:00"
   },
   {
    "id": "R1-0310",
@@ -860,7 +860,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:51+00:00"
+   "checked_at": "2026-10-22T04:21:08+00:00"
   },
   {
    "id": "R1-0130",
@@ -868,7 +868,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:53+00:00"
+   "checked_at": "2026-10-22T04:21:09+00:00"
   },
   {
    "id": "R2-0053",
@@ -876,7 +876,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:54+00:00"
+   "checked_at": "2026-10-22T04:21:10+00:00"
   },
   {
    "id": "R2-0310",
@@ -884,7 +884,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:54+00:00"
+   "checked_at": "2026-10-22T04:21:10+00:00"
   },
   {
    "id": "R2-0104",
@@ -892,7 +892,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:54+00:00"
+   "checked_at": "2026-10-22T04:21:11+00:00"
   },
   {
    "id": "R2-0102",
@@ -900,7 +900,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:55+00:00"
+   "checked_at": "2026-10-22T04:21:11+00:00"
   },
   {
    "id": "R2-0346",
@@ -908,7 +908,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:55+00:00"
+   "checked_at": "2026-10-22T04:21:11+00:00"
   },
   {
    "id": "R2-0123",
@@ -916,7 +916,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:55+00:00"
+   "checked_at": "2026-10-22T04:21:12+00:00"
   },
   {
    "id": "R2-0193",
@@ -924,7 +924,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:55+00:00"
+   "checked_at": "2026-10-22T04:21:12+00:00"
   },
   {
    "id": "R2-0207",
@@ -932,7 +932,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:56+00:00"
+   "checked_at": "2026-10-22T04:21:12+00:00"
   },
   {
    "id": "R2-0228",
@@ -940,7 +940,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:56+00:00"
+   "checked_at": "2026-10-22T04:21:13+00:00"
   },
   {
    "id": "R2-0348",
@@ -948,7 +948,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:56+00:00"
+   "checked_at": "2026-10-22T04:21:13+00:00"
   },
   {
    "id": "R2-0112",
@@ -956,7 +956,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:58+00:00"
+   "checked_at": "2026-10-22T04:21:14+00:00"
   },
   {
    "id": "R2-0217",
@@ -964,7 +964,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:58+00:00"
+   "checked_at": "2026-10-22T04:21:14+00:00"
   },
   {
    "id": "R2-0269",
@@ -972,7 +972,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:36:59+00:00"
+   "checked_at": "2026-10-22T04:21:16+00:00"
   },
   {
    "id": "R2-0126",
@@ -980,7 +980,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:37:01+00:00"
+   "checked_at": "2026-10-22T04:21:18+00:00"
   },
   {
    "id": "R2-0260",
@@ -988,7 +988,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:37:01+00:00"
+   "checked_at": "2026-10-22T04:21:18+00:00"
   },
   {
    "id": "R3-0224",
@@ -996,7 +996,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:37:03+00:00"
+   "checked_at": "2026-10-22T04:21:19+00:00"
   },
   {
    "id": "R3-0326",
@@ -1004,7 +1004,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:37:03+00:00"
+   "checked_at": "2026-10-22T04:21:20+00:00"
   },
   {
    "id": "R3-0041",
@@ -1012,7 +1012,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:37:03+00:00"
+   "checked_at": "2026-10-22T04:21:20+00:00"
   },
   {
    "id": "R3-0264",
@@ -1020,7 +1020,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:37:03+00:00"
+   "checked_at": "2026-10-22T04:21:20+00:00"
   },
   {
    "id": "R3-0140",
@@ -1028,7 +1028,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:37:05+00:00"
+   "checked_at": "2026-10-22T04:21:21+00:00"
   },
   {
    "id": "R3-0083",
@@ -1036,7 +1036,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:37:05+00:00"
+   "checked_at": "2026-10-22T04:21:22+00:00"
   },
   {
    "id": "R3-0155",
@@ -1044,7 +1044,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:37:06+00:00"
+   "checked_at": "2026-10-22T04:21:23+00:00"
   },
   {
    "id": "R3-0260",
@@ -1052,7 +1052,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:37:06+00:00"
+   "checked_at": "2026-10-22T04:21:23+00:00"
   },
   {
    "id": "R3-0329",
@@ -1060,7 +1060,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:37:07+00:00"
+   "checked_at": "2026-10-22T04:21:24+00:00"
   },
   {
    "id": "R3-0287",
@@ -1068,7 +1068,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:37:08+00:00"
+   "checked_at": "2026-10-22T04:21:25+00:00"
   },
   {
    "id": "R3-0075",
@@ -1076,7 +1076,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:37:08+00:00"
+   "checked_at": "2026-10-22T04:21:25+00:00"
   },
   {
    "id": "R3-0170",
@@ -1084,7 +1084,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:37:20+00:00"
+   "checked_at": "2026-10-22T04:21:27+00:00"
   },
   {
    "id": "R3-0012",
@@ -1092,7 +1092,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:37:22+00:00"
+   "checked_at": "2026-10-22T04:21:28+00:00"
   },
   {
    "id": "R3-0018",
@@ -1100,7 +1100,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:37:23+00:00"
+   "checked_at": "2026-10-22T04:21:30+00:00"
   },
   {
    "id": "R3-0128",
@@ -1108,7 +1108,7 @@
    "truth": "ok",
    "verdict": "CITED",
    "outcome": "not_flagged",
-   "checked_at": "2026-10-22T03:37:24+00:00"
+   "checked_at": "2026-10-22T04:21:31+00:00"
   }
  ]
 }

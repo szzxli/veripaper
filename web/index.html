@@ -218,6 +218,7 @@ details.fold section.side{padding:26px 0 4px}
   <div class="sec-head"><span class="sec-no">§3</span><h2>Accuracy</h2></div>
   <p class="sec-lede">Measured, not promised. Every number is generated from published result files, misses and false alarms included.</p>
   <div class="toolcard" style="padding:18px 20px">
+<!-- SAMPLES34:BEGIN -->
     <p class="hint" style="margin:0 0 8px"><b>Our labelled set: 34 samples</b> — web app, no key, keyless check on (run 2026-10-21).</p>
     <div class="acc-wrap"><table class="acc">
       <thead><tr><th>Category</th><th>n</th><th>Caught</th><th>Misses</th><th>False alarms</th></tr></thead>
@@ -229,8 +230,9 @@ details.fold section.side{padding:26px 0 4px}
         <tr><td>Specific not in abstract*</td><td>6</td><td>6/6</td><td>0</td><td>—</td></tr>
       </tbody>
     </table></div>
+<!-- SAMPLES34:END -->
 <!-- PUBLIC:BEGIN -->
-    <p class="hint" style="margin:14px 0 8px"><b>Public third-party datasets</b> — existence / metadata level, same web pipeline, run 2026-10-21. Recall = problem references flagged; false alarms = real references flagged (rate-limited items left out).</p>
+    <p class="hint" style="margin:14px 0 8px"><b>Public third-party datasets</b> — existence / metadata level, same web pipeline, run 2026-10-21. Recall = problem references flagged; false alarms = real references flagged (not-checked items — rate-limited or unreachable — left out).</p>
     <div class="acc-wrap"><table class="acc">
       <thead><tr><th>Dataset (licence)</th><th>n</th><th>Recall</th><th>False alarms</th><th>Not checked</th></tr></thead>
       <tbody>
@@ -274,7 +276,7 @@ details.fold section.side{padding:26px 0 4px}
     <dt><span class="label l-unverified">FABRICATED</span></dt>
     <dd>An explicit identifier (DOI / arXiv ID) checked against its registry and found not to exist — fabricated or mistyped. Absence of evidence is UNVERIFIED; this is evidence of absence.</dd>
     <dt><span class="label l-stale">RATE_LIMITED</span></dt>
-    <dd>Sources were rate-limited while checking — not checked, <i>not</i> proven fake. A limit is never presented as a fabrication.</dd>
+    <dd>Sources were rate-limited or could not be reached (offline, blocked, server error) while checking — not checked, <i>not</i> proven fake. A limit or a network failure is never presented as a fabrication.</dd>
     <dt><span class="label l-stale">[STALE:YYYY]</span> <span class="label l-unverified">[CHIMERIC:author-mismatch]</span> <span class="label l-unverified">[RETRACTED]</span></dt>
     <dd>Tags, not labels: stale data, a real title carrying the wrong authors, a retracted paper. A retracted paper can never be ABSTRACT-SUPPORTED.</dd>
     <dt><span class="label l-stale">[SPECIFIC-NOT-IN-ABSTRACT]</span> <span class="label l-unverified">[POSSIBLE-MISATTRIBUTION]</span></dt>
@@ -498,11 +500,28 @@ function busy(b){ $btn.disabled = b; $btn.textContent = b ? 'Checking…' : 'Ver
 
 const RETR_RE = /^\s*(retracted|withdrawn)\s*:/i;
 
+/* A registry answers with a record, a genuine "not found" (HTTP 404, or an
+ * empty search result) — or it fails: {limited} for 429 / 503, {unavailable}
+ * for anything else (offline, CORS, timeout, other HTTP status, unreadable
+ * body). Only "not found" from every registry may read as FABRICATED; a
+ * failure is "not checked". */
+const unavailable = why => ({ unavailable: true, why: why || 'request failed' });
+async function getJson(url, init){
+  let r;
+  try{ r = await fetch(url, init); }catch(e){ return { fail: unavailable('network error') }; }
+  if(r.status === 404) return { miss: true };
+  if(r.status === 429 || r.status === 503) return { fail: { limited: true, why: 'HTTP ' + r.status } };
+  if(!r.ok) return { fail: unavailable('HTTP ' + r.status) };
+  try{ return { json: await r.json() }; }catch(e){ return { fail: unavailable('unreadable response') }; }
+}
+
 async function checkCrossRef(doi){
-  const r = await fetch('https://api.crossref.org/works/' + encodeURIComponent(doi), {
+  const g = await getJson('https://api.crossref.org/works/' + encodeURIComponent(doi), {
     headers: { 'Accept': 'application/json' } });
-  if(!r.ok) return r.status === 429 ? {limited:true} : null;
-  const m = (await r.json()).message;
+  if(g.miss) return null;
+  if(g.fail) return g.fail;
+  const m = (g.json||{}).message;
+  if(!m) return unavailable('unexpected response');
   const yr = (m['published-print']||m['published-online']||m.created||{})['date-parts'];
   const title = (m.title||['(no title)'])[0];
   return {
@@ -517,6 +536,7 @@ async function checkCrossRef(doi){
 async function checkArxiv(id){
   const base = id.replace(/v\d+$/i,'');
   const via = await checkDataCite('10.48550/arXiv.' + base);
+  if(via && (via.limited || via.unavailable)) return via;   // could not ask DataCite: not checked
   if(via) return {...via, venue: 'arXiv preprint'};
   try{
     const r = await fetch('https://export.arxiv.org/api/query?id_list=' + encodeURIComponent(id));
@@ -538,10 +558,12 @@ async function checkArxiv(id){
   }
 }
 async function checkDataCite(doi){
-  const r = await fetch('https://api.datacite.org/dois/' + encodeURIComponent(doi), {
+  const g = await getJson('https://api.datacite.org/dois/' + encodeURIComponent(doi), {
     headers: { 'Accept': 'application/vnd.api+json' } });
-  if(!r.ok) return r.status === 429 ? {limited:true} : null;
-  const a = (await r.json()).data.attributes;
+  if(g.miss) return null;
+  if(g.fail) return g.fail;
+  const a = ((g.json||{}).data||{}).attributes;
+  if(!a) return unavailable('unexpected response');
   const dcTitle = ((a.titles||[])[0]||{}).title || '(no title)';
   return {
     title: dcTitle,
@@ -553,11 +575,14 @@ async function checkDataCite(doi){
   };
 }
 async function checkEuropePMC(doi){
-  const r = await fetch('https://www.ebi.ac.uk/europepmc/webservices/rest/search?' + new URLSearchParams({
+  const g = await getJson('https://www.ebi.ac.uk/europepmc/webservices/rest/search?' + new URLSearchParams({
     query: 'DOI:"' + doi + '"', format: 'json', resultType: 'core', pageSize: '1' }));
-  if(!r.ok) return r.status === 429 ? {limited:true} : null;
-  const res = (((await r.json()).resultList||{}).result||[]);
-  if(!res.length) return null;
+  if(g.miss) return null;
+  if(g.fail) return g.fail;
+  const rl = (g.json||{}).resultList;
+  if(!rl || !Array.isArray(rl.result)) return unavailable('unexpected response');
+  const res = rl.result;
+  if(!res.length) return null;   // the search answered: no record with this DOI
   const p = res[0];
   const epmcTitle = p.title || '(no title)';
   return {
@@ -577,18 +602,27 @@ async function verify(){
   try{
     const doi = raw.replace(/^https?:\/\/(dx\.)?doi\.org\//i,'').replace(/^arxiv:/i,'').trim();
     const isArxiv = /^(\d{4}\.\d{4,5}(v\d+)?|[a-z-]+\/\d{7}(v\d+)?)$/i.test(doi);
-    let limited = false;
-    const wrapLimited = async (fn) => { const m = await fn(); if(m && m.limited){ limited = true; return null; } return m; };
+    const failed = [];
+    const tryOne = async (name, fn) => {
+      let m;
+      try{ m = await fn(); }
+      catch(e){ if(e && /^arxiv-/.test(e.message || '')) throw e; m = unavailable('unexpected response'); }
+      if(m && (m.limited || m.unavailable)){ failed.push({ name, limited: !!m.limited, why: m.why || '' }); return null; }
+      return m;
+    };
     const meta = isArxiv
-      ? await wrapLimited(() => checkArxiv(doi))
-      : (await wrapLimited(() => checkCrossRef(doi)) || await wrapLimited(() => checkDataCite(doi)) || await wrapLimited(() => checkEuropePMC(doi)));
+      ? await tryOne('DataCite/arXiv', () => checkArxiv(doi))
+      : (await tryOne('Crossref', () => checkCrossRef(doi)) || await tryOne('DataCite', () => checkDataCite(doi)) || await tryOne('Europe PMC', () => checkEuropePMC(doi)));
     if(meta){
       const retr = meta.retracted ? `<br><span class="label l-unverified">RETRACTED</span> <b style="color:var(--crimson)">This paper has been retracted — do not cite it as support.</b><br>` : '';
       show(`<span class="label l-cited">CITED</span><b>Source exists.</b> Content support not yet checked — this is honest downgrade, not verification.${retr}<br>
         <b>${esc(meta.title)}</b><br>
         <span style="color:var(--ink-soft)">${esc(meta.authors)}${meta.year?' · '+esc(meta.year):''}${meta.venue?' · <i>'+esc(meta.venue)+'</i>':''}</span>`);
-    }else if(limited){
+    }else if(failed.length && failed.every(f => f.limited)){
       show(`<span class="label l-stale">RATE_LIMITED</span><b>Sources were rate-limited (HTTP 429).</b> Not checked — NOT proven fake. Wait a minute and retry.`);
+    }else if(failed.length){
+      const which = failed.map(f => f.name + (f.why ? ' (' + f.why + ')' : '')).join(', ');
+      show(`<span class="label l-stale">RATE_LIMITED</span><b>Could not reach the registries</b> — ${esc(which)}. Not checked: could not verify, NOT proven fake. Check your connection and retry.`);
     }else{
       show(`<span class="label l-unverified">FABRICATED</span><b>No record in any registry.</b> This ${isArxiv ? 'arXiv ID' : 'DOI'} does not exist — fabricated or mistyped; do not cite it.`);
     }
@@ -598,7 +632,7 @@ async function verify(){
     }else if(err && err.message === 'arxiv-cors'){
       show('<p style="color:#96690f">arXiv blocks direct browser queries and no DataCite record was found — try the paper\'s DOI form (10.48550/arXiv.…) instead.</p>');
     }else{
-      show('<p style="color:var(--crimson)">Network error — check your connection and try again.</p>');
+      show('<p style="color:#96690f"><b>Network error</b> — not checked, NOT proven fake. Check your connection and try again.</p>');
     }
   }
   busy(false);

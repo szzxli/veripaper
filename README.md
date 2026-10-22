@@ -178,10 +178,14 @@ jitter on HTTP 429/503 that honours `Retry-After` (seconds or HTTP-date), and
 a per-host cooldown: when a source says "come back in 30 minutes" the app
 does not wait — it skips that source and moves on. Results are cached in
 `localStorage` (metadata 7 days, abstracts and judgments 30 days; rate-limited
-results are never cached). A reference entry without DOI is labelled
-`RATE_LIMITED` only when fewer than two indexes could answer; if two or more
-answered "no match", it is `UNVERIFIED` and the note names the sources that
-were rate-limited. Keyless OpenAlex search shares a small daily budget per IP
+or not-checked results are never cached). A failed request — offline, CORS,
+timeout, HTTP 5xx, an unreadable answer — is "not checked", never "not
+found": only a genuine 404 or an empty search result counts as a miss, so a
+network failure can never make a reference `FABRICATED`; it shows as
+`RATE_LIMITED` (not checked) with the failing sources named. A reference
+entry without DOI is labelled `RATE_LIMITED` only when fewer than two indexes
+could answer; if two or more answered "no match", it is `UNVERIFIED` and the
+note names the sources that were rate-limited or unreachable. Keyless OpenAlex search shares a small daily budget per IP
 address (the `mailto` parameter does not raise it), which matters on shared
 networks.
 
