@@ -128,8 +128,11 @@ const okResp = (status, retryAfter) => ({
     const runCache = new Map();
     const res = { doi: '10.1/dup', arxiv_id: null };
     const a1 = await sb.fetchAbstract(res, runCache);
+    const afterFirst = netCalls;
     const a2 = await sb.fetchAbstract(res, runCache);
-    ok('same DOI fetched once per run', netCalls === 1 && a1 === a2, 'netCalls=' + netCalls);
+    // the first lookup may walk several free sources before one has the
+    // abstract; the second citation of the same paper must cost nothing
+    ok('same DOI fetched once per run', afterFirst >= 1 && netCalls === afterFirst && a1 === a2, 'netCalls=' + netCalls);
   }
 
   console.log('— ABSTRACT-SUPPORTED end to end —');

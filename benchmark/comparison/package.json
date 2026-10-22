@@ -1,0 +1,9 @@
+{
+  "name": "veripaper-benchmark-web-runner",
+  "private": true,
+  "description": "Node runner for the in-browser pipeline (web/ground.js) incl. the keyless NLI model",
+  "type": "module",
+  "dependencies": {
+    "@huggingface/transformers": "4.3.1"
+  }
+}

@@ -8,8 +8,8 @@ specific-not-in-abstract.
 
 - `METHOD.md` — construction, tools, configurations, pre-registered
   scoring rules, limitations
-- `RESULTS.md` — the 2026-10-20 scored runs (veripaper + RefExists),
-  including every miss, false alarm and inconclusive sample
+- `RESULTS.md` — superseded; points to `COMPARISON.md` (the 2026-10-20
+  first run is kept in git history)
 - `samples.json` — the sample set (drafts, bibliography-form strings,
   per-sample ground truth and its basis)
 - `build_samples.py` — rebuilds the set, re-verifying ground truth live;
@@ -19,10 +19,14 @@ specific-not-in-abstract.
   retries for rate-limited / error samples)
 - `results_veripaper.json` / `results_refexists.json` — raw per-sample
   outputs, all attempts preserved
-- `COMPARISON.md` — **comparative run (2026-10-21)**: veripaper vs.
+- `COMPARISON.md` — **latest results**: the web app before/after the
+  free-fallback + keyless claim-check change (2026-10-21), and the
+  comparative run: veripaper vs.
   RefExists, citegate and refchecker on the same samples, plus what was not
   tested and why; runners, raw results and generated tables in
-  `comparison/`, the BibTeX form of the samples in `samples.bib`
+  `comparison/` (`comparison/run_veripaper_web.mjs` runs the web app's
+  `ground.js` in Node, keyless model included), the BibTeX form of the
+  samples in `samples.bib`
 
 First-party constructed and published with its misses visible — see the
 honesty statement in `METHOD.md`. Independent re-runs are the point;

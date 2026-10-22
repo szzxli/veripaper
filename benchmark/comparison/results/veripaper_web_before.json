@@ -1,0 +1,469 @@
+{
+  "tool": "veripaper (web pipeline web/ground.js, no LLM key; this version has no keyless model)",
+  "source": "web/ground.js @ main b4bb41a (git show main:web/ground.js), unmodified",
+  "commit": "b4bb41a (main, before this change)",
+  "nli_model": null,
+  "input": "samples.json `draft`",
+  "runtime": "Node v20.19.2, fresh vm context + empty cache per sample",
+  "run_finished_at": "2026-10-21T23:51:26+00:00",
+  "results": [
+    {
+      "id": "real-01",
+      "category": "real",
+      "subtype": "doi-in-text",
+      "verdict": "CITED [STALE:2016]",
+      "base_label": "CITED",
+      "note": "heuristic: strong keyword overlap (57% of claim keywords appear in the abstract) — a number, not a verdict; author decides (add an OpenRouter key above for a real content judgment)",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T23:40:52+00:00"
+    },
+    {
+      "id": "real-02",
+      "category": "real",
+      "subtype": "arxiv-in-text",
+      "verdict": "CITED",
+      "base_label": "CITED",
+      "note": "heuristic: strong keyword overlap (50% of claim keywords appear in the abstract) — a number, not a verdict; author decides (add an OpenRouter key above for a real content judgment)",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T23:40:53+00:00"
+    },
+    {
+      "id": "real-03",
+      "category": "real",
+      "subtype": "arxiv-in-text",
+      "verdict": "CITED",
+      "base_label": "CITED",
+      "note": "heuristic: strong keyword overlap (81% of claim keywords appear in the abstract) — a number, not a verdict; author decides (add an OpenRouter key above for a real content judgment)",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T23:40:54+00:00"
+    },
+    {
+      "id": "real-04",
+      "category": "real",
+      "subtype": "reference-entry-with-doi",
+      "verdict": "CITED",
+      "base_label": "CITED",
+      "note": "heuristic: partial keyword overlap (38% of claim keywords appear in the abstract) — a number, not a verdict; author decides (add an OpenRouter key above for a real content judgment)",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T23:40:55+00:00"
+    },
+    {
+      "id": "real-05",
+      "category": "real",
+      "subtype": "reference-entry-no-id",
+      "verdict": "UNVERIFIED",
+      "base_label": "UNVERIFIED",
+      "note": "reference-list: reference entry has no DOI/arXiv ID and no confident bibliographic match",
+      "outcome": "false-alarm",
+      "checked_at": "2026-10-21T23:45:10+00:00",
+      "attempts": [
+        {
+          "id": "real-05",
+          "category": "real",
+          "subtype": "reference-entry-no-id",
+          "verdict": "RATE_LIMITED",
+          "base_label": "RATE_LIMITED",
+          "note": "source(s) rate-limited (HTTP 429) while checking — not checked, NOT proven fake. Try again later.",
+          "outcome": "inconclusive",
+          "checked_at": "2026-10-21T23:41:05+00:00"
+        },
+        {
+          "id": "real-05",
+          "category": "real",
+          "subtype": "reference-entry-no-id",
+          "verdict": "UNVERIFIED",
+          "base_label": "UNVERIFIED",
+          "note": "reference-list: reference entry has no DOI/arXiv ID and no confident bibliographic match",
+          "outcome": "false-alarm",
+          "checked_at": "2026-10-21T23:45:10+00:00"
+        }
+      ]
+    },
+    {
+      "id": "real-06",
+      "category": "real",
+      "subtype": "doi-in-text",
+      "verdict": "CITED",
+      "base_label": "CITED",
+      "note": "no LLM key provided — support not checked (add an OpenRouter key above for content judgment)",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T23:41:16+00:00"
+    },
+    {
+      "id": "real-07",
+      "category": "real",
+      "subtype": "arxiv-in-text",
+      "verdict": "CITED",
+      "base_label": "CITED",
+      "note": "heuristic: strong keyword overlap (81% of claim keywords appear in the abstract) — a number, not a verdict; author decides (add an OpenRouter key above for a real content judgment)",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T23:41:17+00:00"
+    },
+    {
+      "id": "real-08",
+      "category": "real",
+      "subtype": "reference-entry-with-arxiv",
+      "verdict": "CITED",
+      "base_label": "CITED",
+      "note": "heuristic: strong keyword overlap (57% of claim keywords appear in the abstract) — a number, not a verdict; author decides (add an OpenRouter key above for a real content judgment)",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T23:41:18+00:00"
+    },
+    {
+      "id": "fab-01",
+      "category": "fabricated",
+      "subtype": "fabricated-doi",
+      "verdict": "FABRICATED",
+      "base_label": "FABRICATED",
+      "note": "DOI 10.1038/s41586-024-99999-9 checked against its registry and does not exist — fabricated or mistyped; do not cite.",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T23:41:19+00:00"
+    },
+    {
+      "id": "fab-02",
+      "category": "fabricated",
+      "subtype": "fabricated-doi",
+      "verdict": "FABRICATED",
+      "base_label": "FABRICATED",
+      "note": "DOI 10.1126/science.adq9999 checked against its registry and does not exist — fabricated or mistyped; do not cite.",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T23:41:20+00:00"
+    },
+    {
+      "id": "fab-03",
+      "category": "fabricated",
+      "subtype": "fabricated-arxiv",
+      "verdict": "FABRICATED",
+      "base_label": "FABRICATED",
+      "note": "DOI 10.48550/arXiv.2406.99999 checked against its registry and does not exist — fabricated or mistyped; do not cite.",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T23:41:21+00:00"
+    },
+    {
+      "id": "fab-04",
+      "category": "fabricated",
+      "subtype": "fabricated-doi",
+      "verdict": "FABRICATED",
+      "base_label": "FABRICATED",
+      "note": "DOI 10.1109/CVPR.2024.99999 checked against its registry and does not exist — fabricated or mistyped; do not cite.",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T23:41:21+00:00"
+    },
+    {
+      "id": "fab-05",
+      "category": "fabricated",
+      "subtype": "fabricated-arxiv",
+      "verdict": "FABRICATED",
+      "base_label": "FABRICATED",
+      "note": "DOI 10.48550/arXiv.2302.99998 checked against its registry and does not exist — fabricated or mistyped; do not cite.",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T23:41:22+00:00"
+    },
+    {
+      "id": "fab-06",
+      "category": "fabricated",
+      "subtype": "fabricated-entry-no-id",
+      "verdict": "UNVERIFIED",
+      "base_label": "UNVERIFIED",
+      "note": "reference-list: reference entry has no DOI/arXiv ID and no confident bibliographic match",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T23:41:28+00:00"
+    },
+    {
+      "id": "fab-07",
+      "category": "fabricated",
+      "subtype": "fabricated-entry-no-id",
+      "verdict": "UNVERIFIED",
+      "base_label": "UNVERIFIED",
+      "note": "reference-list: reference entry has no DOI/arXiv ID and no confident bibliographic match",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T23:41:34+00:00"
+    },
+    {
+      "id": "fab-08",
+      "category": "fabricated",
+      "subtype": "fabricated-entry-no-id",
+      "verdict": "RATE_LIMITED",
+      "base_label": "RATE_LIMITED",
+      "note": "source(s) rate-limited (HTTP 429) while checking — not checked, NOT proven fake. Try again later.",
+      "outcome": "inconclusive",
+      "checked_at": "2026-10-21T23:51:05+00:00",
+      "attempts": [
+        {
+          "id": "fab-08",
+          "category": "fabricated",
+          "subtype": "fabricated-entry-no-id",
+          "verdict": "RATE_LIMITED",
+          "base_label": "RATE_LIMITED",
+          "note": "source(s) rate-limited (HTTP 429) while checking — not checked, NOT proven fake. Try again later.",
+          "outcome": "inconclusive",
+          "checked_at": "2026-10-21T23:41:45+00:00"
+        },
+        {
+          "id": "fab-08",
+          "category": "fabricated",
+          "subtype": "fabricated-entry-no-id",
+          "verdict": "RATE_LIMITED",
+          "base_label": "RATE_LIMITED",
+          "note": "source(s) rate-limited (HTTP 429) while checking — not checked, NOT proven fake. Try again later.",
+          "outcome": "inconclusive",
+          "checked_at": "2026-10-21T23:45:20+00:00"
+        },
+        {
+          "id": "fab-08",
+          "category": "fabricated",
+          "subtype": "fabricated-entry-no-id",
+          "verdict": "RATE_LIMITED",
+          "base_label": "RATE_LIMITED",
+          "note": "source(s) rate-limited (HTTP 429) while checking — not checked, NOT proven fake. Try again later.",
+          "outcome": "inconclusive",
+          "checked_at": "2026-10-21T23:51:05+00:00"
+        }
+      ]
+    },
+    {
+      "id": "chim-01",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "verdict": "RATE_LIMITED",
+      "base_label": "RATE_LIMITED",
+      "note": "source(s) rate-limited (HTTP 429) while checking — not checked, NOT proven fake. Try again later.",
+      "outcome": "inconclusive",
+      "checked_at": "2026-10-21T23:51:16+00:00",
+      "attempts": [
+        {
+          "id": "chim-01",
+          "category": "chimeric",
+          "subtype": "reference-entry",
+          "verdict": "RATE_LIMITED",
+          "base_label": "RATE_LIMITED",
+          "note": "source(s) rate-limited (HTTP 429) while checking — not checked, NOT proven fake. Try again later.",
+          "outcome": "inconclusive",
+          "checked_at": "2026-10-21T23:41:56+00:00"
+        },
+        {
+          "id": "chim-01",
+          "category": "chimeric",
+          "subtype": "reference-entry",
+          "verdict": "RATE_LIMITED",
+          "base_label": "RATE_LIMITED",
+          "note": "source(s) rate-limited (HTTP 429) while checking — not checked, NOT proven fake. Try again later.",
+          "outcome": "inconclusive",
+          "checked_at": "2026-10-21T23:45:31+00:00"
+        },
+        {
+          "id": "chim-01",
+          "category": "chimeric",
+          "subtype": "reference-entry",
+          "verdict": "RATE_LIMITED",
+          "base_label": "RATE_LIMITED",
+          "note": "source(s) rate-limited (HTTP 429) while checking — not checked, NOT proven fake. Try again later.",
+          "outcome": "inconclusive",
+          "checked_at": "2026-10-21T23:51:16+00:00"
+        }
+      ]
+    },
+    {
+      "id": "chim-02",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "verdict": "CITED [CHIMERIC:author-mismatch]",
+      "base_label": "CITED",
+      "note": "CHIMERIC citation: the title matches a real paper but the listed authors do not — no LLM key provided — support not checked (add an OpenRouter key above for content judgment)",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T23:42:07+00:00"
+    },
+    {
+      "id": "chim-03",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "verdict": "CITED [CHIMERIC:author-mismatch]",
+      "base_label": "CITED",
+      "note": "CHIMERIC citation: the title matches a real paper but the listed authors do not — heuristic: strong keyword overlap (57% of claim keywords appear in the abstract) — a number, not a verdict; author decides (add an OpenRouter key above for a real content judgment)",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T23:42:09+00:00"
+    },
+    {
+      "id": "chim-04",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "verdict": "CITED [CHIMERIC:author-mismatch]",
+      "base_label": "CITED",
+      "note": "CHIMERIC citation: the title matches a real paper but the listed authors do not — no LLM key provided — support not checked (add an OpenRouter key above for content judgment)",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T23:42:19+00:00"
+    },
+    {
+      "id": "chim-05",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "verdict": "UNVERIFIED",
+      "base_label": "UNVERIFIED",
+      "note": "reference-list: reference entry has no DOI/arXiv ID and no confident bibliographic match",
+      "outcome": "miss",
+      "checked_at": "2026-10-21T23:42:23+00:00"
+    },
+    {
+      "id": "chim-06",
+      "category": "chimeric",
+      "subtype": "reference-entry",
+      "verdict": "RATE_LIMITED",
+      "base_label": "RATE_LIMITED",
+      "note": "source(s) rate-limited (HTTP 429) while checking — not checked, NOT proven fake. Try again later.",
+      "outcome": "inconclusive",
+      "checked_at": "2026-10-21T23:51:26+00:00",
+      "attempts": [
+        {
+          "id": "chim-06",
+          "category": "chimeric",
+          "subtype": "reference-entry",
+          "verdict": "RATE_LIMITED",
+          "base_label": "RATE_LIMITED",
+          "note": "source(s) rate-limited (HTTP 429) while checking — not checked, NOT proven fake. Try again later.",
+          "outcome": "inconclusive",
+          "checked_at": "2026-10-21T23:42:34+00:00"
+        },
+        {
+          "id": "chim-06",
+          "category": "chimeric",
+          "subtype": "reference-entry",
+          "verdict": "RATE_LIMITED",
+          "base_label": "RATE_LIMITED",
+          "note": "source(s) rate-limited (HTTP 429) while checking — not checked, NOT proven fake. Try again later.",
+          "outcome": "inconclusive",
+          "checked_at": "2026-10-21T23:45:41+00:00"
+        },
+        {
+          "id": "chim-06",
+          "category": "chimeric",
+          "subtype": "reference-entry",
+          "verdict": "RATE_LIMITED",
+          "base_label": "RATE_LIMITED",
+          "note": "source(s) rate-limited (HTTP 429) while checking — not checked, NOT proven fake. Try again later.",
+          "outcome": "inconclusive",
+          "checked_at": "2026-10-21T23:51:26+00:00"
+        }
+      ]
+    },
+    {
+      "id": "retr-01",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "verdict": "CITED [RETRACTED]",
+      "base_label": "CITED",
+      "note": "RETRACTED paper — do not cite it as support. heuristic: strong keyword overlap (50% of claim keywords appear in the abstract) — a number, not a verdict; author decides (add an OpenRouter key above for a real content judgment)",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T23:42:45+00:00"
+    },
+    {
+      "id": "retr-02",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "verdict": "CITED [RETRACTED]",
+      "base_label": "CITED",
+      "note": "RETRACTED paper — do not cite it as support. heuristic: strong keyword overlap (50% of claim keywords appear in the abstract) — a number, not a verdict; author decides (add an OpenRouter key above for a real content judgment)",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T23:42:45+00:00"
+    },
+    {
+      "id": "retr-03",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "verdict": "CITED [RETRACTED]",
+      "base_label": "CITED",
+      "note": "RETRACTED paper — do not cite it as support. heuristic: strong keyword overlap (58% of claim keywords appear in the abstract) — a number, not a verdict; author decides (add an OpenRouter key above for a real content judgment)",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T23:42:55+00:00"
+    },
+    {
+      "id": "retr-04",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "verdict": "CITED [RETRACTED]",
+      "base_label": "CITED",
+      "note": "RETRACTED paper — do not cite it as support. heuristic: partial keyword overlap (40% of claim keywords appear in the abstract) — a number, not a verdict; author decides (add an OpenRouter key above for a real content judgment)",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T23:43:07+00:00"
+    },
+    {
+      "id": "retr-05",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "verdict": "CITED [RETRACTED]",
+      "base_label": "CITED",
+      "note": "RETRACTED paper — do not cite it as support. heuristic: partial keyword overlap (40% of claim keywords appear in the abstract) — a number, not a verdict; author decides (add an OpenRouter key above for a real content judgment)",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T23:43:13+00:00"
+    },
+    {
+      "id": "retr-06",
+      "category": "retracted",
+      "subtype": "doi-in-text",
+      "verdict": "CITED [RETRACTED]",
+      "base_label": "CITED",
+      "note": "RETRACTED paper — do not cite it as support. heuristic: strong keyword overlap (67% of claim keywords appear in the abstract) — a number, not a verdict; author decides (add an OpenRouter key above for a real content judgment)",
+      "outcome": "pass",
+      "checked_at": "2026-10-21T23:43:19+00:00"
+    },
+    {
+      "id": "spec-01",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "verdict": "CITED",
+      "base_label": "CITED",
+      "note": "heuristic: partial keyword overlap (40% of claim keywords appear in the abstract) — a number, not a verdict; author decides (add an OpenRouter key above for a real content judgment)",
+      "outcome": "miss",
+      "checked_at": "2026-10-21T23:43:21+00:00"
+    },
+    {
+      "id": "spec-02",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "verdict": "CITED [STALE:2016]",
+      "base_label": "CITED",
+      "note": "no LLM key provided — support not checked (add an OpenRouter key above for content judgment)",
+      "outcome": "miss",
+      "checked_at": "2026-10-21T23:43:32+00:00"
+    },
+    {
+      "id": "spec-03",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "verdict": "CITED",
+      "base_label": "CITED",
+      "note": "heuristic: strong keyword overlap (45% of claim keywords appear in the abstract) — a number, not a verdict; author decides (add an OpenRouter key above for a real content judgment)",
+      "outcome": "miss",
+      "checked_at": "2026-10-21T23:43:33+00:00"
+    },
+    {
+      "id": "spec-04",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "verdict": "CITED [STALE:2006]",
+      "base_label": "CITED",
+      "note": "heuristic: weak keyword overlap (9% of claim keywords appear in the abstract) — a number, not a verdict; author decides (add an OpenRouter key above for a real content judgment)",
+      "outcome": "miss",
+      "checked_at": "2026-10-21T23:43:34+00:00"
+    },
+    {
+      "id": "spec-05",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "verdict": "CITED",
+      "base_label": "CITED",
+      "note": "heuristic: partial keyword overlap (36% of claim keywords appear in the abstract) — a number, not a verdict; author decides (add an OpenRouter key above for a real content judgment)",
+      "outcome": "miss",
+      "checked_at": "2026-10-21T23:43:35+00:00"
+    },
+    {
+      "id": "spec-06",
+      "category": "specific-not-in-abstract",
+      "subtype": "claim-specific-absent-from-abstract",
+      "verdict": "CITED",
+      "base_label": "CITED",
+      "note": "heuristic: weak keyword overlap (10% of claim keywords appear in the abstract) — a number, not a verdict; author decides (add an OpenRouter key above for a real content judgment)",
+      "outcome": "miss",
+      "checked_at": "2026-10-21T23:43:35+00:00"
+    }
+  ]
+}

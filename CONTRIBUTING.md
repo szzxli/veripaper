@@ -14,3 +14,15 @@
 ## Roadmap
 
 See README. v0.1 starts with evidence grounding — nail the single point before expanding.
+
+## Tests (there is no CI — run them locally before a PR)
+
+```bash
+for f in web/tests/*.js; do node "$f" || exit 1; done   # web app (no network; fetch is mocked)
+python3 -m pytest -q tests                              # Python pipeline
+```
+
+`web/tests/fallbacks.js` covers the request queue (backoff, `Retry-After`,
+cooldown), the free lookup fallbacks and the cache; `web/tests/keyless.js`
+covers the keyless claim check with a stubbed model (the real model is only
+downloaded by the browser, or by `benchmark/comparison/run_veripaper_web.mjs`).
