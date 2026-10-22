@@ -216,7 +216,7 @@ def homepage_block(all_rows):
                 "not check venue, pages or partly wrong author lists. ")
     return ("    <p class=\"hint\" style=\"margin:14px 0 8px\"><b>Public third-party datasets</b> — existence / metadata level, "
             "same web pipeline, run 2026-10-21. Recall = problem references flagged; false alarms = real references flagged "
-            "(rate-limited items left out).</p>\n"
+            "(not-checked items — rate-limited or unreachable — left out).</p>\n"
             "    <div class=\"acc-wrap\"><table class=\"acc\">\n"
             "      <thead><tr><th>Dataset (licence)</th><th>n</th><th>Recall</th><th>False alarms</th><th>Not checked</th></tr></thead>\n"
             "      <tbody>\n" + "\n".join(tr) + "\n      </tbody>\n    </table></div>\n"

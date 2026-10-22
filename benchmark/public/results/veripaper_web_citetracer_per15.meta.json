@@ -1,6 +1,6 @@
 {
   "tool": "veripaper web pipeline (web/bibtex.js + web/ground.js), groundDraft bibMode, no LLM key",
-  "commit": "eba375bda6b25263790d699863b0488594495b6b",
+  "commit": "d8eab718592b2e1e5ea0fb221c3dce2af4c347cb",
   "dataset": "citetracer",
   "population": 2179,
   "sample": "stratified random, 15 per stratum, mulberry32 seed 20261021",
@@ -142,5 +142,5 @@
     "R3-0128"
   ],
   "runtime": "Node v20.19.2, fresh vm context + empty cache per item",
-  "started_at": "2026-10-22T03:31:22+00:00"
+  "started_at": "2026-10-22T04:15:27+00:00"
 }

@@ -218,6 +218,7 @@ details.fold section.side{padding:26px 0 4px}
   <div class="sec-head"><span class="sec-no">§3</span><h2>Accuracy</h2></div>
   <p class="sec-lede">Measured, not promised. Every number is generated from published result files, misses and false alarms included.</p>
   <div class="toolcard" style="padding:18px 20px">
+<!-- SAMPLES34:BEGIN -->
     <p class="hint" style="margin:0 0 8px"><b>Our labelled set: 34 samples</b> — web app, no key, keyless check on (run 2026-10-21).</p>
     <div class="acc-wrap"><table class="acc">
       <thead><tr><th>Category</th><th>n</th><th>Caught</th><th>Misses</th><th>False alarms</th></tr></thead>
@@ -229,8 +230,9 @@ details.fold section.side{padding:26px 0 4px}
         <tr><td>Specific not in abstract*</td><td>6</td><td>6/6</td><td>0</td><td>—</td></tr>
       </tbody>
     </table></div>
+<!-- SAMPLES34:END -->
 <!-- PUBLIC:BEGIN -->
-    <p class="hint" style="margin:14px 0 8px"><b>Public third-party datasets</b> — existence / metadata level, same web pipeline, run 2026-10-21. Recall = problem references flagged; false alarms = real references flagged (rate-limited items left out).</p>
+    <p class="hint" style="margin:14px 0 8px"><b>Public third-party datasets</b> — existence / metadata level, same web pipeline, run 2026-10-21. Recall = problem references flagged; false alarms = real references flagged (not-checked items — rate-limited or unreachable — left out).</p>
     <div class="acc-wrap"><table class="acc">
       <thead><tr><th>Dataset (licence)</th><th>n</th><th>Recall</th><th>False alarms</th><th>Not checked</th></tr></thead>
       <tbody>
