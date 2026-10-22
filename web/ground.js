@@ -1303,7 +1303,7 @@ function initFileUpload(ta, prog) {
         return;
       }
       ta.value = text;
-      prog.textContent = `Extracted ${text.length.toLocaleString()} characters — review above, then Ground this draft.`;
+      prog.textContent = `Extracted ${text.length.toLocaleString()} characters — review above, then click Check citations.`;
     } catch (err) {
       prog.textContent = 'Could not read this file: ' + (err.message || err);
     }
@@ -1614,7 +1614,7 @@ function initGround() {
     const text = ta.value.trim();
     if (!text) { out.innerHTML = '<p style="color:var(--ink-soft)">Paste your draft first — or load the sample.</p>'; return; }
     btn.disabled = true;
-    btn.textContent = 'Grounding…';
+    btn.textContent = 'Checking…';
     out.innerHTML = '';
     prog.textContent = 'Extracting claims…';
     try {
@@ -1674,7 +1674,7 @@ function initGround() {
       out.innerHTML = `<p style="color:var(--red)">Something failed: ${gesc(err.message || err)}. Your draft never left this page — try again.</p>`;
     }
     btn.disabled = false;
-    btn.textContent = 'Ground this draft';
+    btn.textContent = 'Check citations';
   });
 }
 
