@@ -72,7 +72,12 @@ def _resolve(pair: dict, cache: dict, refmap: dict) -> dict:
     if key in cache:
         return cache[key]
     t, cid = key
-    if t == "doi":
+    if t == "invalid_doi":
+        out = {"exists": False, "title": None, "doi": None, "arxiv_id": None,
+               "limited": False, "retracted": False, "chimeric": False,
+               "authors": [], "fabricated": False, "invalid_doi": cid,
+               "note": f"'{cid}' looks like a DOI but is not well-formed"}
+    elif t == "doi":
         out = _verify_ids(cid, None, "raw DOI in text")
     elif t == "arxiv":
         out = _verify_ids(None, cid, "raw arXiv ID in text")
@@ -142,10 +147,14 @@ def ground_evidence(draft_path: str) -> tuple[list[dict], list[EvidenceRef]]:
     """The pipeline without the report: (citation pairs, evidence rows)."""
     bib_mode = draft_path.lower().endswith((".bib", ".bibtex"))
     bib_titles: dict = {}
+    bib_invalid: dict = {}
     if bib_mode:
         conv = bibtex.bib_to_draft(open(draft_path, encoding="utf-8").read())
         text = conv["draft"]
         bib_titles = {e["key"]: bibtex.clean_latex(e["fields"].get("title", "")) for e in conv["entries"]}
+        bib_invalid = {e["key"]: e["fields"].get("doi", "").strip() for e in conv["entries"]
+                       if e["fields"].get("doi", "").strip()
+                       and not bibtex._doi({"doi": e["fields"]["doi"]})}
     else:
         text = _read_draft(draft_path)
     pairs = extract.extract_pairs(text)
@@ -155,7 +164,20 @@ def ground_evidence(draft_path: str) -> tuple[list[dict], list[EvidenceRef]]:
     evidence: list[EvidenceRef] = []
 
     for p in pairs:
-        res = _resolve(p, cache, refmap)
+        if bib_mode and p["cite_id"] in bib_invalid:
+            res = {"invalid_doi": bib_invalid[p["cite_id"]]}
+        else:
+            res = _resolve(p, cache, refmap)
+        if res.get("invalid_doi"):
+            claim = p["claim"]
+            if bib_mode:
+                claim = f"@{p['cite_id']} — {bib_titles.get(p['cite_id']) or '(no title in entry)'}"
+            evidence.append(EvidenceRef(
+                claim=claim, source_doi=None, label="INVALID_DOI",
+                note=(f"DOI format invalid: '{res['invalid_doi']}' is not a well-formed DOI "
+                      "(10.<4-9 digits>/<suffix>) — likely mistyped or fabricated; "
+                      "not looked up. Fix or remove it.")))
+            continue
         if bib_mode:
             key = p["cite_id"]
             p = dict(p, claim=f"@{key} — {bib_titles.get(key) or '(no title in entry)'}")
@@ -239,7 +261,7 @@ def _write_report(out_path: str, draft_path: str, pairs: list[dict],
         "## Summary",
         "",
     ]
-    for label in ("ABSTRACT-SUPPORTED", "CITED", "UNVERIFIED", "RATE_LIMITED", "FABRICATED"):
+    for label in ("ABSTRACT-SUPPORTED", "CITED", "UNVERIFIED", "RATE_LIMITED", "INVALID_DOI", "FABRICATED"):
         n = sum(v for k, v in counts.items() if k == label or k.startswith(label + ":"))
         # count STALE tags separately
         lines.append(f"- {label}: {n}")
@@ -275,6 +297,7 @@ def _write_report(out_path: str, draft_path: str, pairs: list[dict],
         "FABRICATED = identifier checked against its registry and found not "
         "to exist — fabricated or mistyped; "
         "RATE_LIMITED = sources were rate-limited while checking — not checked, NOT proven fake; "
+        "INVALID_DOI = DOI format invalid (not a well-formed DOI; likely mistyped or fabricated); "
                 "[STALE:YYYY] = numeric claim older than the freshness window; "
         "[CHIMERIC:author-mismatch] = title matches a real paper but the listed authors do not; "
         "[SPECIFIC-NOT-IN-ABSTRACT] = claim leans on hard specifics (numbers, quoted phrases) "

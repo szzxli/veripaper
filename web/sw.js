@@ -1,4 +1,4 @@
-const C='veripaper-v27';
+const C='veripaper-v28';
 const FILES=['index.html','project.js','ground.js','bibtex.js','idea.js','datasets.js','venues.js','rebuttal.js','manifest.json'];
 self.addEventListener('install',e=>{
   e.waitUntil(caches.open(C).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting()));

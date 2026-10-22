@@ -47,7 +47,7 @@ class NetworkFailureTests(unittest.TestCase):
         from veripaper.pipeline import ground_evidence
         with tempfile.TemporaryDirectory() as td:
             bib = Path(td) / "r.bib"
-            bib.write_text("@article{a, title={T}, author={Doe, J.}, year={2020}, doi={10.1/x}}\n", encoding="utf-8")
+            bib.write_text("@article{a, title={T}, author={Doe, J.}, year={2020}, doi={10.1234/example}}\n", encoding="utf-8")
             with patch.object(citations, "_get", return_value=None):
                 _pairs, ev = ground_evidence(str(bib))
         self.assertEqual(len(ev), 1)

@@ -9,7 +9,7 @@ inputs:
     description: Space-separated .bib paths or glob patterns, e.g. "paper/refs.bib" or "**/*.bib"
     required: true
   fail-on:
-    description: Comma-separated categories that fail the job (fabricated, chimeric, retracted, unverified, rate_limited) or "none"
+    description: Comma-separated categories that fail the job (fabricated, chimeric, retracted, unverified, rate_limited, invalid_doi) or "none"
     required: false
     default: fabricated,chimeric,retracted
   json:

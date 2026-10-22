@@ -602,6 +602,12 @@ async function verify(){
   try{
     const doi = raw.replace(/^https?:\/\/(dx\.)?doi\.org\//i,'').replace(/^arxiv:/i,'').trim();
     const isArxiv = /^(\d{4}\.\d{4,5}(v\d+)?|[a-z-]+\/\d{7}(v\d+)?)$/i.test(doi);
+    const doiLike = /^doi:/i.test(doi) || /^10\./.test(doi) || /doi\.org\//i.test(raw);
+    const bare = doi.replace(/^doi:\s*/i,'');
+    if(!isArxiv && doiLike && !/^10\.\d{4,9}\/[^\s"'<>]+$/i.test(bare)){
+      show(`<span class="label l-unverified">INVALID_DOI</span><b>DOI format invalid.</b> '${esc(bare)}' is not a well-formed DOI (10.&lt;4-9 digits&gt;/&lt;suffix&gt;) — likely mistyped or fabricated. Not looked up.`);
+      busy(false); return;
+    }
     const failed = [];
     const tryOne = async (name, fn) => {
       let m;

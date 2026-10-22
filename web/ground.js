@@ -13,6 +13,21 @@ const DOI_RE = /(?:https?:\/\/(?:dx\.)?doi\.org\/)?(10\.\d{4,}\/[^\s\]\"'<>]+)/g
 /* DOIs may legally contain balanced parentheses (e.g. Wiley's
  * 10.1016/S0140-6736(97)11096-0). The regex above lets them through;
  * this strips trailing punctuation and any UNBALANCED trailing ')'. */
+/* DOI-like strings that fail DOI_RE ("10.1/x", "doi:10.12/ab", a doi.org URL
+ * with a malformed DOI) are flagged INVALID_DOI, never silently ignored —
+ * fabricated citations often carry such identifiers. */
+const DOI_LIKE_RE = /(?:doi:\s*|https?:\/\/(?:dx\.)?doi\.org\/)([^\s\]"'<>]+)|\b(10\.\d*\/[^\s\]"'<>]*)/gi;
+function isValidDoi(s) { return /^10\.\d{4,9}\/[^\s\]"'<>]+$/i.test(cleanDoi(String(s || '').trim())); }
+function findInvalidDois(text) {
+  const out = []; let m;
+  DOI_LIKE_RE.lastIndex = 0;
+  while ((m = DOI_LIKE_RE.exec(String(text || '')))) {
+    const c = cleanDoi(m[1] || m[2] || '');
+    if (c && !isValidDoi(c) && !out.includes(c)) out.push(c);
+  }
+  return out;
+}
+const INVALID_DOI_NOTE = d => `DOI format invalid: '${d}' is not a well-formed DOI (10.<4-9 digits>/<suffix>) — likely mistyped or fabricated; not looked up. Fix or remove it.`;
 function cleanDoi(raw) {
   let d = String(raw || '').replace(/[.,;:]+$/, '');
   const opens = s => (s.match(/\(/g) || []).length;
@@ -245,6 +260,7 @@ function markersInSentence(sent) {
   let m;
   DOI_RE.lastIndex = 0;
   while ((m = DOI_RE.exec(sent))) add(m[0], 'doi', cleanDoi(m[1]));
+  for (const bad of findInvalidDois(sent)) add(bad, 'invalid_doi', bad);
   ARXIV_RE.lastIndex = 0;
   while ((m = ARXIV_RE.exec(sent))) {
     if (found.some(f => f.type === 'doi' && f.id.includes(m[1]))) continue;
@@ -270,6 +286,7 @@ function markersInSentence(sent) {
   while ((m = URL_RE.exec(sent))) {
     const url = m[0].replace(/[.,;:]+$/, '');
     if (url.includes('doi.org')) continue;
+    if (found.some(f => f.type === 'invalid_doi' && url.includes(f.id))) continue;
     if (found.some(f => (f.type === 'doi' || f.type === 'arxiv') && f.raw.includes(url))) continue;
     add(url, 'url', url);
   }
@@ -1443,6 +1460,12 @@ async function groundDraft(text, opts, onStep) {
   let next = 0, done = 0;
   async function checkOne(i) {
     const p = pairs[i];
+    if (p.cite_type === 'invalid_doi') {
+      evidence[i] = { claim: p.claim, base: 'INVALID_DOI', label: 'INVALID_DOI', doi: '', arxiv_id: '', title: '',
+        note: INVALID_DOI_NOTE(p.cite_id), authors: [], venue: '', year: '' };
+      done++;
+      return;
+    }
     const res = await resolveCitation(p, refmap, cache);
     let base = 'UNVERIFIED', note = res.note;
     const extraTags = [];
@@ -1603,12 +1626,12 @@ Verizon. 2023 Data Breach Investigations Report. 2023.`;
 
 function labelClass(base) {
   return { 'ABSTRACT-SUPPORTED': 'l-verified', CITED: 'l-cited', UNVERIFIED: 'l-unverified',
-    RATE_LIMITED: 'l-stale', FABRICATED: 'l-unverified' }[base] || 'l-cited';
+    RATE_LIMITED: 'l-stale', INVALID_DOI: 'l-unverified', FABRICATED: 'l-unverified' }[base] || 'l-cited';
 }
 
 function renderReport(evidence, ropts) {
   const unit = (ropts && ropts.unit) || 'claims';
-  const counts = { 'ABSTRACT-SUPPORTED': 0, CITED: 0, UNVERIFIED: 0, RATE_LIMITED: 0, FABRICATED: 0 };
+  const counts = { 'ABSTRACT-SUPPORTED': 0, CITED: 0, UNVERIFIED: 0, RATE_LIMITED: 0, INVALID_DOI: 0, FABRICATED: 0 };
   let staleN = 0, chimericN = 0, retractedN = 0;
   for (const e of evidence) {
     counts[e.base] = (counts[e.base] || 0) + 1;
@@ -1622,6 +1645,7 @@ function renderReport(evidence, ropts) {
     `<span class="label l-cited">CITED ${counts.CITED}</span> ` +
     `<span class="label l-unverified">UNVERIFIED ${counts.UNVERIFIED}</span>` +
     (counts.RATE_LIMITED ? ` <span class="label l-stale">RATE_LIMITED ${counts.RATE_LIMITED}</span>` : '') +
+    (counts.INVALID_DOI ? ` <span class="label l-unverified">INVALID_DOI ${counts.INVALID_DOI}</span>` : '') +
     (counts.FABRICATED ? ` <span class="label l-unverified">FABRICATED ${counts.FABRICATED}</span>` : '') +
     (staleN ? ` <span class="label l-stale">STALE ×${staleN}</span>` : '') +
     (chimericN ? ` <span class="label l-unverified">CHIMERIC ×${chimericN}</span>` : '') +
@@ -1646,6 +1670,7 @@ function renderReport(evidence, ropts) {
     `UNVERIFIED = no record found or marker not resolvable (absence of evidence, not evidence of fabrication); ` +
     `FABRICATED = identifier checked against its registry and found not to exist — fabricated or mistyped; ` +
     `RATE_LIMITED = sources were rate-limited or could not be reached (offline, blocked, server error) while checking — not checked, NOT proven fake; ` +
+    `INVALID_DOI = DOI format invalid (not a well-formed DOI; likely mistyped or fabricated); ` +
     `[STALE:YYYY] = data older than the freshness window; ` +
     `[CHIMERIC:author-mismatch] = title matches a real paper but the listed authors do not; ` +
     `[RETRACTED] = the paper has been retracted — do not cite it as support; ` +
