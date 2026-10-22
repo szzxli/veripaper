@@ -22,10 +22,11 @@ import re
 DOI_RE = re.compile(r"(?:https?://(?:dx\.)?doi\.org/)?(10\.\d{4,}/[^\s\]\"'<>]+)", re.I)
 
 
-# DOI-like strings that fail DOI_RE (e.g. "10.1/x", "doi:10.12/ab"): flagged
+# Only explicit DOI markers (doi: prefix, doi.org URL) that fail DOI_RE are flagged;
+# bare malformed "10.x/y" in body text is ignored. Flagged
 # as INVALID_DOI rather than silently ignored — fabricated citations often
 # carry such identifiers.
-DOI_LIKE_RE = re.compile(r"(?:doi:\s*|https?://(?:dx\.)?doi\.org/)([^\s\]\"'<>]+)|\b(10\.\d*/[^\s\]\"'<>]*)", re.I)
+DOI_LIKE_RE = re.compile(r"(?:doi:\s*|https?://(?:dx\.)?doi\.org/)([^\s\]\"'<>]+)", re.I)
 VALID_DOI_FULL_RE = re.compile(r"10\.\d{4,9}/[^\s\]\"'<>]+", re.I)
 
 

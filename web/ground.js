@@ -13,10 +13,10 @@ const DOI_RE = /(?:https?:\/\/(?:dx\.)?doi\.org\/)?(10\.\d{4,}\/[^\s\]\"'<>]+)/g
 /* DOIs may legally contain balanced parentheses (e.g. Wiley's
  * 10.1016/S0140-6736(97)11096-0). The regex above lets them through;
  * this strips trailing punctuation and any UNBALANCED trailing ')'. */
-/* DOI-like strings that fail DOI_RE ("10.1/x", "doi:10.12/ab", a doi.org URL
+/* Only explicit DOI markers ("doi:10.12/ab", a doi.org URL; bare "10.x/y" body text is ignored
  * with a malformed DOI) are flagged INVALID_DOI, never silently ignored —
  * fabricated citations often carry such identifiers. */
-const DOI_LIKE_RE = /(?:doi:\s*|https?:\/\/(?:dx\.)?doi\.org\/)([^\s\]"'<>]+)|\b(10\.\d*\/[^\s\]"'<>]*)/gi;
+const DOI_LIKE_RE = /(?:doi:\s*|https?:\/\/(?:dx\.)?doi\.org\/)([^\s\]"'<>]+)/gi;
 function isValidDoi(s) { return /^10\.\d{4,9}\/[^\s\]"'<>]+$/i.test(cleanDoi(String(s || '').trim())); }
 function findInvalidDois(text) {
   const out = []; let m;
