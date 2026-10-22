@@ -22,6 +22,27 @@ import re
 DOI_RE = re.compile(r"(?:https?://(?:dx\.)?doi\.org/)?(10\.\d{4,}/[^\s\]\"'<>]+)", re.I)
 
 
+# DOI-like strings that fail DOI_RE (e.g. "10.1/x", "doi:10.12/ab"): flagged
+# as INVALID_DOI rather than silently ignored — fabricated citations often
+# carry such identifiers.
+DOI_LIKE_RE = re.compile(r"(?:doi:\s*|https?://(?:dx\.)?doi\.org/)([^\s\]\"'<>]+)|\b(10\.\d*/[^\s\]\"'<>]*)", re.I)
+VALID_DOI_FULL_RE = re.compile(r"10\.\d{4,9}/[^\s\]\"'<>]+", re.I)
+
+
+def is_valid_doi(s: str) -> bool:
+    return bool(VALID_DOI_FULL_RE.fullmatch(clean_doi((s or "").strip())))
+
+
+def find_invalid_dois(text: str) -> list[str]:
+    """Return DOI-like strings in text that are not well-formed DOIs."""
+    out: list[str] = []
+    for m in DOI_LIKE_RE.finditer(text or ""):
+        cand = clean_doi(m.group(1) or m.group(2) or "")
+        if cand and not is_valid_doi(cand) and cand not in out:
+            out.append(cand)
+    return out
+
+
 def clean_doi(raw: str) -> str:
     """Strip trailing punctuation and unbalanced trailing ')'.
 
@@ -128,6 +149,8 @@ def _markers(sentence: str) -> list[dict]:
         # avoid double-counting arXiv IDs as DOIs handled separately is fine;
         # DOI form wins when explicit
         add(m.group(0), "doi", doi)
+    for bad in find_invalid_dois(sentence):
+        add(bad, "invalid_doi", bad)
     for m in ARXIV_RE.finditer(sentence):
         aid = m.group(1)
         # skip if this span is inside an already-found DOI marker
@@ -156,6 +179,8 @@ def _markers(sentence: str) -> list[dict]:
         url = m.group(0).rstrip(".,;:")
         if "doi.org" in url:
             continue  # already captured as DOI
+        if any(f["type"] == "invalid_doi" and f["id"] in url for f in found):
+            continue
         if any(f["type"] in ("doi", "arxiv") and url in f["raw"] for f in found):
             continue
         add(url, "url", url)

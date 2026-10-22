@@ -10,6 +10,7 @@ Categories (one per finding; a finding can hit several):
   retracted     [RETRACTED] — the cited paper is retracted
   unverified    UNVERIFIED — no confident match in the free indexes (may still be real)
   rate_limited  RATE_LIMITED — not checked; never treated as a fabrication
+  invalid_doi   INVALID_DOI — DOI format invalid (warning by default)
 
 Default ``--fail-on fabricated,chimeric,retracted``: the job fails only on
 evidence of a problem. ``unverified`` and ``rate_limited`` are reported as
@@ -25,7 +26,7 @@ import os
 import sys
 from dataclasses import asdict
 
-CATEGORIES = ("fabricated", "chimeric", "retracted", "unverified", "rate_limited")
+CATEGORIES = ("fabricated", "chimeric", "retracted", "unverified", "rate_limited", "invalid_doi")
 DEFAULT_FAIL_ON = ("fabricated", "chimeric", "retracted")
 
 
@@ -42,6 +43,8 @@ def categorize(label: str) -> list[str]:
         cats.append("unverified")
     if base == "RATE_LIMITED":
         cats.append("rate_limited")
+    if base == "INVALID_DOI":
+        cats.append("invalid_doi")
     return cats
 
 
@@ -153,7 +156,7 @@ def main(argv: list[str]) -> int:
             print(f"{level.upper()} {r['file']}: {msg}")
     c = summary["counts"]
     print(f"veripaper: {summary['entries']} entries · fabricated {c['fabricated']} · chimeric {c['chimeric']} · "
-          f"retracted {c['retracted']} · unverified {c['unverified']} · rate-limited {c['rate_limited']} → "
+          f"retracted {c['retracted']} · unverified {c['unverified']} · rate-limited {c['rate_limited']} · invalid-DOI {c['invalid_doi']} → "
           + ("PASS" if summary["ok"] else f"FAIL ({summary['failing']} entries hit --fail-on {','.join(fail_on)})"))
     if args.json_out:
         with open(args.json_out, "w", encoding="utf-8") as f:
