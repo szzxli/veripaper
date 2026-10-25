@@ -153,6 +153,7 @@ details.fold summary{cursor:pointer;font-family:var(--sans);font-size:14px;color
 details.fold section.side{padding:26px 0 4px}
 .st-no{color:var(--crimson);font-family:var(--sans);font-size:12.5px;font-style:normal;font-weight:700}
 .st-live{color:var(--green);font-family:var(--sans);font-size:12.5px;font-style:normal}
+#roadmap h3{font-family:var(--sans);font-size:15px;font-weight:700;color:var(--navy);margin:16px 0 4px}
 .linkbtn{background:none;border:0;padding:0;color:var(--navy);font:inherit;text-decoration:underline;cursor:pointer}
 .progress{font-family:var(--sans);font-size:13px;color:var(--ink-soft);margin-top:10px}
 @media(max-width:640px){.wrap{padding:0 18px}.titleblock{padding:36px 0 6px}}
@@ -304,20 +305,29 @@ details.fold section.side{padding:26px 0 4px}
 </section>
 
 <section id="roadmap">
-  <div class="sec-head"><span class="sec-no">Later</span><h2>Roadmap</h2></div>
+  <div class="sec-head"><span class="sec-no">§7</span><h2>Roadmap</h2></div>
+  <p class="sec-lede">Three horizons. Only <b>Now</b> is built; <b>Next</b> and <b>Later</b> are plans, not features.</p>
+  <h3>Now</h3>
+  <ul class="tight">
+    <li><b>Citation checker.</b> Per citation: does the work exist, does its metadata match, is it retracted, and does the cited abstract support the claim (abstract-level only — see <a href="#limits">limits</a>). <i class="st-live">Built — §1 and §2 above.</i></li>
+    <li><b>.bib CLI and GitHub Action.</b> Check bibliographies from the command line or as a CI gate (<a href="https://github.com/szzxli/veripaper#check-bib-files-in-ci-github-action--cli">how</a>). <i class="st-live">Built.</i></li>
+    <li>Early, unvalidated side tools sit collapsed at the bottom of this page.</li>
+  </ul>
   <details class="fold" id="roadmap-vision">
-    <summary>Long-term vision — <b>not built</b>. Show the seven stages</summary>
-    <p class="hint" style="margin-top:10px">Where the project might go, not what it does today. Only stage 3, the citation checker, is built. Nothing on this site estimates acceptance chances or plans a submission strategy.</p>
-  <p class="sec-lede">veripaper is a workbench, not a writing tool. Each phase hands a typed contract to the next.</p>
-  <ol class="tight">
-    <li><b>Proposal decision.</b> Compare candidate directions: heat index from top venues, citation forecast, frontier-extrapolation for data-scarce bets. <i class="st-live">Partly built: an experimental idea-heat helper is under “Experimental side tools” below.</i></li>
-    <li><b>Idea distillation.</b> From rough notes to a concept note: novelty check, contribution statement, research questions. <i class="st-no">Not built.</i></li>
-    <li><b>Evidence grounding.</b> Every claim gets an honest label — §1 and §2 above. <i class="st-live">Built — this is the citation checker above (§1, §2).</i></li>
-    <li><b>Top-venue benchmarking.</b> Measured against real accepted papers from top venues — not imagined standards. <i class="st-no">Not built.</i></li>
-    <li><b>Reviewer simulation.</b> Pre-submission critique in the voice of the target venue. Evidence gaps first. <i class="st-no">Not built.</i></li>
-    <li><b>Venue targeting.</b> Acceptance-probability estimates and submission strategy. A wrong venue costs months. <i class="st-no">Not built</i> <i class="st-live" style="color:var(--ink-soft)">— no acceptance estimate exists; a simple venue-shortlist helper is under side tools.</i></li>
-    <li><b>Rebuttal &amp; acceptance loop.</b> Point-by-point responses and revision tracking, so acceptance compounds. <i class="st-no">Not built</i> <i class="st-live" style="color:var(--ink-soft)">— only a basic review splitter and a submission tracker exist, under side tools.</i></li>
-  </ol>
+    <summary>Next and Later — plans, <b>not built</b></summary>
+    <h3>Next</h3>
+    <ol class="tight">
+      <li><b>Claim-level checks against open-access full text</b> (arXiv, PubMed Central): which parts of a claim the source supports, with quotes — never a flat yes/no. <i class="st-no">Planned, not built.</i></li>
+      <li><b>Close the gaps in the <a href="#limits">limits</a>:</b> compare year, venue and pages; catch a partly wrong author list. <i class="st-no">Planned, not built.</i></li>
+      <li><b>More free registries</b> (e.g. PubMed, DBLP) to cut UNVERIFIED. <i class="st-no">Planned, not built.</i></li>
+      <li><b>Workflow integrations:</b> Zotero, Overleaf, and a batch mode for journal editors and writing centers. <i class="st-no">Planned, not built.</i></li>
+      <li><b>A public citation-check benchmark.</b> Today's measurement is <a href="https://github.com/szzxli/veripaper/blob/main/benchmark/COMPARISON.md">benchmark/COMPARISON.md</a> (§3). <i class="st-no">Planned, not built.</i></li>
+    </ol>
+    <h3>Later</h3>
+    <ul class="tight">
+      <li><b>Idea distillation.</b> From rough notes to a novelty and contribution statement, grounded in retrieved literature. <i class="st-no">Vision, not built.</i></li>
+    </ul>
+    <p class="hint">veripaper will not estimate acceptance chances, simulate reviewers, or ghost-write rebuttals: those are predictions or generation the tool cannot verify.</p>
   </details>
   <details class="fold" id="side-tools">
     <summary>Experimental side tools — early, unvalidated, not the focus of this site</summary>

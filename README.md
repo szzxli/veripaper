@@ -68,38 +68,44 @@ limit proves nothing); flagged entries appear as annotations and in the job
 summary. This uses the Python pipeline, which has fewer free fallbacks than
 the web app (see COMPARISON.md) — review every flag by hand.
 
-## Roadmap — vision, not built
+## Roadmap
 
-Everything in this section is a plan, not a feature. Only evidence grounding
-(the citation checker) is built; a few early, unvalidated side tools (idea
-heat, venue shortlist, review splitter, submission tracker) sit collapsed at
-the bottom of the web page. Nothing estimates acceptance chances.
+Three horizons. Only **Now** is built; **Next** and **Later** are plans, not
+features. Try what is built in the live demo:
+https://szzxli.github.io/veripaper/web/
 
-Open-source academic paper tool: **the paper is just the final presentation.**
+### Now — built
 
-**Live workbench (runs in your browser, no install):** https://szzxli.github.io/veripaper/web/
+- **Citation checker** (web app and `python -m veripaper ground`): per
+  citation, does the work **exist**, does its **metadata match** (the authors
+  you cited vs. the record), is it **retracted**, and does the cited
+  **abstract support the claim** (abstract-level only — see [Limits](#limits)).
+- **`.bib` CLI and GitHub Action**: `python -m veripaper check` and
+  `szzxli/veripaper@main` gate bibliographies in CI (see above).
+- A few early, unvalidated side tools sit collapsed at the bottom of the web
+  page; they are not the focus and are not benchmarked.
 
-Researchers should only do three things: **creative ideas, logical reasoning, empirical proof**.
-Everything else — writing, benchmarking, venue targeting, rebuttals — is handled by the tool.
+### Next — planned, not built
 
-The tool automates bureaucratic taxes on thinking, not thinking itself.
-It can't give you taste — taste is the whole PhD.
+1. **Claim-level checks against open-access full text** (arXiv, PubMed
+   Central): report *which parts* of a claim the source supports, with quotes,
+   never a flat yes/no (iron rule 7).
+2. **Close the gaps in [Limits](#limits)**: compare year, venue and pages, and
+   catch a *partly* wrong author list.
+3. **More free registries** (e.g. PubMed, DBLP) to cut `UNVERIFIED`.
+4. **Workflow integrations**: Zotero, Overleaf, and a batch mode for journal
+   editors and writing centers.
+5. **A public citation-check benchmark**. Today's measurement is
+   [benchmark/COMPARISON.md](benchmark/COMPARISON.md).
 
-```
-idea → proposal decision → idea distillation → evidence grounding → top-venue benchmarking → reviewer simulation → venue targeting → rebuttal → publishable
-```
+### Later — vision, not built
 
-### Long-term vision (not built)
+- **Idea distillation**: from rough notes to a novelty and contribution
+  statement, grounded in retrieved literature.
 
-Draft-generation tools solve "a draft in 10 minutes"; their strength is citation
-*existence* verification — checking that sources exist, not that claims about
-their content are accurate.
-
-veripaper solves "getting published":
-- **Claim-level verification**: not just "does the citation exist", but "does the cited work actually support your claim"
-- **Idea-first**: start from your rough idea; distill its academic value (novelty / contribution statement)
-- **Reviewer simulation**: pre-submission critique in the voice of the target venue, focused on evidence gaps and stale data
-- **Rebuttal assistance**: point-by-point response drafting, tone calibration, revision tracking
+veripaper will **not** estimate acceptance chances, simulate reviewers, or
+ghost-write rebuttals: those are predictions or generation the tool cannot
+verify (iron rules 3 and 5).
 
 ## Iron rules
 
