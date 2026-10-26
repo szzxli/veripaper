@@ -463,7 +463,7 @@ details.fold section.side{padding:26px 0 4px}
 
 <footer><div class="wrap">
   <div class="colophon">VERIPAPER · v0.1 · SET IN GEORGIA · MIT LICENSE · <a href="https://github.com/szzxli/veripaper">GITHUB</a> · <a href="https://github.com/szzxli/veripaper/issues">FEEDBACK</a> · <a href="#" id="buglink">REPORT BUG</a></div>
-  <p class="colophon" style="margin-top:8px;text-transform:none;letter-spacing:0">Privacy: we count anonymous page views with <a href="https://www.goatcounter.com" rel="noopener">GoatCounter</a> — no cookies, no personal data. Your drafts and keys are never sent to it; your content stays in your browser except for the lookups you start (Crossref / DataCite / arXiv / OpenAlex / Europe PMC / DBLP / Semantic Scholar — identifiers and reference text only — and OpenRouter only if you add your own key). The keyless claim-check model is downloaded from the Hugging Face hub and runs locally; claims are not sent anywhere.</p>
+  <p class="colophon" style="margin-top:8px;text-transform:none;letter-spacing:0">Privacy: we use <a href="https://www.goatcounter.com" rel="noopener">GoatCounter</a>, a privacy-friendly, cookie-free page-view counter (no personal data, no cookies; its small script loads from gc.zgo.at). Your drafts and keys are never sent to it; your content stays in your browser except for the lookups you start (Crossref / DataCite / arXiv / OpenAlex / Europe PMC / DBLP / Semantic Scholar — identifiers and reference text only — and OpenRouter only if you add your own key). The keyless claim-check model is downloaded from the Hugging Face hub and runs locally; claims are not sent anywhere.</p>
 </div></footer>
 
 <script>
@@ -656,5 +656,8 @@ async function verify(){
 $btn.addEventListener('click', verify);
 $in.addEventListener('keydown', e => { if(e.key==='Enter') verify(); });
 </script>
+<!-- GoatCounter: privacy-friendly, cookie-free page-view counter (no personal data). -->
+<script data-goatcounter="https://szzxli-sec.goatcounter.com/count"
+        async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>
