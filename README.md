@@ -1,8 +1,10 @@
+> **The web app now lives at [verifycites.com/papers](https://verifycites.com/papers/?ref=gh-veripaper)** (the old szzxli.github.io/veripaper/web/ address redirects there).
+
 # veripaper — catch hallucinated citations in AI-written research drafts
 
 > **Your AI wrote the draft. Did it invent the citations?** veripaper checks every cited source against CrossRef, arXiv, Semantic Scholar and other registries, flags references that don't exist, and labels each claim honestly. Free and open source (MIT).
 >
-> **▶ Live demo:** https://szzxli.github.io/veripaper/web/ — paste a draft or upload .docx/.pdf; everything runs in your browser, nothing is uploaded.
+> **▶ Live demo:** https://verifycites.com/papers/?ref=gh-veripaper — paste a draft or upload .docx/.pdf; everything runs in your browser, nothing is uploaded.
 
 *(veripaper is a working name.)*
 
@@ -72,7 +74,7 @@ the web app (see COMPARISON.md) — review every flag by hand.
 
 Three horizons. Only **Now** is built; **Next** and **Later** are plans, not
 features. Try what is built in the live demo:
-https://szzxli.github.io/veripaper/web/
+https://verifycites.com/papers/?ref=gh-veripaper
 
 ### Now — built
 
