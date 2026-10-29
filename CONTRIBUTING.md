@@ -11,6 +11,15 @@
 4. **Academic ethics**: this tool assists writing, it does not replace research.
    Never use it for ghostwriting or contract cheating.
 
+## Test without counting (humans and agents)
+
+The pages GitHub Pages renders from this repo (README/docs) count visits with GoatCounter. Open one once with
+`?nocount=1` (e.g. <https://szzxli.github.io/veripaper/?nocount=1>): that browser then counts nothing (page views
+and events) until you open a page with `?nocount=0`. It sets GoatCounter's own `skipgc` flag in localStorage.
+Headless/automated browsers start fresh: add `?nocount=1` to every URL. URLs with `v=`, `cb=`, `cachebust`, `_=`
+or `nocount` are never counted. The web app itself moved to verifycites.com/papers (test it there with `?nocount=1` too).
+Links from this repo to li jun's other sites carry `?ref=gh-veripaper` (before any `#fragment`); third-party links are not tagged.
+
 ## Roadmap
 
 See README. v0.1 starts with evidence grounding — nail the single point before expanding.
