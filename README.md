@@ -1,20 +1,14 @@
 > **The web app now lives at [verifycites.com/papers](https://verifycites.com/papers/?ref=gh-veripaper)** (the old szzxli.github.io/veripaper/web/ address redirects there).
 
-# veripaper — catch hallucinated citations in AI-written research drafts
+# veripaper — citation-existence checker for AI-written research drafts
 
-> **Your AI wrote the draft. Did it invent the citations?** veripaper checks every cited source against CrossRef, arXiv, Semantic Scholar and other registries, flags references that don't exist, and labels each claim honestly. Free and open source (MIT).
+> **Your AI wrote the draft. Did each citation resolve and match?** veripaper, for researchers, checks whether each cited paper exists in public registries, whether the identifier matches the record, whether it is retracted, and, as a first-pass screen, whether the cited abstract supports the claim. Free and open source (MIT).
 >
 > **▶ Live demo:** https://verifycites.com/papers/?ref=gh-veripaper — paste a draft or upload .docx/.pdf; everything runs in your browser, nothing is uploaded.
 
 *(veripaper is a working name.)*
 
-**What it checks, per citation:** does the cited work **exist** (DOI / arXiv ID /
-title lookup in free registries), does its **metadata match** (the authors you
-cited vs. the record), is it **retracted**, and — for a draft with claims —
-does the cited **abstract support the claim**. Input: a draft (markdown, plain
-text, .docx, .pdf) or a BibTeX `.bib`. It is a **first-pass screen**: use it
-to decide which references to check by hand, not as a substitute for human
-review (see [Limits](#limits)).
+**What it checks, per citation:** whether each cited paper **exists** in public registries, whether the identifier **matches the record**, whether it is **retracted**, and, as a first-pass screen, whether the cited **abstract supports the claim**. Input: a draft (markdown, plain text, .docx, .pdf) or a BibTeX `.bib`. It is a **first-pass screen**: use it to decide which references to check by hand, not as a substitute for human review (see [Limits](#limits)).
 
 ## Accuracy
 
