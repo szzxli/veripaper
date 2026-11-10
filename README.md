@@ -9,12 +9,6 @@
 *(veripaper is a working name.)*
 
 **What it checks, per citation:** whether each cited paper **exists** in public registries, whether the identifier **matches the record**, whether it is **retracted**, and, as a first-pass screen, whether the cited **abstract supports the claim**. Input: a draft (markdown, plain text, .docx, .pdf) or a BibTeX `.bib`. It is a **first-pass screen**: use it to decide which references to check by hand, not as a substitute for human review (see [Limits](#limits)).
-title lookup in free registries), does its **metadata match** (the authors you
-cited vs. the record), is it **retracted**, and — for a draft with claims —
-does the cited **abstract support the claim**. Input: a draft (markdown, plain
-text, .docx, .pdf) or a BibTeX `.bib`. It is a **first-pass screen**: use it
-to decide which references to check by hand, not as a substitute for human
-review (see [Limits](#limits)).
 
 ## Accuracy
 
