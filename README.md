@@ -12,7 +12,7 @@
 
 ## Accuracy
 
-Measured on a 34-sample first-party set (8 real, 8 fabricated, 6 chimeric,
+Measured on a 34-sample first-party set (8 real, 8 could not be found, 6 chimeric,
 6 retracted, 6 specific-not-in-abstract) and on openly licensed third-party
 datasets, including the data of the July 2026 five-tool study. Per-category
 numbers, misses, false alarms, method and caveats:
@@ -25,11 +25,11 @@ read the numbers as signals, not rates.
   (nli-deberta-v3-xsmall in the browser). Bring your own OpenRouter key for an
   LLM judgment instead — the more accurate path, not yet scored in our
   benchmark, and still abstract-only.
-- "Not found" is not proof of fabrication: real papers, software, web pages
-  and standards can be missing from the free indexes (`UNVERIFIED`, not
-  `FABRICATED`).
+- "Not found" is not proof a work does not exist: real papers, software, web pages
+  and standards can be missing from the free indexes (`UNVERIFIED`, not a
+  confirmed miss).
 - Venue, year, pages and a *partly* wrong author list are not checked.
-- An independent July 2026 study of five hallucinated-citation checkers
+- An independent July 2026 study of five citation-existence checkers
   (Badalova & Mayr, [arXiv:2607.22693](https://arxiv.org/abs/2607.22693))
   found all of them limited by extraction errors, incomplete metadata,
   database coverage and inconsistent results, and advised manual checks of
@@ -40,8 +40,8 @@ read the numbers as signals, not rates.
 
 ```bash
 pip install git+https://github.com/szzxli/veripaper
-python -m veripaper check paper/refs.bib            # exit 1 on fabricated / chimeric / retracted
-python -m veripaper check "**/*.bib" --fail-on fabricated,chimeric,retracted,unverified --json report.json
+python -m veripaper check paper/refs.bib            # exit 1 when a citation could not be found, doesn't match, or is retracted
+python -m veripaper check "**/*.bib" --json report.json   # default fail-on; see --help to also fail on unverified
 ```
 
 ```yaml
@@ -55,7 +55,7 @@ jobs:
       - uses: szzxli/veripaper@main
         with:
           files: paper/refs.bib          # space-separated paths or globs
-          # fail-on: fabricated,chimeric,retracted   (default; add unverified to be strict)
+          # fail-on defaults to citations that could not be found, don't match, or are retracted; add unverified to be strict
 ```
 
 Free registries, no key, no account. `UNVERIFIED` and `RATE_LIMITED` are
@@ -105,7 +105,7 @@ verify (iron rules 3 and 5).
 
 ## Iron rules
 
-1. Every citation must come from a real retrieval result. **Fabricating citations is forbidden.**
+1. Every citation must come from a real retrieval result. **Citations that do not come from a real retrieval result are forbidden.**
 2. Honest labels: `[VERIFIED]` / `[CITED]` / `[UNVERIFIED]` / `[STALE:YYYY]` / `[EXTRAPOLATED]` —
    downgrade rather than pretend verification happened.
 3. The tool assists writing; it does not replace research. Final judgment always belongs to the author.
@@ -113,8 +113,9 @@ verify (iron rules 3 and 5).
    and tool outputs all get the same honest labels. An illustrative number is labeled
    illustrative — never presented as measured.
 5. **Lookup, not generation**: the verifier generates nothing — it only queries
-   databases (CrossRef, arXiv, OpenAlex) and reports back. Hallucinations happen when
-   AI *invents* references; asking "does this DOI resolve" is a lookup, a different
+   databases (CrossRef, arXiv, OpenAlex) and reports back. A cited source that
+   could not be found, or that doesn't match the cited record, is a retrieval miss;
+   asking "does this DOI resolve" is a lookup, a different
    failure mode entirely.
 6. **Lightweight by design**: verification is database lookups, not model training.
    The heaviest operation is an HTTP GET. No GPU farms required to check a citation.
@@ -136,7 +137,7 @@ Input: paper markdown. Output: claim-by-claim verification report.
 **BibTeX input.** Give it a `.bib` instead (`python -m veripaper ground refs.bib --out report.md`,
 or paste/upload the `.bib` in the web app) and every entry is checked by DOI /
 arXiv ID / title lookup with the same labels (`CITED` / `UNVERIFIED` /
-`FABRICATED` / `RATE_LIMITED` + `[CHIMERIC]` / `[RETRACTED]`). Parsing happens
+could not be found / `RATE_LIMITED` + `[CHIMERIC]` / `[RETRACTED]`). Parsing happens
 locally — in the web app, entirely in your browser; the only network traffic is
 the registry lookups. A `.bib` carries no claims, so this mode is
 existence-level: no claim-support judgment and no freshness tags.
@@ -183,7 +184,7 @@ does not wait — it skips that source and moves on. Results are cached in
 or not-checked results are never cached). A failed request — offline, CORS,
 timeout, HTTP 5xx, an unreadable answer — is "not checked", never "not
 found": only a genuine 404 or an empty search result counts as a miss, so a
-network failure can never make a reference `FABRICATED`; it shows as
+network failure can never mark a reference as "could not be found"; it shows as
 `RATE_LIMITED` (not checked) with the failing sources named. A reference
 entry without DOI is labelled `RATE_LIMITED` only when fewer than two indexes
 could answer; if two or more answered "no match", it is `UNVERIFIED` and the
