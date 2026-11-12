@@ -18,7 +18,7 @@ The pages GitHub Pages renders from this repo (README/docs) count visits with Go
 and events) until you open a page with `?nocount=0`. It sets GoatCounter's own `skipgc` flag in localStorage.
 Headless/automated browsers start fresh: add `?nocount=1` to every URL. URLs with `v=`, `cb=`, `cachebust`, `_=`
 or `nocount` are never counted. The web app itself moved to verifycites.com/papers (test it there with `?nocount=1` too).
-Links from this repo to li jun's other sites carry `?ref=gh-veripaper` (before any `#fragment`); third-party links are not tagged.
+Links from this repo to David Lee's other sites carry `?ref=gh-veripaper` (before any `#fragment`); third-party links are not tagged.
 
 ## Roadmap
 
